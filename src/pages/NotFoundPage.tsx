@@ -1,4 +1,4 @@
-const NotFoundPage = () => {
+export const NotFoundPage = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <h2>
@@ -7,5 +7,3 @@ const NotFoundPage = () => {
     </div>
   );
 };
-
-export default NotFoundPage;

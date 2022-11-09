@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function Main() {
+export function Main() {
   return (
     <>
       <h2>MAIN</h2>
@@ -10,5 +10,3 @@ function Main() {
     </>
   );
 }
-
-export default Main;
