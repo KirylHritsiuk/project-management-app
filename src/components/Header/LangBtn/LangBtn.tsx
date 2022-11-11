@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormControlLabel, Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useTranslationChange } from 'i18nano';
 
 const MaterialUISwitch = styled(Switch)(() => ({
   width: 62,
@@ -13,7 +14,7 @@ const MaterialUISwitch = styled(Switch)(() => ({
       color: '#fff',
       transform: 'translateX(22px)',
       '& .MuiSwitch-thumb:before': {
-        content: '"ru"',
+        content: '"ру"',
       },
       '& + .MuiSwitch-track': {
         opacity: 1,
@@ -45,11 +46,17 @@ const MaterialUISwitch = styled(Switch)(() => ({
 }));
 
 export const LangBtn: React.FC = () => {
+  const { change } = useTranslationChange();
+  const changeLanguage = (event: React.SyntheticEvent<Element, Event>, checked: boolean) => {
+    if (checked) change('ru');
+    else change('en');
+  };
+
   return (
     <FormControlLabel
       control={<MaterialUISwitch defaultChecked />}
       label={undefined}
-      onChange={() => console.log('lang')}
+      onChange={changeLanguage}
       sx={{ m: 0 }}
     />
   );

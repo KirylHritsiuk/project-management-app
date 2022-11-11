@@ -12,10 +12,10 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-      <Provider store={store}>
-        <TranslationProvider translations={translations.home} language={'en'} fallback="en">
-          <App />
-        </TranslationProvider>
-      </Provider>
+    <Provider store={store}>
+      <TranslationProvider translations={translations.home} language={'ru'} fallback="ru">
+        <App />
+      </TranslationProvider>
+    </Provider>
   </React.StrictMode>
 );
