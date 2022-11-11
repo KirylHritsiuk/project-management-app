@@ -1,20 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { usersAPI } from 'api/usersApi';
-import { UserStateType } from 'types/types';
+import { DecodedTokenType, UserStateType } from 'types/types';
 import { RootState } from 'store/store';
+import { isExpired, decodeToken } from 'react-jwt';
 
 const getInitialState = () => {
   const token = localStorage.getItem('token');
-  if (token) {
+  if (token && isExpired(token)) {
+    const decodedToken = decodeToken(token) as DecodedTokenType;
     return {
+      isAuth: true,
       token: token,
-      id: '',
+      id: decodedToken!.userId,
       name: '',
-      login: '',
+      login: decodedToken!.login,
       status: 'idle',
     };
   } else
     return {
+      isAuth: false,
       token: null,
       id: '',
       name: '',
@@ -31,17 +35,34 @@ export const authUserSlice = createSlice({
   reducers: {
     logout: () => {
       localStorage.removeItem('token');
-      return initialState;
+      return {
+        isAuth: false,
+        token: null,
+        id: '',
+        name: '',
+        login: '',
+        status: 'idle',
+      };
     },
   },
   extraReducers: (bulder) => {
     bulder
+      .addMatcher(usersAPI.endpoints.createUser.matchPending, (state) => {
+        state.status = 'loading';
+      })
+      .addMatcher(usersAPI.endpoints.createUser.matchRejected, (state) => {
+        state.status = 'failed';
+      })
       .addMatcher(usersAPI.endpoints.loginUser.matchPending, (state) => {
         state.status = 'loading';
       })
       .addMatcher(usersAPI.endpoints.loginUser.matchFulfilled, (state, action) => {
-        state.status = 'idle';
+        const decodedToken: DecodedTokenType | null = decodeToken(action.payload.token);
+        state.isAuth = true;
         state.token = action.payload.token;
+        state.id = decodedToken!.userId;
+        state.login = decodedToken!.login;
+        state.status = 'idle';
         localStorage.setItem('token', action.payload.token);
       })
       .addMatcher(usersAPI.endpoints.loginUser.matchRejected, (state) => {
@@ -50,7 +71,7 @@ export const authUserSlice = createSlice({
   },
 });
 
-export const selectAuth = (state: RootState) => state.user;
+export const authUser = (state: RootState) => state.user;
 
 export const { logout } = authUserSlice.actions;
 
