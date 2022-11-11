@@ -5,7 +5,7 @@ import { Header } from '../components/Header/Header';
 export const Layout = () => {
   return (
     <>
-      <Header title="Project Management App" />
+      <Header />
       <main>
         <Outlet />
       </main>
