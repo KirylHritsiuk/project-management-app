@@ -18,6 +18,10 @@ code {
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
   gap: 15px;
-
   position: relative;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
 }

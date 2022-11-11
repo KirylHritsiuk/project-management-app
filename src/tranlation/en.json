@@ -1,5 +1,9 @@
 {
-	"title": "project management app",
-	"login": "login",
-	"main": "boards"
+  "title": "project management app",
+  "login": "login",
+  "main": "boards",
+  "addBoard": "Add Board",
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "Boards": "Boards"
 }

@@ -1,0 +1,25 @@
+.registr {
+  text-align: center;
+}
+
+.registr__form {
+  display: flex;
+  margin-top: 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.registr__input {
+  max-width: 300px;
+  width: 100%;
+  margin-bottom: 24px !important;
+}
+
+.registr__error-input {
+  width: 300px;
+}
+
+.registr__button{
+  width: max-content;
+}

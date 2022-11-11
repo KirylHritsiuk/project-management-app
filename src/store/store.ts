@@ -7,6 +7,7 @@ export const store = configureStore({
     user: userSlice,
     [api.reducerPath]: api.reducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
