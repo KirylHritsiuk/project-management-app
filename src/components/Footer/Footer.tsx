@@ -3,11 +3,7 @@ import { ReactComponent as RssLogo } from './assets/rssLogo.svg';
 import { ReactComponent as GitLogo } from './assets/gitLogo.svg';
 import { ReactComponent as Copy } from './assets/copy.svg';
 
-const TEAM = [
-  { login: 'KirylHritsiuk', link: 'https://github.com/KirylHritsiuk' },
-  { login: 'Philonena', link: 'https://github.com/Philonena' },
-  { login: 'kate-js', link: 'https://github.com/kate-js' },
-];
+import { TEAM } from '../../constants/constants';
 
 export const Footer = () => {
   return (
