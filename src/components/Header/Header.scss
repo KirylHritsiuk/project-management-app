@@ -1,0 +1,16 @@
+.header {
+  display: flex !important;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header__logo {
+  font-size: 32px !important;
+  text-decoration: none;
+}
+
+.header__navbar {
+  display: flex;
+  margin-left: auto !important;
+  gap: 15px;
+}

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom';
+import { translations } from './tranlation';
+import { TranslationProvider } from 'i18nano';
 import { createRoot } from 'react-dom/client';
 import { store } from 'store/store';
-import App from 'App/App';
+import App from './App';
 import './index.scss';
 
 const container = document.getElementById('root')!;
@@ -11,10 +12,10 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <HashRouter>
-      <Provider store={store}>
+    <Provider store={store}>
+      <TranslationProvider translations={translations.home} language={'ru'} fallback="ru">
         <App />
-      </Provider>
-    </HashRouter>
+      </TranslationProvider>
+    </Provider>
   </React.StrictMode>
 );

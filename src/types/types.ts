@@ -16,6 +16,7 @@ export type LoginUserType = {
 };
 
 export type UserStateType = {
+  isAuth: boolean;
   token: string | null;
   id: string;
   name: string;
@@ -103,4 +104,10 @@ export type UpdateTaskType = {
     boardId: string;
     columnId: string;
   };
+};
+
+export type DecodedTokenType = {
+  iat: number;
+  login: string;
+  userId: string;
 };
