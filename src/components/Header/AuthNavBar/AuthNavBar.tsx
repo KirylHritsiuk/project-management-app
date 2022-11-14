@@ -13,7 +13,7 @@ import { authUser, logout } from 'store/slices/userSlice';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { Translation } from 'i18nano';
-import { useAppDispatch, useAppSelector } from '../../../Hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 
 // import './Header.scss';
 

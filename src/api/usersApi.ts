@@ -5,14 +5,14 @@ export const usersAPI = api.injectEndpoints({
   endpoints: (build) => ({
     createUser: build.mutation<GetUserType, CreateUserType>({
       query: (body) => ({
-        url: '/signup',
+        url: 'auth/signup',
         method: 'POST',
         body,
       }),
     }),
     loginUser: build.mutation<{ token: string }, LoginUserType>({
       query: (body) => ({
-        url: '/signin',
+        url: 'auth/signin',
         method: 'POST',
         body,
       }),

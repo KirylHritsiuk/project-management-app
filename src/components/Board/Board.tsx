@@ -5,7 +5,7 @@ import styled from './Board.module.scss';
 import { boardsAPI } from 'api/boardsApi';
 import { Modal } from 'components';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { CreateBoardType } from 'types/types';
 
 export const Board: React.FC<BoardProps> = ({ data }) => {
@@ -21,8 +21,8 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
     reset,
   } = useForm();
 
-  const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
-    editBoard({ id: _id, body: { ...data, users: [] } })
+  const onSubmit = (data: FieldValues) => {
+    editBoard({ id: _id, body: { ...(data as CreateBoardType), users: [] } })
       .then(() => {
         setVisible(false);
         reset();

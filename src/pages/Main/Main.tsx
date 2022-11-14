@@ -3,11 +3,11 @@ import { boardsAPI } from 'api/boardsApi';
 import { Board, Modal } from 'components';
 import { useState } from 'react';
 import styled from './Main.module.scss';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { CreateBoardType } from 'types/types';
 
 export function Main() {
-  const { data, isLoading, error, isError, isSuccess } = boardsAPI.useGetBoardsQuery('');
+  const { data, isLoading, error } = boardsAPI.useGetBoardsQuery('');
   const [isVisible, setVisible] = useState<boolean>(false);
   const [addBoard] = boardsAPI.useCreateBoardMutation();
   const {
@@ -17,11 +17,9 @@ export function Main() {
     reset,
   } = useForm();
 
-  const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
-    console.log('onSubmit', data, isError, isSuccess);
-    addBoard({ ...data, users: [] })
-      .then((val) => {
-        console.log('then', val, isError, isSuccess);
+  const onSubmit = (data: FieldValues) => {
+    addBoard({ ...(data as CreateBoardType), users: [] })
+      .then(() => {
         setVisible(false);
         reset();
       })

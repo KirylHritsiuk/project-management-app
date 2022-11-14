@@ -1,7 +1,7 @@
 import { Button, LinearProgress, Stack, ListItem, Card } from '@mui/material';
 import { columnsAPI } from 'api/columnsApi';
 import { TaskList } from 'components/TaskList/TaskList';
-import { usePageNavigate } from 'Hooks/usePageNavigate';
+import { usePageNavigate } from 'hooks/usePageNavigate';
 import { useParams } from 'react-router-dom';
 
 export const Board = () => {
