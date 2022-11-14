@@ -9,18 +9,27 @@ export const boardsAPI = api.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: [{ type: 'boards', id: 'LIST' }],
     }),
     getBoards: build.query<GetBoardType[], string>({
       query: () => ({
         url: `/boards`,
         method: 'GET',
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'boards' as const, _id })),
+              { type: 'boards', id: 'LIST' },
+            ]
+          : [{ type: 'boards', id: 'LIST' }],
     }),
     deleteBoard: build.mutation<string, { id: string }>({
       query: ({ id }) => ({
         url: `/boards/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: [{ type: 'boards', id: 'LIST' }],
     }),
     updateBoard: build.mutation<GetBoardType, { id: string; body: CreateBoardType }>({
       query: ({ id, body }) => ({
@@ -28,6 +37,7 @@ export const boardsAPI = api.injectEndpoints({
         method: 'PUT',
         body,
       }),
+      invalidatesTags: [{ type: 'boards', id: 'LIST' }],
     }),
     getBoardById: build.query<BoardType, { id: string }>({
       query: ({ id }) => ({
