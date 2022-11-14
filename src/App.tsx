@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Main, NotFoundPage, User, Board, SignUp, SignIn } from './pages';
+import { Home, Main, NotFoundPage, User, Board, SignIn, SignUp } from './pages';
 import { Header, Footer } from './components';
 
 function App() {

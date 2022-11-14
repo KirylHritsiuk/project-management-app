@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Container, Toolbar, Typography } from '@mui/material';
-import { useAppSelector } from '../../Hooks/hooks';
+import { useAppSelector } from '../../hooks/hooks';
 import { authUser } from 'store/slices/userSlice';
 import { LangBtn } from './LangBtn/LangBtn';
 import { NavBar } from './NavBar/NavBar';

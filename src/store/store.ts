@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { api } from 'api/api';
+import boardsSlice from './slices/boardsSlice';
 import userSlice from './slices/userSlice';
 
 export const store = configureStore({
   reducer: {
-    user: userSlice,
     [api.reducerPath]: api.reducer,
+    user: userSlice,
+    boards: boardsSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 });
