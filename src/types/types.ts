@@ -5,7 +5,7 @@ export type CreateUserType = {
 };
 
 export type GetUserType = {
-  id: string;
+  _id: string;
   name: string;
   login: string;
 };
