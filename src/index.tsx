@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { translations } from './tranlation';
+import { translations } from './translation';
 import { TranslationProvider } from 'i18nano';
 import { createRoot } from 'react-dom/client';
 import { store } from 'store/store';
