@@ -25,20 +25,22 @@ export type UserStateType = {
 
 export type CreateBoardType = {
   title: string;
-  description: string;
+  owner: string;
+  users: string[];
 };
 
 export type GetBoardType = {
-  id: string;
+  _id: string;
   title: string;
-  description: string;
+  owner: string;
+  users: string[];
 };
 
 export type BoardType = {
-  id: string;
+  _id: string;
   title: string;
-  description: string;
-  columns: ColumnType[];
+  owner: string;
+  users: string[];
 };
 
 export type GetColumnType = {
@@ -81,14 +83,14 @@ export type GetTaskType = {
 };
 
 export type TaskType = {
-  id: string;
+  _id: string;
   title: string;
   order: number;
   description: string;
   userId: string;
   boardId: string;
   columnId: string;
-  files: [];
+  files: FilesType[];
 };
 
 export type UpdateTaskType = {
@@ -103,4 +105,9 @@ export type UpdateTaskType = {
     boardId: string;
     columnId: string;
   };
+};
+
+export type FilesType = {
+  filename: string;
+  fileSize: number;
 };

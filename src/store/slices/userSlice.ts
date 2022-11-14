@@ -34,8 +34,8 @@ export const authUserSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: (bulder) => {
-    bulder
+  extraReducers: (builder) => {
+    builder
       .addMatcher(usersAPI.endpoints.loginUser.matchPending, (state) => {
         state.status = 'loading';
       })
