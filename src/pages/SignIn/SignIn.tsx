@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { Button, Container, TextField, CircularProgress } from '@mui/material';
-import { useAppSelector } from 'hooks/hooks';
-import { usersAPI } from 'api/usersApi';
-import { authUser } from 'store/slices/userSlice';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../Hooks/hooks';
 
 import './SignIn.scss';
+import { usersAPI } from '../../api/usersApi';
+import { authUser } from '../../store/slices/userSlice';
 
 export const SignIn: React.FC = () => {
   const { isAuth, status } = useAppSelector(authUser);

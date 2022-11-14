@@ -1,10 +1,11 @@
 import { Button, Card, LinearProgress } from '@mui/material';
-import { boardsAPI } from 'api/boardsApi';
+
 import { Board, Modal } from 'components';
 import { useState } from 'react';
 import styled from './Main.module.scss';
 import { FieldValues, useForm } from 'react-hook-form';
-import { CreateBoardType } from 'types/types';
+import { CreateBoardType } from '../../types/types';
+import { boardsAPI } from '../../api/boardsApi';
 
 export function Main() {
   const { data, isLoading, error } = boardsAPI.useGetBoardsQuery('');
