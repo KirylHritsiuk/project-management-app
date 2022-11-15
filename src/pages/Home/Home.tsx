@@ -22,7 +22,7 @@ export const Home = () => {
         <img src={Board} alt="image deskboard" className="home_image" />
       </div>
       <div className="project_section">
-        <img src={Background} alt="image background" className="project_image" />
+        {/* <img src={Background} alt="image background" className="project_image" /> */}
         <div className="project_main">
           <h2>Project management system</h2>
           <span>with</span>
