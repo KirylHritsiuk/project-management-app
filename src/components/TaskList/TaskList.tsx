@@ -1,7 +1,7 @@
 import { LinearProgress, Stack } from '@mui/material';
-import { tasksAPI } from 'api/tasksApi';
-import { Task } from 'components/Task/Task';
 import { FC } from 'react';
+import { tasksAPI } from '../../api/tasksApi';
+import { Task } from '../Task/Task';
 
 interface TaskProps {
   boardId: string;

@@ -45,7 +45,7 @@ export type BoardType = {
 };
 
 export type GetColumnType = {
-  id: string;
+  _id: string;
   title: string;
   order: number;
 };
