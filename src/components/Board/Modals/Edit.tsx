@@ -1,12 +1,16 @@
-import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
+import { Autocomplete, Button, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { Modal } from 'components';
-import { FC } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
+import { FC, useState, useEffect } from 'react';
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { usersAPI } from 'api/usersApi';
 import { boardsAPI } from 'api/boardsApi';
-import { GetBoardType } from 'types/types';
+import { CreateBoardType, GetBoardType } from 'types/types';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import styled from './Edit.module.scss';
+import { useAppSelector } from 'hooks/hooks';
+import SaveIcon from '@mui/icons-material/Save';
 
 interface EditProps {
   data: GetBoardType;
@@ -14,27 +18,39 @@ interface EditProps {
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { data: allUsers } = usersAPI.useGetUsersQuery('');
+  const { login } = useAppSelector((state) => state.user);
   const [editBoard] = boardsAPI.useUpdateBoardMutation();
-  console.log(data.users);
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { isDirty, errors },
     reset,
-  } = useForm();
+  } = useForm<CreateBoardType>();
 
-  const onSubmit = (data: FieldValues) => {
-    // editBoard({ id: _id, body: { ...(data as CreateBoardType), users: [] } })
-    //   .then(() => {
-    //     setEdit(false);
-    //     reset();
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    console.log(data);
+  const usersFields = allUsers?.filter((el) => el.login !== login).map((el) => el.login) ?? [];
+  const [owner, setOwner] = useState<string>(data.owner);
+  const [users, setUsers] = useState<string[]>(data.users);
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setOwner(event.target.value);
+  };
+
+  const onSubmit = (formData: CreateBoardType) => {
+    // console.log(formData);
+    editBoard({ id: data._id, body: { ...formData, users } })
+      .then(() => {
+        setModal(false);
+        reset();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -44,15 +60,14 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           required
           label="Title"
           defaultValue={data.title}
-          helperText="Please, enter title."
           {...register('title', { required: true })}
           aria-invalid={errors.title ? 'true' : 'false'}
         />
         <TextField
-          id="input-with-icon-textfield"
+          select
           label="Owner"
-          defaultValue={data.owner}
-          {...register('owner', { required: true })}
+          value={owner}
+          {...register('owner', { onChange: (e) => handleChange(e) })}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -60,19 +75,54 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
               </InputAdornment>
             ),
           }}
+        >
+          {allUsers?.map((user) => (
+            <MenuItem key={user._id} value={user.login}>
+              {user.login}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Controller
+          name="users"
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange } }) => (
+            <Autocomplete
+              multiple
+              disableCloseOnSelect
+              defaultValue={[...data.users]}
+              options={[...usersFields]}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              style={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Users" placeholder="Search" />}
+              onChange={(_, data) => {
+                console.log(data);
+                setUsers(data);
+                onChange(data);
+                return data;
+              }}
+            />
+          )}
         />
-        <Autocomplete
-          multiple
-          limitTags={3}
-          id="multiple-limit-tags"
-          options={allUsers?.map((el) => el.name) ?? ['']}
-          getOptionLabel={(option) => option}
-          defaultValue={data.users}
-          renderInput={(params) => <TextField {...params} label="Users" placeholder="Users" />}
-          {...register('users')}
-          sx={{ width: '300px' }}
-        />
-        <input type="submit" />
+        <Button
+          type="submit"
+          disabled={!isDirty}
+          variant="contained"
+          color="secondary"
+          endIcon={<SaveIcon />}
+        >
+          Save
+        </Button>
       </form>
     </Modal>
   );

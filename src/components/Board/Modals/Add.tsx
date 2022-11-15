@@ -1,55 +1,53 @@
-import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
+import { Autocomplete, Button, Checkbox, InputAdornment, TextField } from '@mui/material';
 import { Modal } from 'components';
-import { FC } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
+import { FC, useEffect, useState } from 'react';
+import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { usersAPI } from 'api/usersApi';
 import { boardsAPI } from 'api/boardsApi';
 import { CreateBoardType, GetBoardType } from 'types/types';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import SaveIcon from '@mui/icons-material/Save';
+
 import styled from './Edit.module.scss';
+import { useAppSelector } from 'hooks/hooks';
 
 interface AddProps {
   visible: boolean;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
+  const { login } = useAppSelector((state) => state.user);
   const { data: allUsers } = usersAPI.useGetUsersQuery('');
-  const [addBoard] = boardsAPI.useCreateBoardMutation();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const usersFields = allUsers?.filter((el) => el.login !== login).map((el) => el.login) ?? [];
+  const [addBoard, status] = boardsAPI.useCreateBoardMutation();
+  const { register, handleSubmit, control, reset } = useForm<CreateBoardType>();
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
-    // addBoard({ ...(data as CreateBoardType), users: [] })
-    //   .then(() => {
-    //     setModal(false);
-    //     reset();
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+  // console.log(status);
+  const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
+    if (typeof data.users === 'undefined') {
+      data.users = [];
+    }
+    addBoard(data)
+      .then(() => {
+        setModal(false);
+        reset();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <Modal visible={visible} setModal={setModal}>
       <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
+        <TextField required label="Title" {...register('title', { required: true })} />
         <TextField
-          required
-          label="Title"
-          helperText="Please, enter title."
-          {...register('title', { required: true })}
-          aria-invalid={errors.title ? 'true' : 'false'}
-        />
-        <TextField
-          id="input-with-icon-textfield"
           label="Owner"
-          //**TODO change username */
-          defaultValue={'IMask'}
           {...register('owner', { required: true })}
           InputProps={{
             startAdornment: (
@@ -57,19 +55,43 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
                 <OwnerIcon />
               </InputAdornment>
             ),
+            readOnly: true,
+            value: login,
           }}
         />
-        <Autocomplete
-          multiple
-          limitTags={2}
-          options={allUsers?.map((el) => el.name) ?? ['']}
-          getOptionLabel={(option) => option}
-          renderInput={(params) => (
-            <TextField {...params} label="Users" placeholder="Users" {...register('users')} />
+        <Controller
+          name="users"
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange } }) => (
+            <Autocomplete
+              multiple
+              disableCloseOnSelect
+              defaultValue={[]}
+              options={usersFields}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {option}
+                </li>
+              )}
+              style={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Users" placeholder="Search" />}
+              onChange={(_, data) => {
+                onChange(data);
+                return data;
+              }}
+            />
           )}
-          sx={{ width: '300px' }}
         />
-        <input type="submit" />
+        <Button type="submit" variant="contained" color="secondary" endIcon={<SaveIcon />}>
+          Save
+        </Button>
       </form>
     </Modal>
   );

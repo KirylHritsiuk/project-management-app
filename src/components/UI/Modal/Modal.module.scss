@@ -4,9 +4,11 @@
     bottom: 0;
     right: 0;
     left: 0;
-    display: none;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .content {
@@ -20,11 +22,6 @@
     align-items: center;
 }
 
-.active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .close {
     position: absolute !important;
