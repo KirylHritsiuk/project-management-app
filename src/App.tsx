@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home, Main, NotFoundPage, User, Board, SignIn, SignUp } from './pages';
-import { Header, Footer } from './components';
+import { Header, Footer, Notification } from './components';
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
         <Route path="/main/:id" element={<Board />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Notification />
       <Footer />
     </Router>
   );

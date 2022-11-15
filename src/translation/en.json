@@ -1,9 +1,21 @@
 {
-  "title": "project management app",
-  "login": "login",
-  "main": "boards",
-  "addBoard": "Add Board",
-  "signIn": "Sign In",
-  "signUp": "Sign Up",
-  "Boards": "Boards"
+  "Add Board": "Add Board",
+  "Boards": "Boards",
+  "Sign In": "Sign In",
+  "Sign Up": "Sign Up",
+  "Sign Out": "Sign Out",
+  "Profile": "Profile",
+  "Welcome": "Welcome",
+  "Login": "Login",
+  "Password": "Password",
+  "Name": "Name",
+  "Minimum 3 characters": "Minimum 3 characters",
+  "Only english letters and numbers": "Only english letters and numbers",
+  "Required field": "Required field",
+  "Minimum 8 characters": "Minimum 8 characters",
+  "Password must contain letters and numbers": "Password must contain letters and numbers",
+  "I don’t have an account": "I don’t have an account",
+  "Create new account": "Create new account",
+  "I have an account": "I have an account",
+  "Save": "Save"
 }
