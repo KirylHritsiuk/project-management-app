@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Button, Container, TextField, CircularProgress } from '@mui/material';
-import { useAppSelector } from 'hooks/hooks';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { usersAPI } from 'api/usersApi';
 import { authUser } from 'store/slices/userSlice';
-import { Link, useNavigate } from 'react-router-dom';
+import { showNotification } from 'store/slices/notificationSlice';
+import { LoginUserType } from 'types/types';
 
 import './SignIn.scss';
 
@@ -12,34 +15,53 @@ export const SignIn: React.FC = () => {
   const { isAuth, status } = useAppSelector(authUser);
   const [loginUser] = usersAPI.useLoginUserMutation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm({ defaultValues: { login: '', password: '' } });
 
   useEffect(() => {
     if (isAuth) navigate('/main');
   }, [isAuth, navigate]);
 
-  const onSubmitForm = async (data: FieldValues) => {
-    const authUser = await loginUser({ login: data.login, password: data.password });
+  const onSubmitForm = async (data: LoginUserType) => {
+    const authUser = await loginUser({ ...data });
+    if ('data' in authUser)
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${t('Welcome')}, ${data.login}!`,
+          severity: 'success',
+        })
+      );
+    if ('error' in authUser) {
+      let message;
+      if ('status' in authUser.error)
+        message = (authUser.error.data as { message: string }).message;
+      else message = authUser.error.message!;
+      dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+      reset({ login: '', password: '' });
+    }
   };
 
   return (
     <Container component="main" className="auth">
       {status === 'loading' && <CircularProgress color="secondary" />}
-      <h2 className="auth__title">Sign in</h2>
+      <h2 className="auth__title">{t('Sign In')}</h2>
       <form onSubmit={handleSubmit(onSubmitForm)} className="auth__form">
         <TextField
-          label="Login"
+          label={t('Login')}
           {...register('login', {
-            required: 'Required field',
-            minLength: { value: 3, message: 'Minimum 3 characters' },
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 3, message: t('Minimum 3 characters') },
             pattern: {
               value: /^^[a-zA-Z0-9]+$/,
-              message: 'Only english letters and numbers',
+              message: t('Only english letters and numbers'),
             },
           })}
           size="small"
@@ -48,14 +70,14 @@ export const SignIn: React.FC = () => {
           className={errors.login ? 'auth__error-input' : 'auth__input'}
         />
         <TextField
-          label="Password"
+          label={t('Password')}
           type="password"
           {...register('password', {
-            required: 'Required field',
-            minLength: { value: 8, message: 'Minimum 8 characters' },
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 8, message: t('Minimum 8 characters') },
             pattern: {
               value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-              message: 'Password must contain letters and numbers',
+              message: t('Password must contain letters and numbers'),
             },
           })}
           size="small"
@@ -64,13 +86,13 @@ export const SignIn: React.FC = () => {
           className={errors.password ? 'auth__error-input' : 'auth__input'}
         />
         <Button type="submit" variant="contained" className="auth__button">
-          Save
+          {t('Save')}
         </Button>
       </form>
       <p className="auth__text">
-        I don’t have an account,{' '}
+        {t('I don’t have an account')},{' '}
         <Link className="auth__link" to="/signup">
-          Sign Up
+          {t('Sign Up')}
         </Link>
       </p>
     </Container>

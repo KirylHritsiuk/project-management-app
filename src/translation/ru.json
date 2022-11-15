@@ -1,9 +1,21 @@
 {
-  "title": "приложение для управления проектом",
-  "login": "логин",
-  "main": "доски",
-  "addBoard": "Добавить доску",
-	"signIn": "Войти",
-  "signUp": "Зарегистрироваться",
-  "Boards": "Доски"
+  "Add Board": "Добавить доску",
+  "Boards": "Доски",
+  "Sign In": "Войти",
+  "Sign Up": "Зарегистрироваться",
+  "Sign Out": "Выйти",
+  "Profile": "Профиль",
+  "Welcome": "Добро пожаловать",
+  "Login": "Логин",
+  "Password": "Пароль",
+  "Name": "Имя",
+  "Minimum 3 characters": "Минимум 3 символа",
+  "Only english letters and numbers": "Только цифры и английские буквы",
+  "Required field": "Обязательное поле",
+  "Minimum 8 characters": "Минимум 8 символов",
+  "Password must contain letters and numbers": "Пароль должен состоять из цифр и букв",
+  "I don’t have an account": "У меня нету аккаунта",
+  "Create new account": "Создать новый аккаунт",
+  "I have an account": "У меня уже есть аккаунт",
+  "Save": "Сохранить"
 }

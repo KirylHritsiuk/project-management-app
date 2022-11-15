@@ -118,3 +118,9 @@ export type DecodedTokenType = {
   login: string;
   userId: string;
 };
+
+export type NotificationType = {
+  isShow: boolean;
+  text: string;
+  severity: 'error' | 'success' | undefined;
+};
