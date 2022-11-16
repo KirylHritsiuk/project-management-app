@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-
-import { columnsAPI } from '../../api/columnsApi';
 import { Modal } from '../../components/UI/Modal/Modal';
 import { usePageNavigate } from '../../Hooks/usePageNavigate';
-import { TaskList } from '../../components/TaskList/TaskList';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+import { columnsAPI } from '../../api/columnsApi';
+import { TaskList } from '../../components/TaskList/TaskList';
 
 import './Board.scss';
 

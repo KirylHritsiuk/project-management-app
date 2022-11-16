@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
-import { Button, Container, TextField, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Button, Container, TextField, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { usersAPI } from 'api/usersApi';
+import { authUser } from 'store/slices/userSlice';
+import { showNotification } from 'store/slices/notificationSlice';
+import { CreateUserType } from 'types/types';
 
 import './SignUp.scss';
 import { useAppSelector } from '../../Hooks/hooks';
@@ -14,34 +20,63 @@ export const SignUp: React.FC = () => {
   const [createUser] = usersAPI.useCreateUserMutation();
   const [loginUser] = usersAPI.useLoginUserMutation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm({ defaultValues: { name: '', login: '', password: '' } });
 
   useEffect(() => {
     if (isAuth) navigate('/main');
   }, [isAuth, navigate]);
 
-  const onSubmitForm = async (data: FieldValues) => {
-    const newUser = await createUser({ ...(data as CreateUserType) });
+  const onSubmitForm = async (data: CreateUserType) => {
+    const newUser = await createUser({ ...data });
+
     if ('data' in newUser) {
       const authUser = await loginUser({ login: data.login, password: data.password });
+
+      if ('data' in authUser)
+        dispatch(
+          showNotification({
+            isShow: true,
+            text: `${t('Welcome')}, ${data.login}!`,
+            severity: 'success',
+          })
+        );
+      if ('error' in authUser) {
+        let message;
+        if ('status' in authUser.error)
+          message = (authUser.error.data as { message: string }).message;
+        else message = authUser.error.message!;
+        dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+        reset({ name: '', login: '', password: '' });
+      }
+    }
+
+    if ('error' in newUser) {
+      let message;
+      if ('status' in newUser.error) message = (newUser.error.data as { message: string }).message;
+      else message = newUser.error.message!;
+      dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+      reset({ name: '', login: '', password: '' });
     }
   };
 
   return (
     <Container component="main" className="registr">
       {status === 'loading' && <CircularProgress color="secondary" />}
-      <h2 className="registr__title">Create new account</h2>
+      <h2 className="registr__title">{t('Create new account')}</h2>
       <form onSubmit={handleSubmit(onSubmitForm)} className="registr__form">
         <TextField
-          label="Name"
+          label={t('Name')}
           {...register('name', {
-            required: 'Required field',
-            minLength: { value: 3, message: 'Minimum 3 characters' },
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 3, message: t('Minimum 3 characters') },
           })}
           size="small"
           error={!!errors.name}
@@ -49,13 +84,13 @@ export const SignUp: React.FC = () => {
           className={errors.name ? 'registr__error-input' : 'registr__input'}
         />
         <TextField
-          label="Login"
+          label={t('Login')}
           {...register('login', {
-            required: 'Required field',
-            minLength: { value: 3, message: 'Minimum 3 characters' },
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 3, message: t('Minimum 3 characters') },
             pattern: {
               value: /^^[a-zA-Z0-9]+$/,
-              message: 'Only english letters and numbers',
+              message: t('Only english letters and numbers'),
             },
           })}
           size="small"
@@ -64,14 +99,14 @@ export const SignUp: React.FC = () => {
           className={errors.login ? 'registr__error-input' : 'registr__input'}
         />
         <TextField
-          label="Password"
+          label={t('Password')}
           type="password"
           {...register('password', {
-            required: 'Required field',
-            minLength: { value: 8, message: 'Minimum 8 characters' },
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 8, message: t('Minimum 8 characters') },
             pattern: {
               value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-              message: 'Password must contain letters and numbers',
+              message: t('Password must contain letters and numbers'),
             },
           })}
           size="small"
@@ -80,13 +115,13 @@ export const SignUp: React.FC = () => {
           className={errors.password ? 'registr__error-input' : 'registr__input'}
         />
         <Button type="submit" variant="contained" className="registr__button">
-          Save
+          {t('Save')}
         </Button>
       </form>
       <p className="registr__text">
-        I have an account,{' '}
+        {t('I have an account')},{' '}
         <Link className="registr__link" to="/signin">
-          Sign In
+          {t('Sign In')}
         </Link>
       </p>
     </Container>

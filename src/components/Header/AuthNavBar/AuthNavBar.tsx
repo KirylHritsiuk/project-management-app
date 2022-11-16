@@ -6,22 +6,30 @@ import {
   ListItemText,
   IconButton,
   Avatar,
-  Menu,
   MenuItem,
+  Popover,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
+<<<<<<< HEAD
 import { Translation } from 'i18nano';
 import { useAppDispatch, useAppSelector } from '../../../Hooks/hooks';
 import { authUser, logout } from '../../../store/slices/userSlice';
 
 // import './Header.scss';
+=======
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { Add } from 'components/Board/Modals/Add';
+import { useTranslation } from 'react-i18next';
+>>>>>>> develop
 
 export const AuthNavBar: React.FC = () => {
   const { login } = useAppSelector(authUser);
   const { pathname } = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [visible, setVisible] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,45 +45,42 @@ export const AuthNavBar: React.FC = () => {
   };
 
   return (
-    <List className="header__navbar">
-      {pathname === '/main' ? (
-        <ListItemButton component={Link} to="/main">
-          <DashboardCustomizeIcon sx={{ mr: 1 }} color="action" fontSize="large" />
-          <ListItemText
-            sx={{ display: { xs: 'none', sm: 'inline' } }}
-            primary={<Translation path="addBoard" />}
-          />
-        </ListItemButton>
-      ) : (
-        <ListItemButton component={Link} to="/main">
-          <DashboardIcon sx={{ mr: 1 }} color="action" fontSize="large" />
-          <ListItemText
-            sx={{ display: { xs: 'none', sm: 'inline' } }}
-            primary={<Translation path="Boards" />}
-          />
-        </ListItemButton>
-      )}
-      <IconButton onClick={handleMenu}>
-        <Avatar>{login[0]}</Avatar>
-      </IconButton>
-      <Menu
-        sx={{ mt: '45px' }}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={onExit}>Sign out</MenuItem>
-      </Menu>
-    </List>
+    <>
+      <List className="header__navbar">
+        {pathname === '/main' ? (
+          <ListItemButton component={Link} to="/main" onClick={() => setVisible(true)}>
+            <DashboardCustomizeIcon sx={{ mr: 1 }} color="action" fontSize="large" />
+            <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Add Board')} />
+          </ListItemButton>
+        ) : (
+          <ListItemButton component={Link} to="/main">
+            <DashboardIcon sx={{ mr: 1 }} color="action" fontSize="large" />
+            <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Boards')} />
+          </ListItemButton>
+        )}
+        <IconButton onClick={handleMenu}>
+          <Avatar>{login[0]}</Avatar>
+        </IconButton>
+        <Popover
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          disableScrollLock
+        >
+          <MenuItem onClick={handleClose}>{t('Profile')}</MenuItem>
+          <MenuItem onClick={onExit}>{t('Sign Out')}</MenuItem>
+        </Popover>
+      </List>
+      <Add visible={visible} setModal={setVisible} />
+    </>
   );
 };

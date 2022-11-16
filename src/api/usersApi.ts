@@ -28,6 +28,13 @@ export const usersAPI = api.injectEndpoints({
         url: `/users`,
         method: 'GET',
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'users' as const, _id })),
+              { type: 'users', id: 'LIST' },
+            ]
+          : [{ type: 'users', id: 'LIST' }],
     }),
     getUserById: build.query<GetUserType, { id: string }>({
       query: ({ id }) => ({

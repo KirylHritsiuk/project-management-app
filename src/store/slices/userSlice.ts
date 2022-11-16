@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { usersAPI } from 'api/usersApi';
 import { DecodedTokenType, UserStateType } from 'types/types';
 import { RootState } from 'store/store';
-import { decodeToken } from 'react-jwt';
+import { decodeToken, isExpired } from 'react-jwt';
 
 const getInitialState = () => {
   const token = localStorage.getItem('token');
-  if (token) {
+  if (token && !isExpired(token)) {
     const decodedToken = decodeToken(token) as DecodedTokenType;
     return {
       isAuth: true,

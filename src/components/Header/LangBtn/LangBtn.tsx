@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControlLabel, Switch } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
-import { useTranslationChange } from 'i18nano';
 
 const MaterialUISwitch = styled(Switch)(() => ({
   width: 62,
@@ -23,14 +23,14 @@ const MaterialUISwitch = styled(Switch)(() => ({
     },
   },
   '& .MuiSwitch-thumb': {
-    backgroundColor: '#001e3c',
+    backgroundColor: 'var(--hoverLinkColor)',
     width: 32,
     height: 32,
     '&:before': {
       content: '"en"',
       position: 'absolute',
       width: '100%',
-      height: '100%',
+      height: '85%',
       left: 0,
       top: 0,
       display: 'flex',
@@ -46,10 +46,11 @@ const MaterialUISwitch = styled(Switch)(() => ({
 }));
 
 export const LangBtn: React.FC = () => {
-  const { change } = useTranslationChange();
+  const { i18n } = useTranslation();
+
   const changeLanguage = (event: React.SyntheticEvent<Element, Event>, checked: boolean) => {
-    if (checked) change('ru');
-    else change('en');
+    if (checked) i18n.changeLanguage('ru');
+    else i18n.changeLanguage('en');
   };
 
   return (

@@ -5,7 +5,7 @@ export type CreateUserType = {
 };
 
 export type GetUserType = {
-  id: string;
+  _id: string;
   name: string;
   login: string;
 };
@@ -124,4 +124,10 @@ export type DecodedTokenType = {
   iat: number;
   login: string;
   userId: string;
+};
+
+export type NotificationType = {
+  isShow: boolean;
+  text: string;
+  severity: 'error' | 'success' | undefined;
 };
