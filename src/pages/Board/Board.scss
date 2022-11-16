@@ -1,51 +1,27 @@
-.backButton {
-  height: 50px;
-  width: 100px;
-}
-
-.del_button {
-  width: 30px;
-}
-
-.list_column {
-  display: flex;
-  align-items: center;
-}
-
 .column_section {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  align-items: flex-start;
   margin: 20px;
-  overflow-x: scroll;
 }
 
 .card_column {
   width: 350px;
   min-height: 50px;
-  background-color: #106354;
-  margin: 30px;
-  list-style: none;
-  padding: 0;
   flex-shrink: 0;
 }
 
-.card_column div {
+.card_title {
   display: flex;
-}
-
-.card_column h3 {
+  background-color: #106354;
   color: white;
   font-size: 1em;
   font-weight: 700;
   text-align: center;
-  flex-grow: 1;
+  align-items: center;
 }
 
-.add_button {
-  display: block;
-  flex-shrink: 0;
-  height: 50px;
-  border: 1px solid gray;
-  min-width: 100px;
-  font-weight: 700;
-  font-size: 1em;
-  padding: 5px 10px;
+.card_title h3 {
+  flex-grow: 1;
 }
