@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
 import {
   List,
   ListItemButton,
@@ -11,17 +12,11 @@ import {
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
-<<<<<<< HEAD
-import { Translation } from 'i18nano';
+import { useTranslation } from 'react-i18next';
+
 import { useAppDispatch, useAppSelector } from '../../../Hooks/hooks';
 import { authUser, logout } from '../../../store/slices/userSlice';
-
-// import './Header.scss';
-=======
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import { Add } from 'components/Board/Modals/Add';
-import { useTranslation } from 'react-i18next';
->>>>>>> develop
+import { Add } from '../../Board/Modals/Add';
 
 export const AuthNavBar: React.FC = () => {
   const { login } = useAppSelector(authUser);

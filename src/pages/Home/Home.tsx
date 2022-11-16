@@ -1,6 +1,5 @@
 import './Home.scss';
 import Board from './assets/board.png';
-import Background from './assets/back.jpeg';
 import Icon from './assets/icon.png';
 
 import { TEAM } from '../../constants/constants';
