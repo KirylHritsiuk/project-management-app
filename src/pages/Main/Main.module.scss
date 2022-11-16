@@ -1,13 +1,13 @@
 .main {
-	display: grid;
-	justify-content: center;
-	align-items: center;
-	padding: 2%;
+	padding: 0 20px;
 }
 
 .list {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	gap: 20px;
+	display: grid;
+	width: 100%;
+	grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) );
+	gap: 20px 10px;
+	align-items: center;
+	justify-items: center;
+
 }
