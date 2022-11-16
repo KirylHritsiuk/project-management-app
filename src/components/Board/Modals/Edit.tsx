@@ -11,6 +11,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import styled from './Edit.module.scss';
 import { useAppSelector } from 'hooks/hooks';
 import SaveIcon from '@mui/icons-material/Save';
+import { useTranslation } from 'react-i18next';
 
 interface EditProps {
   data: GetBoardType;
@@ -25,6 +26,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { data: allUsers } = usersAPI.useGetUsersQuery('');
   const { login } = useAppSelector((state) => state.user);
   const [editBoard] = boardsAPI.useUpdateBoardMutation();
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -58,14 +60,14 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
       <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
         <TextField
           required
-          label="Title"
+          label={t('Title')}
           defaultValue={data.title}
           {...register('title', { required: true })}
           aria-invalid={errors.title ? 'true' : 'false'}
         />
         <TextField
           select
-          label="Owner"
+          label={t('Owner')}
           value={owner}
           {...register('owner', { onChange: (e) => handleChange(e) })}
           InputProps={{
@@ -104,7 +106,9 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
                 </li>
               )}
               style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Users" placeholder="Search" />}
+              renderInput={(params) => (
+                <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
+              )}
               onChange={(_, data) => {
                 console.log(data);
                 setUsers(data);
@@ -121,7 +125,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           color="secondary"
           endIcon={<SaveIcon />}
         >
-          Save
+          {t('Save')}
         </Button>
       </form>
     </Modal>

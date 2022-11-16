@@ -9,7 +9,7 @@ import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
-
+import { useTranslation } from 'react-i18next';
 import styled from './Edit.module.scss';
 import { useAppSelector } from 'hooks/hooks';
 
@@ -26,6 +26,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
   const usersFields = allUsers?.filter((el) => el.login !== login).map((el) => el.login) ?? [];
   const [addBoard, status] = boardsAPI.useCreateBoardMutation();
   const { register, handleSubmit, control, reset } = useForm<CreateBoardType>();
+  const { t } = useTranslation();
 
   // console.log(status);
   const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
@@ -45,9 +46,9 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
   return (
     <Modal visible={visible} setModal={setModal}>
       <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
-        <TextField required label="Title" {...register('title', { required: true })} />
+        <TextField required label={t('Title')} {...register('title', { required: true })} />
         <TextField
-          label="Owner"
+          label={t('Owner')}
           {...register('owner', { required: true })}
           InputProps={{
             startAdornment: (
@@ -81,7 +82,9 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
                 </li>
               )}
               style={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Users" placeholder="Search" />}
+              renderInput={(params) => (
+                <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
+              )}
               onChange={(_, data) => {
                 onChange(data);
                 return data;
@@ -90,7 +93,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
           )}
         />
         <Button type="submit" variant="contained" color="secondary" endIcon={<SaveIcon />}>
-          Save
+          {t('Add')}
         </Button>
       </form>
     </Modal>

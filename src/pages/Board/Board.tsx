@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 export const Board = () => {
   const { id } = useParams();
-  const iddd = id ?? '1';
+  const iddd = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetColumnsQuery({ boardId: iddd });
   return (
     <>

@@ -17,5 +17,11 @@
   "I don’t have an account": "I don’t have an account",
   "Create new account": "Create new account",
   "I have an account": "I have an account",
-  "Save": "Save"
+  "Save": "Save",
+  "Add": "Add",
+  "Delete": "Delete",
+  "Title": "Title",
+  "Owner": "Owner",
+  "Users": "Users",
+  "Search": "Search"
 }

@@ -41,7 +41,7 @@ export const AuthNavBar: React.FC = () => {
     <>
       <List className="header__navbar">
         {pathname === '/main' ? (
-          <ListItemButton component={Link} to="/main">
+          <ListItemButton component={Link} to="/main" onClick={() => setVisible(true)}>
             <DashboardCustomizeIcon sx={{ mr: 1 }} color="action" fontSize="large" />
             <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Add Board')} />
           </ListItemButton>
