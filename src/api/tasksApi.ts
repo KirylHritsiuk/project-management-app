@@ -1,5 +1,5 @@
 import { api } from './api';
-import { CreateTaskType, GetTaskType, TaskType, UpdateTaskType } from 'types/types';
+import { CreateTaskType, GetTaskType, TaskType, UpdateTaskType } from '../types/types';
 
 export const tasksAPI = api.injectEndpoints({
   endpoints: (build) => ({
