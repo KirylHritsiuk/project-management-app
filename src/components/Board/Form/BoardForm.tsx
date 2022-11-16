@@ -8,7 +8,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import styled from './Edit.module.scss';
-import { useAppSelector } from 'hooks/hooks';
+import { useAppSelector } from '../../../Hooks/hooks';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+
 import { Button, Container, TextField, CircularProgress } from '@mui/material';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import { usersAPI } from 'api/usersApi';
-import { authUser } from 'store/slices/userSlice';
-import { showNotification } from 'store/slices/notificationSlice';
-import { LoginUserType } from 'types/types';
+
+import { usersAPI } from '../../api/usersApi';
+import { authUser } from '../../store/slices/userSlice';
+import { useAppDispatch, useAppSelector } from '../../Hooks/hooks';
+import { LoginUserType } from '../../types/types';
+import { showNotification } from '../../store/slices/notificationSlice';
 
 import './SignIn.scss';
 

@@ -1,9 +1,12 @@
+import { ColumnType, GetColumnType, UpdateColumnType } from '../types/types';
 import { api } from './api';
-import { ColumnType, GetColumnType, UpdateColumnType } from 'types/types';
 
 export const columnsAPI = api.injectEndpoints({
   endpoints: (build) => ({
-    createColumn: build.mutation<GetColumnType, { boardId: string; body: { title: string } }>({
+    createColumn: build.mutation<
+      GetColumnType,
+      { boardId: string; body: { title: string; order: number } }
+    >({
       query: ({ boardId, body }) => ({
         url: `/boards/${boardId}/columns`,
         method: 'POST',

@@ -1,17 +1,17 @@
 import { Autocomplete, Button, Checkbox, InputAdornment, TextField } from '@mui/material';
-import { Modal } from 'components';
 import { FC, useEffect, useState } from 'react';
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { usersAPI } from 'api/usersApi';
-import { boardsAPI } from 'api/boardsApi';
-import { CreateBoardType, GetBoardType } from 'types/types';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import styled from './Edit.module.scss';
-import { useAppSelector } from 'hooks/hooks';
+import { useAppSelector } from '../../../Hooks/hooks';
+import { usersAPI } from '../../../api/usersApi';
+import { boardsAPI } from '../../../api/boardsApi';
+import { CreateBoardType } from '../../../types/types';
+import { Modal } from '../../UI/Modal/Modal';
 
 interface AddProps {
   visible: boolean;

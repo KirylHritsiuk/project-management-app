@@ -45,7 +45,7 @@ export type BoardType = {
 };
 
 export type GetColumnType = {
-  id: string;
+  _id: string;
   title: string;
   order: number;
 };
@@ -72,7 +72,9 @@ export type CreateTaskType = {
   body: {
     title: string;
     description: string;
-    userId: string;
+    userId: number;
+    order: number;
+    users: Array<string> | [];
   };
 };
 
@@ -82,6 +84,11 @@ export type GetTaskType = {
   description: string;
   userId: string;
 };
+
+export interface TaskProps {
+  task: TaskType;
+  columnId: string;
+}
 
 export type TaskType = {
   _id: string;
