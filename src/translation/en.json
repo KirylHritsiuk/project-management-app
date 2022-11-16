@@ -20,8 +20,10 @@
   "Save": "Save",
   "Add": "Add",
   "Delete": "Delete",
+  "DeleteMess": "Do you want to delete it?",
   "Title": "Title",
   "Owner": "Owner",
   "Users": "Users",
+  "NoUsers": "No selected users",
   "Search": "Search"
 }

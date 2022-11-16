@@ -4,10 +4,12 @@ import { BoardProps } from './Board.props';
 import styled from './Board.module.scss';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import { BoarderMenu } from './Menu/BoarderMenu';
+import { useTranslation } from 'react-i18next';
 
 export const Board: React.FC<BoardProps> = ({ data }) => {
   const { _id, title, owner, users } = data;
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <Card variant="outlined" className={styled.card}>
@@ -22,7 +24,7 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
         <h2>{title}</h2>
         <ul className={styled.users}>
           {users.length === 0 ? (
-            <li>No selected users</li>
+            <li>{t('NoUsers')}</li>
           ) : (
             users.map((u, index) => <li key={u + index.toString()}>{u}</li>)
           )}

@@ -87,7 +87,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         <Controller
           name="users"
           control={control}
-          rules={{ required: true }}
+          rules={{ required: false }}
           render={({ field: { onChange } }) => (
             <Autocomplete
               multiple
@@ -110,7 +110,6 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
                 <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
               )}
               onChange={(_, data) => {
-                console.log(data);
                 setUsers(data);
                 onChange(data);
                 return data;

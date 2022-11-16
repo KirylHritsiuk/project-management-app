@@ -27,7 +27,7 @@ export const Modal: FC<ModalProps> = (props) => {
     return createPortal(
       <div className={styles.modal} onClick={() => setModal(false)}>
         <div className={cn(styles.content, className)} onClick={(e) => e.stopPropagation()}>
-          <Button
+          {/* <Button
             variant="contained"
             onClick={() => setModal(false)}
             className={styles.close}
@@ -35,7 +35,7 @@ export const Modal: FC<ModalProps> = (props) => {
             size="small"
           >
             X
-          </Button>
+          </Button> */}
           {children}
         </div>
       </div>,

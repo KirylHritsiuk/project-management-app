@@ -27,6 +27,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
   const [addBoard, status] = boardsAPI.useCreateBoardMutation();
   const { register, handleSubmit, control, reset } = useForm<CreateBoardType>();
   const { t } = useTranslation();
+  const [users, setUsers] = useState<string[]>([]);
 
   // console.log(status);
   const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
@@ -42,6 +43,10 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    return () => setUsers([]);
+  }, []);
 
   return (
     <Modal visible={visible} setModal={setModal}>
@@ -63,12 +68,12 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         <Controller
           name="users"
           control={control}
-          rules={{ required: true }}
+          rules={{ required: false }}
           render={({ field: { onChange } }) => (
             <Autocomplete
               multiple
               disableCloseOnSelect
-              defaultValue={[]}
+              value={users}
               options={usersFields}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
@@ -86,6 +91,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
                 <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
               )}
               onChange={(_, data) => {
+                setUsers(data);
                 onChange(data);
                 return data;
               }}
