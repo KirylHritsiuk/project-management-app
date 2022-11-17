@@ -1,7 +1,6 @@
 import { Autocomplete, Button, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
-import { FC, useState, useEffect } from 'react';
-import { Controller, FieldValues, useForm } from 'react-hook-form';
-// import './SignIn.scss';
+import { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -10,9 +9,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
-import { CreateBoardType, GetBoardType } from '../../../types/types';
+import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
-import { useAppSelector } from '../../../hooks/hooks';
+import { getUserFromId } from 'utils/getUserFromId';
 
 interface EditProps {
   data: GetBoardType;
@@ -24,10 +23,13 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
-  const { data: allUsers } = usersAPI.useGetUsersQuery('');
-  const { login } = useAppSelector((state) => state.user);
-  const [editBoard] = boardsAPI.useUpdateBoardMutation();
   const { t } = useTranslation();
+  const { data: allUsers, error: usersError } = usersAPI.useGetUsersQuery('');
+
+  const [editBoard] = boardsAPI.useUpdateBoardMutation();
+
+  const usersLogins = data.users.map((user) => getUserFromId(user, allUsers));
+
   const {
     register,
     handleSubmit,
@@ -36,17 +38,16 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     reset,
   } = useForm<CreateBoardType>();
 
-  const usersFields = allUsers?.filter((el) => el.login !== login).map((el) => el.login) ?? [];
   const [owner, setOwner] = useState<string>(data.owner);
-  const [users, setUsers] = useState<string[]>(data.users);
+  const [users, setUsers] = useState<GetUserType[]>(usersLogins);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setOwner(event.target.value);
   };
 
   const onSubmit = (formData: CreateBoardType) => {
-    // console.log(formData);
-    editBoard({ id: data._id, body: { ...formData, users } })
+    const ids = users.map((u) => u._id);
+    editBoard({ id: data._id, body: { ...formData, users: ids } })
       .then(() => {
         setModal(false);
         reset();
@@ -80,7 +81,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           }}
         >
           {allUsers?.map((user) => (
-            <MenuItem key={user._id} value={user.login}>
+            <MenuItem key={user._id} value={user._id}>
               {user.login}
             </MenuItem>
           ))}
@@ -93,8 +94,10 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              defaultValue={[...data.users]}
-              options={[...usersFields]}
+              // defaultValue={usersLogins || null}
+              value={users}
+              options={allUsers || usersLogins}
+              getOptionLabel={(option) => option.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -103,7 +106,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option}
+                  {option.login}
                 </li>
               )}
               style={{ width: 300 }}
@@ -112,7 +115,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
               )}
               onChange={(_, data) => {
                 setUsers(data);
-                onChange(data);
+                onChange(data.map((u) => u._id));
                 return data;
               }}
             />

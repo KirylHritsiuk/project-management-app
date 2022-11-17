@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Checkbox, InputAdornment, TextField } from '@mui/material';
+import { Autocomplete, Button, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
@@ -21,15 +21,22 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
-  const { login } = useAppSelector((state) => state.user);
+  const { id } = useAppSelector((state) => state.user);
   const { data: allUsers } = usersAPI.useGetUsersQuery('');
-  const usersFields = allUsers?.filter((el) => el.login !== login).map((el) => el.login) ?? [];
   const [addBoard, status] = boardsAPI.useCreateBoardMutation();
-  const { register, handleSubmit, control, reset } = useForm<CreateBoardType>();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { isValid },
+  } = useForm<CreateBoardType>({
+    defaultValues: { title: '', owner: id, users: undefined },
+  });
   const { t } = useTranslation();
   const [users, setUsers] = useState<string[]>([]);
 
-  // console.log(status);
   const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
     if (typeof data.users === 'undefined') {
       data.users = [];
@@ -42,6 +49,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
       .catch((error) => {
         console.log(error);
       });
+    console.log(data);
   };
 
   useEffect(() => {
@@ -53,18 +61,24 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
       <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
         <TextField required label={t('Title')} {...register('title', { required: true })} />
         <TextField
+          select
           label={t('Owner')}
-          {...register('owner', { required: true })}
+          defaultValue={id}
+          {...register('owner')}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
                 <OwnerIcon />
               </InputAdornment>
             ),
-            readOnly: true,
-            value: login,
           }}
-        />
+        >
+          {allUsers?.map((user) => (
+            <MenuItem key={user._id} value={user._id}>
+              {user.login}
+            </MenuItem>
+          ))}
+        </TextField>
         <Controller
           name="users"
           control={control}
@@ -73,8 +87,8 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              value={users}
-              options={usersFields}
+              options={allUsers!}
+              getOptionLabel={(option) => option.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -83,7 +97,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option}
+                  {option.login}
                 </li>
               )}
               style={{ width: 300 }}
@@ -91,14 +105,19 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
                 <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
               )}
               onChange={(_, data) => {
-                setUsers(data);
-                onChange(data);
+                onChange(data.map((u) => u._id));
                 return data;
               }}
             />
           )}
         />
-        <Button type="submit" variant="contained" color="secondary" endIcon={<SaveIcon />}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={!isValid}
+          color="secondary"
+          endIcon={<SaveIcon />}
+        >
           {t('Add')}
         </Button>
       </form>

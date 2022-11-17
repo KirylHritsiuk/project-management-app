@@ -121,9 +121,10 @@ export type FilesType = {
 };
 
 export type DecodedTokenType = {
-  iat: number;
   login: string;
-  userId: string;
+  id: string;
+  iat: number;
+  exp: number;
 };
 
 export type NotificationType = {
