@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { Modal } from '../../components/UI/Modal/Modal';
-import { usePageNavigate } from '../../Hooks/usePageNavigate';
+import { usePageNavigate } from '../../hooks/usePageNavigate';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';

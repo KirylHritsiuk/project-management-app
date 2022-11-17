@@ -10,9 +10,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
-import { useAppSelector } from '../../../Hooks/hooks';
 import { CreateBoardType, GetBoardType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
+import { useAppSelector } from '../../../hooks/hooks';
 
 interface EditProps {
   data: GetBoardType;

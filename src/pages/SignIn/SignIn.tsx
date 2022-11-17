@@ -7,11 +7,11 @@ import { Button, Container, TextField, CircularProgress } from '@mui/material';
 
 import { usersAPI } from '../../api/usersApi';
 import { authUser } from '../../store/slices/userSlice';
-import { useAppDispatch, useAppSelector } from '../../Hooks/hooks';
 import { LoginUserType } from '../../types/types';
 import { showNotification } from '../../store/slices/notificationSlice';
 
 import './SignIn.scss';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 
 export const SignIn: React.FC = () => {
   const { isAuth, status } = useAppSelector(authUser);
