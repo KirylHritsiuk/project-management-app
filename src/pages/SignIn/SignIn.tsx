@@ -12,6 +12,7 @@ import { showNotification } from '../../store/slices/notificationSlice';
 
 import './SignIn.scss';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { updateUser } from 'store/slices/mainSlice';
 
 export const SignIn: React.FC = () => {
   const { isAuth, status } = useAppSelector(authUser);

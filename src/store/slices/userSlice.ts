@@ -11,7 +11,7 @@ const getInitialState = () => {
     return {
       isAuth: true,
       token: token,
-      id: decodedToken!.userId,
+      id: decodedToken!.id,
       name: '',
       login: decodedToken!.login,
       status: 'idle',
@@ -60,7 +60,7 @@ export const authUserSlice = createSlice({
         const decodedToken: DecodedTokenType | null = decodeToken(action.payload.token);
         state.isAuth = true;
         state.token = action.payload.token;
-        state.id = decodedToken!.userId;
+        state.id = decodedToken!.id;
         state.login = decodedToken!.login;
         state.status = 'idle';
         localStorage.setItem('token', action.payload.token);

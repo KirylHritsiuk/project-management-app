@@ -6,7 +6,6 @@ const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).user.token;
-    console.log('token', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -16,7 +15,7 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   reducerPath: 'pmaAPI',
-  tagTypes: ['boards', 'boardsSet', 'columns', 'tasks', 'users'],
+  tagTypes: ['boards', 'boardsSet', 'columns', 'tasks', 'users', 'main'],
   baseQuery: baseQuery,
   endpoints: () => ({}),
 });

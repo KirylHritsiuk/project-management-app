@@ -1,4 +1,4 @@
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { IconButton, Menu, MenuItem, Popover } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -30,9 +30,9 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
       >
         <MoreHorizIcon />
       </IconButton>
-      <Menu
+      <Popover
         anchorOrigin={{
-          vertical: 'top',
+          vertical: 'bottom',
           horizontal: 'left',
         }}
         keepMounted
@@ -54,7 +54,7 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
             <DeleteIcon />
           </IconButton>
         </MenuItem>
-      </Menu>
+      </Popover>
       <Edit visible={isEdit} setModal={setEdit} data={data} />
       <Delete visible={isDelete} setModal={setDelete} setDelete={setDelete} id={data._id} />
     </div>

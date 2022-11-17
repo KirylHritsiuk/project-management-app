@@ -26,5 +26,7 @@
   "Users": "Users",
   "NoUsers": "No selected users",
   "Search": "Search",
-  "Empty": " Create your first project"
+  "Empty": " Create your project",
+  "EmptyAll": "The User doesn't participate in projects",
+  "All": "All"
 }
