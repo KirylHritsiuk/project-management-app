@@ -1,0 +1,14 @@
+.profile__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile__del-button{
+  height: max-content;
+}
+
+.profile__main {
+  display: flex;
+  justify-content: space-around;
+}

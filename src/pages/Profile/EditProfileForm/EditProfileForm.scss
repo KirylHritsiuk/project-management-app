@@ -1,0 +1,35 @@
+.profile__form {
+  display: flex;
+  width: 300px;
+  margin-top: 30px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile__field {
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile__field * {
+  margin: 0;
+}
+
+.profile__field-label,
+.profile__field-btn,
+.profile__field-input {
+  margin-bottom: 24px !important;
+}
+
+.profile__field-value {
+  margin-bottom: 24px !important;
+  justify-self: start;
+}
+
+.profile__form-button {
+  display: block !important;
+  margin: 0 auto !important;
+}
