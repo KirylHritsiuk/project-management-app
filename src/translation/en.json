@@ -25,5 +25,6 @@
   "Owner": "Owner",
   "Users": "Users",
   "NoUsers": "No selected users",
-  "Search": "Search"
+  "Search": "Search",
+  "Empty": " Create your first project"
 }
