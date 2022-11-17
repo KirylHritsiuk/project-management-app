@@ -3,13 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Container, TextField, CircularProgress } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
 import './SignUp.scss';
-import { useAppSelector, useAppDispatch } from '../../Hooks/hooks';
 import { authUser } from '../../store/slices/userSlice';
 import { usersAPI } from '../../api/usersApi';
 import { CreateUserType } from '../../types/types';
 import { showNotification } from '../../store/slices/notificationSlice';
+import { useAppSelector, useAppDispatch } from '../../hooks/hooks';
 
 export const SignUp: React.FC = () => {
   const { isAuth, status } = useAppSelector(authUser);

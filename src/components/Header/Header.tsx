@@ -7,7 +7,7 @@ import { AuthNavBar } from './AuthNavBar/AuthNavBar';
 import { ElevationScroll } from './ElevationScroll/ElevationScroll';
 
 import './Header.scss';
-import { useAppSelector } from '../../Hooks/hooks';
+import { useAppSelector } from '../../hooks/hooks';
 import { authUser } from '../../store/slices/userSlice';
 
 export const Header: React.FC = () => {

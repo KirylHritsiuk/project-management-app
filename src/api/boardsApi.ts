@@ -45,5 +45,24 @@ export const boardsAPI = api.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getBoardsSet: build.query<GetBoardType[], { boardsId: string[] }>({
+      query: ({ boardsId }) => ({
+        url: `/boardsSet?ids=[${boardsId}]`,
+        method: 'GET',
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'boardsSet' as const, _id })),
+              { type: 'boardsSet', id: 'LIST' },
+            ]
+          : [{ type: 'boardsSet', id: 'LIST' }],
+    }),
+    getBoardsSetByUserId: build.query<GetBoardType[], { id: string }>({
+      query: ({ id }) => ({
+        url: `/boardsSet/${id}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });

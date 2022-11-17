@@ -7,7 +7,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import styled from './Edit.module.scss';
-import { useAppSelector } from '../../../Hooks/hooks';
+import { useAppSelector } from '../../../hooks/hooks';
 import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
 import { CreateBoardType } from '../../../types/types';
