@@ -19,7 +19,6 @@
   "I have an account": "I have an account",
   "Save": "Save",
   "Add": "Add",
-  "Delete": "Delete",
   "DeleteMess": "Do you want to delete it?",
   "Title": "Title",
   "Owner": "Owner",
@@ -29,7 +28,7 @@
   "Empty": "Create your first project",
   "Delete": "Delete",
   "Deleted": "Deleted",
-  "Saved": "Saved"
+  "Saved": "Saved",
   "EmptyAll": "The User doesn't participate in projects",
   "All": "All"
 }
