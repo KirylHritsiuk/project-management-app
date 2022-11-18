@@ -1,0 +1,15 @@
+.profile__all-tasks {
+  display: flex;
+  min-width: 300px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile__tasks {
+  max-height: 190px;
+  overflow: auto;
+}
+
+.profile__subtitle {
+  margin: 0;
+}

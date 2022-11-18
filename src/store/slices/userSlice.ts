@@ -16,7 +16,8 @@ const getInitialState = () => {
       login: decodedToken!.login,
       status: 'idle',
     };
-  } else
+  } else {
+    localStorage.removeItem('token');
     return {
       isAuth: false,
       token: null,
@@ -25,6 +26,7 @@ const getInitialState = () => {
       login: '',
       status: 'idle',
     };
+  }
 };
 
 const initialState: UserStateType = getInitialState();
@@ -43,6 +45,10 @@ export const authUserSlice = createSlice({
         login: '',
         status: 'idle',
       };
+    },
+    editUser: (state, { payload }: { payload: { name: string; login: string } }) => {
+      state.login = payload.login;
+      state.name = payload.name;
     },
   },
   extraReducers: (builder) => {
@@ -67,12 +73,23 @@ export const authUserSlice = createSlice({
       })
       .addMatcher(usersAPI.endpoints.loginUser.matchRejected, (state) => {
         state.status = 'failed';
+      })
+      .addMatcher(usersAPI.endpoints.getUserById.matchPending, (state) => {
+        state.status = 'loading';
+      })
+      .addMatcher(usersAPI.endpoints.getUserById.matchFulfilled, (state, action) => {
+        state.name = action.payload.name;
+        state.login = action.payload.login;
+        state.status = 'idle';
+      })
+      .addMatcher(usersAPI.endpoints.getUserById.matchRejected, (state) => {
+        state.status = 'failed';
       });
   },
 });
 
 export const authUser = (state: RootState) => state.user;
 
-export const { logout } = authUserSlice.actions;
+export const { logout, editUser } = authUserSlice.actions;
 
 export default authUserSlice.reducer;

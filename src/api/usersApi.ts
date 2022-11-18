@@ -42,7 +42,7 @@ export const usersAPI = api.injectEndpoints({
         method: 'GET',
       }),
     }),
-    updateUser: build.mutation<GetUserType, { id: string; body: CreateUserType }>({
+    updateUser: build.mutation<GetUserType, { id: string; body: Partial<CreateUserType> }>({
       query: ({ id, body }) => ({
         url: `/users/${id}`,
         method: 'PUT',

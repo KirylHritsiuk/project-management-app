@@ -1,23 +1,21 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
-import { Button, Container, TextField, CircularProgress } from '@mui/material';
-
-import { usersAPI } from '../../api/usersApi';
-import { authUser } from '../../store/slices/userSlice';
-import { LoginUserType } from '../../types/types';
-import { showNotification } from '../../store/slices/notificationSlice';
+import { Button, Container, TextField } from '@mui/material';
+import { isExpired } from 'react-jwt';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { usersAPI } from 'api/usersApi';
+import { authUser } from 'store/slices/userSlice';
+import { showNotification } from 'store/slices/notificationSlice';
+import { LoginUserType } from 'types/types';
+import { BackdropLoader } from 'components';
 
 import './SignIn.scss';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
-import { updateUser } from 'store/slices/mainSlice';
 
 export const SignIn: React.FC = () => {
-  const { isAuth, status } = useAppSelector(authUser);
+  const { isAuth, token, status } = useAppSelector(authUser);
   const [loginUser] = usersAPI.useLoginUserMutation();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -27,10 +25,6 @@ export const SignIn: React.FC = () => {
     handleSubmit,
     reset,
   } = useForm({ defaultValues: { login: '', password: '' } });
-
-  useEffect(() => {
-    if (isAuth) navigate('/main');
-  }, [isAuth, navigate]);
 
   const onSubmitForm = async (data: LoginUserType) => {
     const authUser = await loginUser({ ...data });
@@ -53,51 +47,57 @@ export const SignIn: React.FC = () => {
   };
 
   return (
-    <Container component="main" className="auth">
-      {status === 'loading' && <CircularProgress color="secondary" />}
-      <h2 className="auth__title">{t('Sign In')}</h2>
-      <form onSubmit={handleSubmit(onSubmitForm)} className="auth__form">
-        <TextField
-          label={t('Login')}
-          {...register('login', {
-            required: { value: true, message: t('Required field') },
-            minLength: { value: 3, message: t('Minimum 3 characters') },
-            pattern: {
-              value: /^^[a-zA-Z0-9]+$/,
-              message: t('Only english letters and numbers'),
-            },
-          })}
-          size="small"
-          error={!!errors.login}
-          helperText={errors?.login ? errors.login.message : null}
-          className={errors.login ? 'auth__error-input' : 'auth__input'}
-        />
-        <TextField
-          label={t('Password')}
-          type="password"
-          {...register('password', {
-            required: { value: true, message: t('Required field') },
-            minLength: { value: 8, message: t('Minimum 8 characters') },
-            pattern: {
-              value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-              message: t('Password must contain letters and numbers'),
-            },
-          })}
-          size="small"
-          error={!!errors.password}
-          helperText={errors?.password ? errors.password.message : null}
-          className={errors.password ? 'auth__error-input' : 'auth__input'}
-        />
-        <Button type="submit" variant="contained" className="auth__button">
-          {t('Save')}
-        </Button>
-      </form>
-      <p className="auth__text">
-        {t('I don’t have an account')},{' '}
-        <Link className="auth__link" to="/signup">
-          {t('Sign Up')}
-        </Link>
-      </p>
-    </Container>
+    <>
+      {isAuth || !isExpired(token!) ? (
+        <Navigate to={'/main'} />
+      ) : (
+        <Container component="main" className="auth">
+          <BackdropLoader open={status === 'loading'} />
+          <h2 className="auth__title">{t('Sign In')}</h2>
+          <form onSubmit={handleSubmit(onSubmitForm)} className="auth__form">
+            <TextField
+              label={t('Login')}
+              {...register('login', {
+                required: { value: true, message: t('Required field') },
+                minLength: { value: 3, message: t('Minimum 3 characters') },
+                pattern: {
+                  value: /^^[a-zA-Z0-9]+$/,
+                  message: t('Only english letters and numbers'),
+                },
+              })}
+              size="small"
+              error={!!errors.login}
+              helperText={errors?.login ? errors.login.message : null}
+              className={errors.login ? 'auth__error-input' : 'auth__input'}
+            />
+            <TextField
+              label={t('Password')}
+              type="password"
+              {...register('password', {
+                required: { value: true, message: t('Required field') },
+                minLength: { value: 8, message: t('Minimum 8 characters') },
+                pattern: {
+                  value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
+                  message: t('Password must contain letters and numbers'),
+                },
+              })}
+              size="small"
+              error={!!errors.password}
+              helperText={errors?.password ? errors.password.message : null}
+              className={errors.password ? 'auth__error-input' : 'auth__input'}
+            />
+            <Button type="submit" variant="contained" className="auth__button">
+              {t('Save')}
+            </Button>
+          </form>
+          <p className="auth__text">
+            {t('I don’t have an account')},{' '}
+            <Link className="auth__link" to="/signup">
+              {t('Sign Up')}
+            </Link>
+          </p>
+        </Container>
+      )}
+    </>
   );
 };

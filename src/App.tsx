@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Home, Main, NotFoundPage, User, Board, SignIn, SignUp } from './pages';
+import { Home, Main, NotFoundPage, Profile, Board, SignIn, SignUp } from './pages';
 import { Header, Footer, Notification } from './components';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/user" element={<User />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/main" element={<Main />} />
         <Route path="/main/:id" element={<Board />} />
         <Route path="*" element={<NotFoundPage />} />

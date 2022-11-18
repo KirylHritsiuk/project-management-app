@@ -71,7 +71,9 @@ export const AuthNavBar: React.FC = () => {
           onClose={handleClose}
           disableScrollLock
         >
-          <MenuItem onClick={handleClose}>{t('Profile')}</MenuItem>
+          <MenuItem onClick={handleClose} component={Link} to="/profile">
+            {t('Profile')}
+          </MenuItem>
           <MenuItem onClick={onExit}>{t('Sign Out')}</MenuItem>
         </Popover>
       </List>
