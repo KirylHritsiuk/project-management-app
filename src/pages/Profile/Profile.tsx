@@ -1,18 +1,23 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { isExpired } from 'react-jwt';
 import { Container, Button } from '@mui/material';
 import { usersAPI } from 'api/usersApi';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { tasksAPI } from 'api/tasksApi';
 import { authUser, logout } from 'store/slices/userSlice';
-import { Navigate } from 'react-router-dom';
-import { isExpired } from 'react-jwt';
-import { useTranslation } from 'react-i18next';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { EditProfileForm } from './EditProfileForm/EditProfileForm';
 import { showNotification } from 'store/slices/notificationSlice';
+import { ProfileTasks } from './ProfileTasks/ProfileTasks';
+import { Loader } from 'components';
 
 import './Profile.scss';
 
 export const Profile: React.FC = () => {
   const { isAuth, id, token } = useAppSelector(authUser);
+  const { isLoading: userLoading } = usersAPI.useGetUserByIdQuery({ id });
+  const { data: userTasks, isLoading: tasksLoading } = tasksAPI.useGetAllUserTasksQuery({ id });
   const [deleteUser] = usersAPI.useDeleteUserMutation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -43,9 +48,14 @@ export const Profile: React.FC = () => {
               {t('Delete')}
             </Button>
           </div>
-          <div className="profile__main">
-            <EditProfileForm />
-          </div>
+          {userLoading || tasksLoading ? (
+            <Loader />
+          ) : (
+            <div className="profile__main">
+              <EditProfileForm />
+              <ProfileTasks userTasks={userTasks} />
+            </div>
+          )}
         </Container>
       )}
     </>

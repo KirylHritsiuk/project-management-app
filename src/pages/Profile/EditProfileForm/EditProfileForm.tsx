@@ -9,6 +9,7 @@ import { usersAPI } from 'api/usersApi';
 import { authUser, editUser } from 'store/slices/userSlice';
 import { showNotification } from 'store/slices/notificationSlice';
 import { CreateUserType } from 'types/types';
+import { BackdropLoader } from 'components';
 
 import './EditProfileForm.scss';
 
@@ -19,9 +20,8 @@ const editValuesInitial: { [key: string]: boolean } = {
 };
 
 export const EditProfileForm: React.FC = () => {
-  const { id, login, name, status } = useAppSelector(authUser);
-  const {} = usersAPI.useGetUserByIdQuery({ id });
-  const [updateUser] = usersAPI.useUpdateUserMutation();
+  const { id, login, name } = useAppSelector(authUser);
+  const [updateUser, { isLoading }] = usersAPI.useUpdateUserMutation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -68,107 +68,106 @@ export const EditProfileForm: React.FC = () => {
 
   return (
     <>
-      {status === 'idle' && (
-        <form onSubmit={handleSubmit(onSubmitForm)} className="profile__form">
-          <div className="profile__field">
-            <p className="profile__field-label">{t('Name')}: </p>
-            {editValues.name ? (
-              <TextField
-                {...register('name', {
-                  required: { value: true, message: t('Required field') },
-                  minLength: { value: 3, message: t('Minimum 3 characters') },
-                })}
-                size="small"
-                error={!!errors.name}
-                helperText={errors?.name ? errors.name.message : null}
-                className={errors.name ? 'profile__field-error-input' : 'profile__field-input'}
-              />
-            ) : (
-              <p className="profile__field-value">{name}</p>
-            )}
-            <IconButton
-              name="name"
-              onClick={onEditClick}
-              color="primary"
-              className="profile__field-btn"
-            >
-              {editValues.name ? <ReplayIcon /> : <EditIcon />}
-            </IconButton>
-          </div>
-
-          <div className="profile__field">
-            <p className="profile__field-label">{t('Login')}: </p>
-            {editValues.login ? (
-              <TextField
-                {...register('login', {
-                  required: { value: true, message: t('Required field') },
-                  minLength: { value: 3, message: t('Minimum 3 characters') },
-                  pattern: {
-                    value: /^^[a-zA-Z0-9]+$/,
-                    message: t('Only english letters and numbers'),
-                  },
-                })}
-                size="small"
-                error={!!errors.login}
-                helperText={errors?.login ? errors.login.message : null}
-                className={errors.login ? 'profile__field-error-input' : 'profile__field-input'}
-              />
-            ) : (
-              <p className="profile__field-value">{login}</p>
-            )}
-            <IconButton
-              name="login"
-              onClick={onEditClick}
-              color="primary"
-              className="profile__field-btn"
-            >
-              {editValues.login ? <ReplayIcon /> : <EditIcon />}
-            </IconButton>
-          </div>
-
-          <div className="profile__field">
-            <p className="profile__field-label">{t('Password')}: </p>
-            {editValues.password ? (
-              <TextField
-                {...register('password', {
-                  required: { value: true, message: t('Required field') },
-                  minLength: { value: 8, message: t('Minimum 8 characters') },
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-                    message: t('Password must contain letters and numbers'),
-                  },
-                })}
-                type="password"
-                size="small"
-                error={!!errors.password}
-                helperText={errors?.password ? errors.password.message : null}
-                className={errors.password ? 'profile__field-error-input' : 'profile__field-input'}
-              />
-            ) : (
-              <p className="profile__field-value">********</p>
-            )}
-            <IconButton
-              name="password"
-              onClick={onEditClick}
-              color="primary"
-              className="profile__field-btn"
-            >
-              {editValues.password ? <ReplayIcon /> : <EditIcon />}
-            </IconButton>
-          </div>
-
-          {Object.values(editValues).some((item) => item) && (
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={!isDirty || !isValid}
-              className="profile__form-button"
-            >
-              {t('Save')}
-            </Button>
+      <BackdropLoader open={isLoading} />
+      <form onSubmit={handleSubmit(onSubmitForm)} className="profile__form">
+        <div className="profile__field">
+          <p className="profile__field-label">{t('Name')}: </p>
+          {editValues.name ? (
+            <TextField
+              {...register('name', {
+                required: { value: true, message: t('Required field') },
+                minLength: { value: 3, message: t('Minimum 3 characters') },
+              })}
+              size="small"
+              error={!!errors.name}
+              helperText={errors?.name ? errors.name.message : null}
+              className={errors.name ? 'profile__field-error-input' : 'profile__field-input'}
+            />
+          ) : (
+            <p className="profile__field-value">{name}</p>
           )}
-        </form>
-      )}
+          <IconButton
+            name="name"
+            onClick={onEditClick}
+            color="primary"
+            className="profile__field-btn"
+          >
+            {editValues.name ? <ReplayIcon /> : <EditIcon />}
+          </IconButton>
+        </div>
+
+        <div className="profile__field">
+          <p className="profile__field-label">{t('Login')}: </p>
+          {editValues.login ? (
+            <TextField
+              {...register('login', {
+                required: { value: true, message: t('Required field') },
+                minLength: { value: 3, message: t('Minimum 3 characters') },
+                pattern: {
+                  value: /^^[a-zA-Z0-9]+$/,
+                  message: t('Only english letters and numbers'),
+                },
+              })}
+              size="small"
+              error={!!errors.login}
+              helperText={errors?.login ? errors.login.message : null}
+              className={errors.login ? 'profile__field-error-input' : 'profile__field-input'}
+            />
+          ) : (
+            <p className="profile__field-value">{login}</p>
+          )}
+          <IconButton
+            name="login"
+            onClick={onEditClick}
+            color="primary"
+            className="profile__field-btn"
+          >
+            {editValues.login ? <ReplayIcon /> : <EditIcon />}
+          </IconButton>
+        </div>
+
+        <div className="profile__field">
+          <p className="profile__field-label">{t('Password')}: </p>
+          {editValues.password ? (
+            <TextField
+              {...register('password', {
+                required: { value: true, message: t('Required field') },
+                minLength: { value: 8, message: t('Minimum 8 characters') },
+                pattern: {
+                  value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
+                  message: t('Password must contain letters and numbers'),
+                },
+              })}
+              type="password"
+              size="small"
+              error={!!errors.password}
+              helperText={errors?.password ? errors.password.message : null}
+              className={errors.password ? 'profile__field-error-input' : 'profile__field-input'}
+            />
+          ) : (
+            <p className="profile__field-value">********</p>
+          )}
+          <IconButton
+            name="password"
+            onClick={onEditClick}
+            color="primary"
+            className="profile__field-btn"
+          >
+            {editValues.password ? <ReplayIcon /> : <EditIcon />}
+          </IconButton>
+        </div>
+
+        {Object.values(editValues).some((item) => item) && (
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={!isDirty || !isValid}
+            className="profile__form-button"
+          >
+            {t('Save')}
+          </Button>
+        )}
+      </form>
     </>
   );
 };

@@ -16,7 +16,9 @@ interface DeleteProps {
 export const Delete: FC<DeleteProps> = ({ id, visible, setModal, setDelete }) => {
   const [deleteBoard] = boardsAPI.useDeleteBoardMutation();
   const { t } = useTranslation();
-  const { handleSubmit, control } = useForm<{ agree: boolean }>();
+  const { handleSubmit, control, reset } = useForm<{ agree: boolean }>({
+    defaultValues: { agree: false },
+  });
   const [agree, setAgree] = useState<boolean>(false);
 
   const onSubmit = () => {
@@ -25,7 +27,11 @@ export const Delete: FC<DeleteProps> = ({ id, visible, setModal, setDelete }) =>
   };
 
   useEffect(() => {
-    return () => setAgree(false);
+    return () => {
+      console.log(1);
+      setAgree(false);
+      reset({ agree: false });
+    };
   }, []);
 
   return (

@@ -2,18 +2,19 @@ import React from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button, Container, TextField, CircularProgress } from '@mui/material';
+import { Button, Container, TextField } from '@mui/material';
 import { isExpired } from 'react-jwt';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { usersAPI } from 'api/usersApi';
 import { authUser } from 'store/slices/userSlice';
 import { showNotification } from 'store/slices/notificationSlice';
 import { LoginUserType } from 'types/types';
+import { BackdropLoader } from 'components';
 
 import './SignIn.scss';
 
 export const SignIn: React.FC = () => {
-  const { isAuth, status, token } = useAppSelector(authUser);
+  const { isAuth, token, status } = useAppSelector(authUser);
   const [loginUser] = usersAPI.useLoginUserMutation();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ export const SignIn: React.FC = () => {
         <Navigate to={'/main'} />
       ) : (
         <Container component="main" className="auth">
-          {status === 'loading' && <CircularProgress color="secondary" />}
+          <BackdropLoader open={status === 'loading'} />
           <h2 className="auth__title">{t('Sign In')}</h2>
           <form onSubmit={handleSubmit(onSubmitForm)} className="auth__form">
             <TextField

@@ -35,5 +35,11 @@ export const tasksAPI = api.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getAllUserTasks: build.query<TaskType[], { id: string }>({
+      query: ({ id }) => ({
+        url: `/tasksSet?userId=${id}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });

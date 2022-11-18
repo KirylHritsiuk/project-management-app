@@ -5,3 +5,5 @@ export * from './UI/Modal/Modal';
 export * from './Header/Header';
 export * from './Footer/Footer';
 export * from './Notification/Notification';
+export * from './Loader/Loader';
+export * from './BackdropLoader/BackdropLoader';

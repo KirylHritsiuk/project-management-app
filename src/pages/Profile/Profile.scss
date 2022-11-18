@@ -10,5 +10,7 @@
 
 .profile__main {
   display: flex;
+  margin-top: 20px;
   justify-content: space-around;
+  flex-wrap: wrap;
 }
