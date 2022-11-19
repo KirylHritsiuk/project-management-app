@@ -56,7 +56,7 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
         </MenuItem>
       </Popover>
       <Edit visible={isEdit} setModal={setEdit} data={data} />
-      <Delete visible={isDelete} setModal={setDelete} setDelete={setDelete} id={data._id} />
+      <Delete category="board" visible={isDelete} setModal={setDelete} id={{ boardId: data._id }} />
     </div>
   );
 };

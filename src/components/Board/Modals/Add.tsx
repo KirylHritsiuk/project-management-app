@@ -1,6 +1,6 @@
 import { Autocomplete, Button, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -32,15 +32,11 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
     reset,
     formState: { isValid },
   } = useForm<CreateBoardType>({
-    defaultValues: { title: '', owner: id, users: undefined },
+    defaultValues: { title: '', owner: id, users: [] },
   });
   const { t } = useTranslation();
-  const [users, setUsers] = useState<string[]>([]);
 
   const onSubmit: SubmitHandler<CreateBoardType> = (data) => {
-    if (typeof data.users === 'undefined') {
-      data.users = [];
-    }
     addBoard(data)
       .then(() => {
         setModal(false);
@@ -51,11 +47,6 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
       });
     console.log(data);
   };
-
-  useEffect(() => {
-    return () => setUsers([]);
-  }, []);
-
   return (
     <Modal visible={visible} setModal={setModal}>
       <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>

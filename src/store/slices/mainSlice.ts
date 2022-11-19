@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { decodeToken } from 'react-jwt';
 import { RootState } from 'store/store';
-import { DecodedTokenType, GetUserType } from 'types/types';
+import { DecodedTokenType } from 'types/types';
 
 const token = localStorage.getItem('token');
 let decodedToken;
@@ -20,8 +20,8 @@ export const mainSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {
-    updateUser: (state, { payload }: { payload: Main }) => {
-      state.user = payload.user;
+    updateUser: (state, action: { payload: Main }) => {
+      state.user = action.payload.user;
     },
   },
 });

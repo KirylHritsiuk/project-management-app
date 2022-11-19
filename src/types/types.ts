@@ -132,3 +132,5 @@ export type NotificationType = {
   text: string;
   severity: 'error' | 'success' | undefined;
 };
+
+export type CategoryType = 'user' | 'board' | 'column' | 'task';

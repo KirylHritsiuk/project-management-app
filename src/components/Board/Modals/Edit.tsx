@@ -29,6 +29,9 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const [editBoard] = boardsAPI.useUpdateBoardMutation();
 
   const usersLogins = data.users.map((user) => getUserFromId(user, allUsers));
+  const [owner, setOwner] = useState<string>(data.owner);
+  const [users, setUsers] = useState<GetUserType[]>(usersLogins);
+  const ids = users.map((u) => u._id);
 
   const {
     register,
@@ -36,17 +39,15 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     control,
     formState: { isDirty, errors },
     reset,
-  } = useForm<CreateBoardType>();
-
-  const [owner, setOwner] = useState<string>(data.owner);
-  const [users, setUsers] = useState<GetUserType[]>(usersLogins);
+  } = useForm<CreateBoardType>({
+    defaultValues: { title: data.title, owner, users: ids },
+  });
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setOwner(event.target.value);
   };
 
   const onSubmit = (formData: CreateBoardType) => {
-    const ids = users.map((u) => u._id);
     editBoard({ id: data._id, body: { ...formData, users: ids } })
       .then(() => {
         setModal(false);

@@ -5,18 +5,16 @@ import styled from './BoardList.module.scss';
 import { usersAPI } from 'api/usersApi';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { updateUser } from 'store/slices/mainSlice';
-import { getFilterBoards } from 'hooks/useGetFilterBoards';
+import { useFilterBoards } from 'hooks/useFilterBoards';
 
 function BoardList() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const [{ id, login }, { user }] = useAppSelector((state) => [state.user, state.main]);
+  const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
   const { data: users, error: usersError } = usersAPI.useGetUsersQuery('');
-  // const { data: set } = boardsAPI.useGetBoardsSetQuery({
-  //     boardsId: ['6373e91cb298cb95dbb65138', '6373eac9b298cb95dbb6513b'],
-  //   });
-  const { data: boards, isLoading, error, user: userFilter } = getFilterBoards(user);
+
+  const { data: boards, isLoading, error, user: userFilter } = useFilterBoards(user);
 
   return (
     <>
@@ -38,13 +36,11 @@ function BoardList() {
       <TextField
         select
         label={t('Users')}
-        value={user}
+        value={userFilter}
         onChange={(e) => dispatch(updateUser({ user: e.target.value }))}
         fullWidth
       >
-        <MenuItem value={'all'} key={'all'}>
-          {t('All')}
-        </MenuItem>
+        <MenuItem value={'all'}>{t('All')}</MenuItem>
         {users?.map((user) => (
           <MenuItem key={user._id} value={user._id}>
             {user.login}
