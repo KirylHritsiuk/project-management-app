@@ -14,7 +14,7 @@ interface TaskProps {
 
 export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
-  const { data, isLoading, error, refetch } = tasksAPI.useGetTasksQuery({ boardId, columnId });
+  const { data, isLoading, error } = tasksAPI.useGetTasksQuery({ boardId, columnId });
   const [addTask] = tasksAPI.useCreateTaskMutation();
   const order: number = data?.length ? data?.length + 1 : 0;
 
@@ -40,7 +40,6 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       .then(() => {
         setVisible(false);
         reset();
-        refetch();
       })
       .catch((error) => {
         console.log(error);
@@ -52,7 +51,7 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <div className="task_list">
-        {data && data.map((t, index) => <Task task={t} key={index} columnId={columnId} />)}
+        {data && data.map((t) => <Task task={t} key={t._id} columnId={columnId} />)}
       </div>
       <Button onClick={() => setVisible(true)} variant="outlined" color="success">
         +Add task
@@ -65,9 +64,8 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
             {...register('title', { required: true })}
             aria-invalid={errors.title ? 'true' : 'false'}
           />
-          <input type="submit" />
           {errors.title && <p role="alert">Please, input title</p>}
-          <Button onClick={() => setVisible(false)}>Создать</Button>
+          <Button type="submit">Создать</Button>
           <Button onClick={() => setVisible(false)}>Отменить</Button>
         </form>
       </Modal>

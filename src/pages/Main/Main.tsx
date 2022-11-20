@@ -1,5 +1,5 @@
 import { LinearProgress } from '@mui/material';
-import BoardList from 'components/BoardList/BoardList';
+import { BoardList } from 'components';
 import { useAppSelector } from 'hooks/hooks';
 import { lazy, Suspense } from 'react';
 

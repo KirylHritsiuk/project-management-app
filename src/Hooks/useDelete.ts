@@ -22,7 +22,6 @@ export const useDelete = (category: CategoryType, ids: idType) => {
     case 'board':
       const [deleteBoard, errorBoard] = boardsAPI.useDeleteBoardMutation();
       const board: Required<Pick<idType, 'boardId'>> = { boardId: '' };
-      console.log(boardsAPI.useDeleteBoardMutation());
       if (ids.boardId) board.boardId = ids.boardId;
       return { deleteItem: () => deleteBoard(board), error: errorBoard };
 
@@ -44,8 +43,8 @@ export const useDelete = (category: CategoryType, ids: idType) => {
       };
       if (ids.taskId && ids.columnId && ids.boardId) {
         task.boardId = ids.boardId;
-        task.columnId = ids.boardId;
-        task.taskId = ids.boardId;
+        task.columnId = ids.columnId;
+        task.taskId = ids.taskId;
       }
       return { deleteItem: () => deleteTask(task), error: errorTask };
 
@@ -53,37 +52,3 @@ export const useDelete = (category: CategoryType, ids: idType) => {
       throw new Error('Failed Category');
   }
 };
-
-function checkID(
-  category: CategoryType,
-  id: idType
-):
-  | { id: string }
-  | { boardId: string }
-  | { boardId: string; columnId: string }
-  | { boardId: string; columnId: string; taskId: string } {
-  switch (category) {
-    case 'user':
-      if (id.id) {
-        return { id: id.id };
-      }
-      return { id: '' };
-    case 'board':
-      if (id.boardId) {
-        return { boardId: id.boardId };
-      }
-      return { boardId: '' };
-    case 'column':
-      if (id.columnId && id.boardId) {
-        return { boardId: id.boardId, columnId: id.columnId };
-      }
-      return { boardId: '', columnId: '' };
-    case 'task':
-      if (id.taskId && id.columnId && id.boardId) {
-        return { boardId: id.boardId, columnId: id.columnId, taskId: id.taskId };
-      }
-      return { boardId: '', columnId: '', taskId: '' };
-    default:
-      throw new Error('Failed Category');
-  }
-}

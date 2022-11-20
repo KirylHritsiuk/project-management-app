@@ -11,17 +11,17 @@ import { columnsAPI } from '../../api/columnsApi';
 import { TaskList } from '../../components/TaskList/TaskList';
 
 import './Board.scss';
+import { Delete } from 'components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
   const iddd = id ?? '1';
-  const { data, isLoading, error, refetch } = columnsAPI.useGetColumnsQuery({ boardId: iddd });
+  const { data, isLoading, error } = columnsAPI.useGetColumnsQuery({ boardId: iddd });
   const [isVisible, setVisible] = useState<boolean>(false);
   const [isOpen, setOpen] = useState<boolean>(false);
   const [delId, setDelId] = useState('');
   const [addColumn] = columnsAPI.useCreateColumnMutation();
-  const [deleteColumn] = columnsAPI.useDeleteColumnMutation();
   const order: number = data?.length ? data?.length + 1 : 0;
 
   const {
@@ -45,18 +45,6 @@ export const Board = () => {
       .then(() => {
         setVisible(false);
         reset();
-        refetch();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const delColumn = async (id: string) => {
-    await deleteColumn({ boardId: iddd, columnId: id })
-      .then(() => {
-        refetch();
-        setOpen(false);
       })
       .catch((error) => {
         console.log(error);
@@ -99,10 +87,12 @@ export const Board = () => {
             <input type="submit" />
           </form>
         </Modal>
-        <Modal visible={isOpen} setModal={setOpen}>
-          <p>Вы действительно хотите удалить колонку?</p>
-          <Button onClick={() => delColumn(delId)}>Delete</Button>
-        </Modal>
+        <Delete
+          category="column"
+          id={{ boardId: iddd, columnId: delId }}
+          visible={isOpen}
+          setModal={setOpen}
+        />
       </Stack>
     </div>
   );

@@ -16,7 +16,7 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   reducerPath: 'pmaAPI',
-  tagTypes: ['boards', 'boardsSet', 'columns', 'tasks', 'users', 'main'],
+  tagTypes: ['boards', 'boardsSet', 'columns', 'columnsSet', 'tasks', 'tasksSet', 'users', 'main'],
   baseQuery: baseQuery,
   endpoints: () => ({}),
 });
