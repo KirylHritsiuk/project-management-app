@@ -9,9 +9,9 @@ export const filesAPI = api.injectEndpoints({
         body,
       }),
     }),
-    downloadFile: build.query<string, { taskid: string; filename: string }>({
-      query: ({ taskid, filename }) => ({
-        url: `/files/${taskid}/${filename}`,
+    downloadFile: build.query<string, { taskId: string; filename: string }>({
+      query: ({ taskId, filename }) => ({
+        url: `/files/${taskId}/${filename}`,
         method: 'GET',
       }),
     }),

@@ -1,5 +1,9 @@
 .main {
 	padding: 0 20px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+    flex-direction: column;
 }
 
 .list {

@@ -25,10 +25,21 @@
   "Users": "Users",
   "NoUsers": "No selected users",
   "Search": "Search",
-  "Empty": "Create your first project",
+  "Empty": "Create your project",
   "Delete": "Delete",
   "Deleted": "Deleted",
   "Saved": "Saved",
   "EmptyAll": "The User doesn't participate in projects",
-  "All": "All"
+  "All": "All",
+  "Cancel": "Cancel",
+  "user": "User",
+  "board": "Board",
+  "column": "Column",
+  "task": "Task",
+  "delSuccess": "was successfully deleted",
+  "delFailed": "error, check connection",
+  "FETCH_ERROR": "error, check connection",
+  "PARSING_ERROR": "error, check connection",
+  "TIMEOUT_ERROR": "error, check connection Request timed out",
+  "CUSTOM_ERROR": "error, check connection"
 }

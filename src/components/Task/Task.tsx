@@ -9,18 +9,17 @@ import { Modal } from '../UI/Modal/Modal';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
+import { Delete } from 'components';
 
 export const Task: FC<TaskProps> = ({ task, columnId }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const { id } = useParams();
   const iddd = id ?? '1';
-  const { refetch } = tasksAPI.useGetTasksQuery({ boardId: iddd, columnId: columnId });
   const [deleteTask] = tasksAPI.useDeleteTaskMutation();
 
   const deletedTask = async (id: string) => {
     await deleteTask({ boardId: iddd, columnId: columnId, taskId: id })
       .then(() => {
-        refetch();
         setOpen(false);
       })
       .catch((error) => {
@@ -51,6 +50,12 @@ export const Task: FC<TaskProps> = ({ task, columnId }) => {
         <p>Вы действительно хотите удалить колонку?</p>
         <Button onClick={() => deletedTask(task._id)}>Delete</Button>
       </Modal>
+      {/* <Delete
+        category="task"
+        id={{ boardId: iddd, columnId: columnId, taskId: task._id }}
+        visible={isOpen}
+        setModal={setOpen}
+      /> */}
     </Card>
   );
 };

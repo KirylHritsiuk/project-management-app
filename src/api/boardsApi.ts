@@ -27,9 +27,9 @@ export const boardsAPI = api.injectEndpoints({
             ]
           : [{ type: 'boards', id: 'LIST' }],
     }),
-    deleteBoard: build.mutation<string, { id: string }>({
-      query: ({ id }) => ({
-        url: `/boards/${id}`,
+    deleteBoard: build.mutation<string, { boardId: string }>({
+      query: ({ boardId }) => ({
+        url: `/boards/${boardId}`,
         method: 'DELETE',
       }),
       invalidatesTags: [

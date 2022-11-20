@@ -1,11 +1,11 @@
-import { IconButton, Menu, MenuItem, Popover } from '@mui/material';
+import { IconButton, MenuItem, Popover } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { FC, useState } from 'react';
-import { Delete } from '../Modals/Delete';
 import { Edit } from '../Modals/Edit';
 import { BoarderMenuProps } from './BoarderMenu.props';
+import { Delete } from 'components';
 
 export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -31,6 +31,7 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
         <MoreHorizIcon />
       </IconButton>
       <Popover
+        disableScrollLock
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -56,7 +57,7 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
         </MenuItem>
       </Popover>
       <Edit visible={isEdit} setModal={setEdit} data={data} />
-      <Delete visible={isDelete} setModal={setDelete} setDelete={setDelete} id={data._id} />
+      <Delete category="board" visible={isDelete} setModal={setDelete} id={{ boardId: data._id }} />
     </div>
   );
 };
