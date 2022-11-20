@@ -31,6 +31,7 @@ export const BoarderMenu: FC<BoarderMenuProps> = ({ data, className }) => {
         <MoreHorizIcon />
       </IconButton>
       <Popover
+        disableScrollLock
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',

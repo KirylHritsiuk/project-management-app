@@ -53,17 +53,17 @@ export const BoardList = () => {
         </div>
       )}
       {boards?.length == 0 && userFilter == id && (
-        <Typography variant="h1" component="h2" className={styled.empty}>
-          {t('Empty')}
+        <Typography variant="h2" component="h2" className={styled.empty}>
+          ${t('Empty')}
         </Typography>
       )}
       {boards?.length == 0 && userFilter !== id && (
-        <Typography variant="h1" component="h2" className={styled.empty}>
+        <Typography variant="h2" component="h2" className={styled.empty}>
           {t('EmptyAll')}
         </Typography>
       )}
-      {error && (
-        <Typography variant="h1" component="h2" className={styled.empty}>
+      {usersError && (
+        <Typography variant="h2" component="h2" className={styled.empty}>
           error
         </Typography>
       )}

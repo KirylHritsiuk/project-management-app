@@ -1,8 +1,12 @@
 import { useAppSelector } from 'hooks/hooks';
-import { FC, PropsWithChildren, ReactChild, ReactNode } from 'react';
+import { FC } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 
-export const RequiredAuth: FC<ReactChild> = ({ children }) => {
+interface RequiredAuthProp {
+  children: JSX.Element;
+}
+
+export const RequiredAuth: FC<RequiredAuthProp> = ({ children }) => {
   const location = useLocation();
   const { isAuth } = useAppSelector((state) => state.user);
 

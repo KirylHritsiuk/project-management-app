@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
@@ -12,6 +12,9 @@ import { boardsAPI } from '../../../api/boardsApi';
 import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
 import { getUserFromId } from 'utils/getUserFromId';
+import { LoadingButton } from '@mui/lab';
+import { showNotification } from 'store/slices/notificationSlice';
+import { useAppDispatch } from 'hooks/hooks';
 
 interface EditProps {
   data: GetBoardType;
@@ -24,9 +27,10 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
-  const { data: allUsers, error: usersError } = usersAPI.useGetUsersQuery('');
+  const dispatch = useAppDispatch();
+  const { data: allUsers, error } = usersAPI.useGetUsersQuery('');
 
-  const [editBoard] = boardsAPI.useUpdateBoardMutation();
+  const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
   const usersLogins = data.users.map((user) => getUserFromId(user, allUsers));
   const [owner, setOwner] = useState<string>(data.owner);
@@ -47,15 +51,37 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     setOwner(event.target.value);
   };
 
-  const onSubmit = (formData: CreateBoardType) => {
-    editBoard({ id: data._id, body: { ...formData, users: ids } })
-      .then(() => {
-        setModal(false);
-        reset();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const onSubmit = async (formData: CreateBoardType) => {
+    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
+    if (error && status.isError && 'status' in status.error) {
+      if ('status' in status.error) {
+        dispatch(
+          showNotification({
+            isShow: true,
+            text: `${status.error.status} error`,
+            severity: 'error',
+          })
+        );
+      }
+    } else if ('error' in result && 'status' in result.error) {
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${result.error.status} error`,
+          severity: 'error',
+        })
+      );
+    } else {
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: 'Board update',
+          severity: 'success',
+        })
+      );
+      setModal(false);
+      reset();
+    }
   };
 
   return (
@@ -122,15 +148,17 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
             />
           )}
         />
-        <Button
+        <LoadingButton
           type="submit"
-          disabled={!isDirty}
           variant="contained"
           color="secondary"
-          endIcon={<SaveIcon />}
+          disabled={!isDirty}
+          loading={status.isLoading}
+          loadingPosition="center"
+          startIcon={<SaveIcon />}
         >
           {t('Save')}
-        </Button>
+        </LoadingButton>
       </form>
     </Modal>
   );
