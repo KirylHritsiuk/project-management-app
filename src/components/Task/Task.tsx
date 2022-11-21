@@ -6,7 +6,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 
 import { TaskProps } from '../../types/types';
-import { Delete } from '../../components';
+import { Delete } from '../../../../components';
 import { Draggable } from 'react-beautiful-dnd';
 
 export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {

@@ -18,7 +18,7 @@ import './Board.scss';
 import { tasksAPI } from 'api/tasksApi';
 import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
-import { TaskList } from 'components';
+import { TaskList } from '../../components';
 
 export const Board = () => {
   const { t } = useTranslation();
