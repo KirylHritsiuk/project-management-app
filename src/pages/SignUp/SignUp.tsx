@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Container, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { isExpired } from 'react-jwt';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { usersAPI } from 'api/usersApi';
 import { authUser } from 'store/slices/userSlice';
@@ -14,7 +13,7 @@ import { BackdropLoader } from 'components';
 import './SignUp.scss';
 
 export const SignUp: React.FC = () => {
-  const { isAuth, token, status } = useAppSelector(authUser);
+  const { status } = useAppSelector(authUser);
   const [createUser] = usersAPI.useCreateUserMutation();
   const [loginUser] = usersAPI.useLoginUserMutation();
   const dispatch = useAppDispatch();
@@ -61,69 +60,63 @@ export const SignUp: React.FC = () => {
   };
 
   return (
-    <>
-      {isAuth || !isExpired(token!) ? (
-        <Navigate to={'/main'} />
-      ) : (
-        <Container component="main" className="registr">
-          <BackdropLoader open={status === 'loading'} />
+    <Container component="main" className="registr">
+      <BackdropLoader open={status === 'loading'} />
 
-          <h2 className="registr__title">{t('Create new account')}</h2>
-          <form onSubmit={handleSubmit(onSubmitForm)} className="registr__form">
-            <TextField
-              label={t('Name')}
-              {...register('name', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 3, message: t('Minimum 3 characters') },
-              })}
-              size="small"
-              error={!!errors.name}
-              helperText={errors?.name ? errors.name.message : null}
-              className={errors.name ? 'registr__error-input' : 'registr__input'}
-            />
-            <TextField
-              label={t('Login')}
-              {...register('login', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 3, message: t('Minimum 3 characters') },
-                pattern: {
-                  value: /^^[a-zA-Z0-9]+$/,
-                  message: t('Only english letters and numbers'),
-                },
-              })}
-              size="small"
-              error={!!errors.login}
-              helperText={errors?.login ? errors.login.message : null}
-              className={errors.login ? 'registr__error-input' : 'registr__input'}
-            />
-            <TextField
-              label={t('Password')}
-              type="password"
-              {...register('password', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 8, message: t('Minimum 8 characters') },
-                pattern: {
-                  value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-                  message: t('Password must contain letters and numbers'),
-                },
-              })}
-              size="small"
-              error={!!errors.password}
-              helperText={errors?.password ? errors.password.message : null}
-              className={errors.password ? 'registr__error-input' : 'registr__input'}
-            />
-            <Button type="submit" variant="contained" className="registr__button">
-              {t('Save')}
-            </Button>
-          </form>
-          <p className="registr__text">
-            {t('I have an account')},{' '}
-            <Link className="registr__link" to="/signin">
-              {t('Sign In')}
-            </Link>
-          </p>
-        </Container>
-      )}
-    </>
+      <h2 className="registr__title">{t('Create new account')}</h2>
+      <form onSubmit={handleSubmit(onSubmitForm)} className="registr__form">
+        <TextField
+          label={t('Name')}
+          {...register('name', {
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 3, message: t('Minimum 3 characters') },
+          })}
+          size="small"
+          error={!!errors.name}
+          helperText={errors?.name ? errors.name.message : null}
+          className={errors.name ? 'registr__error-input' : 'registr__input'}
+        />
+        <TextField
+          label={t('Login')}
+          {...register('login', {
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 3, message: t('Minimum 3 characters') },
+            pattern: {
+              value: /^^[a-zA-Z0-9]+$/,
+              message: t('Only english letters and numbers'),
+            },
+          })}
+          size="small"
+          error={!!errors.login}
+          helperText={errors?.login ? errors.login.message : null}
+          className={errors.login ? 'registr__error-input' : 'registr__input'}
+        />
+        <TextField
+          label={t('Password')}
+          type="password"
+          {...register('password', {
+            required: { value: true, message: t('Required field') },
+            minLength: { value: 8, message: t('Minimum 8 characters') },
+            pattern: {
+              value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
+              message: t('Password must contain letters and numbers'),
+            },
+          })}
+          size="small"
+          error={!!errors.password}
+          helperText={errors?.password ? errors.password.message : null}
+          className={errors.password ? 'registr__error-input' : 'registr__input'}
+        />
+        <Button type="submit" variant="contained" className="registr__button">
+          {t('Save')}
+        </Button>
+      </form>
+      <p className="registr__text">
+        {t('I have an account')},{' '}
+        <Link className="registr__link" to="/signin">
+          {t('Sign In')}
+        </Link>
+      </p>
+    </Container>
   );
 };

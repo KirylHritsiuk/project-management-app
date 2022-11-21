@@ -84,6 +84,21 @@ export const authUserSlice = createSlice({
       })
       .addMatcher(usersAPI.endpoints.getUserById.matchRejected, (state) => {
         state.status = 'failed';
+      })
+      .addMatcher(usersAPI.endpoints.deleteUser.matchPending, (state) => {
+        state.status = 'loading';
+      })
+      .addMatcher(usersAPI.endpoints.deleteUser.matchFulfilled, (state) => {
+        localStorage.removeItem('token');
+        state.isAuth = false;
+        state.token = null;
+        state.id = '';
+        state.login = '';
+        state.name = '';
+        state.status = 'idle';
+      })
+      .addMatcher(usersAPI.endpoints.deleteUser.matchRejected, (state) => {
+        state.status = 'failed';
       });
   },
 });
