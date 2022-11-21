@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 import { Column } from './Column/Column';
@@ -31,6 +32,9 @@ export const Board = () => {
   const [columns, setColumns] = useState<GetColumnType[]>([]);
   const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
+  const [isOpen, setOpen] = useState<boolean>(false);
+  const [delId, setDelId] = useState('');
+  const [addColumn] = columnsAPI.useCreateColumnMutation();
 
   useEffect(() => {
     if (data) {
