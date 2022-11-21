@@ -22,19 +22,18 @@ import {
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { tasksAPI } from '../../api/tasksApi';
+import { tasksAPI } from 'api/tasksApi';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const iddd = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
+  const boardId = id ?? '1';
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
   const [isVisible, setVisible] = useState<boolean>(false);
   const [addColumn] = columnsAPI.useCreateColumnMutation();
-  // const [deleteColumn] = columnsAPI.useDeleteColumnMutation();
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
@@ -56,7 +55,7 @@ export const Board = () => {
   };
 
   const onSubmit = (value: FieldValues) => {
-    addColumn({ boardId: iddd, body: { title: value.title, order: order } })
+    addColumn({ boardId, body: { title: value.title, order: order } })
       .then(() => {
         setVisible(false);
         reset();
@@ -78,7 +77,7 @@ export const Board = () => {
         delete obj.boardId;
         return obj as UpdatedAllColumns;
       });
-      updatedColunms(newSetColumns);
+      updatedColumns(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -131,7 +130,7 @@ export const Board = () => {
               ref={provided.innerRef}
             >
               {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
               })}
               {provided.placeholder}
               <Button onClick={changeVisible} variant="outlined" color="success">
