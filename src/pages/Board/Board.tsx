@@ -16,6 +16,7 @@ import { GetColumnType } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
+import { Delete } from '../../components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
