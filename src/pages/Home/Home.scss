@@ -1,67 +1,49 @@
 $middle: 1000px;
 
-main {
-  display: flex;
-	align-items: center;
-	justify-content: center;
+.public_page {
+  display: flex !important;
   flex-direction: column;
+  gap: 40px;
 }
 
-.public_page {
-	width: 80%;
-  background: rgba(239, 239, 240, 1);
+.home_section {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .home_main {
   display: flex;
+  width: 40%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-
 }
 
-.home_main h1 {
+.home_main h2 {
+  text-align: center;
   font-size: 4em;
-  color: #1E5945;
-
-}
-
-.home_background_image {
-  position: absolute;
+  color: #1e5945;
 }
 
 .home_image {
-  height: 550px;
-  display: flex;
-}
-
-.home_section,
-.project_section,
-.about_section  {
-  display: flex;
-  padding: 2px;
-  position: relative;
-  overflow: hidden;
+  width: 50%;
+  height: auto;
 }
 
 .home_main p {
-  max-width: 400px;
   text-align: center;
   font-size: 2em;
 }
 
 .project_section {
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-  overflow: hidden;
-  position: relative;
-  max-height: 300px;
+  display: flex;
+  padding: 10px;
+  justify-content: space-around;
   gap: 20px;
-  padding-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
   background: url(./assets/back.jpeg);
 }
 
@@ -74,55 +56,51 @@ main {
 
 .project_main {
   display: flex;
+  width: 300px;
+  height: max-content;
+  padding: 10px;
   flex-direction: column;
-  max-width: 40%;
-  padding: 20px;
-  flex: 1 1 auto;
+  gap: 5px;
   align-items: center;
+  text-align: center;
   background-color: rgba(239, 239, 240, 0.7);
-  margin-left: 25px;
 }
 
 .project_main h2,
 .project_main span,
 .about_section h2 {
   font-size: 2em;
-  color: #1E5945;
-  margin-bottom: 0;
+  color: #1e5945;
 }
 
 .project_main p {
   font-size: 3em;
 }
 
-.project_rss{
+.project_rss {
   max-width: 200px;
 }
 
 .project_description {
   max-width: 60%;
-  padding: 20px;
-  right: 0;
+  padding: 10px;
   font-size: 1.5em;
   background-color: rgba(239, 239, 240, 0.7);
 }
 
 .about_section {
   display: flex;
-  gap: 20px;
-  padding: 20px;
-  align-items: center;
   flex-direction: column;
+  gap: 50px;
+  align-items: center;
 }
-
-
 
 .about_members {
   display: flex;
-  justify-content: space-between;
-  width: 80%;
-  box-sizing: border-box;
+  width: 100%;
+  justify-content: space-around;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .about_member {
@@ -180,4 +158,18 @@ main {
 
 .about_member_head {
   max-width: 300px;
+}
+
+
+@media (max-width: 900px) {
+  .home_main {
+    width: 100%;
+  }
+  .home_image {
+    width: 70%;
+  }
+
+  .project_description {
+    max-width: 100%;
+  }
 }

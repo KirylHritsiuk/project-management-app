@@ -7,7 +7,7 @@ import { idType, useDelete } from 'hooks/useDelete';
 import { useAppDispatch } from 'hooks/hooks';
 import { showNotification } from 'store/slices/notificationSlice';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, Button, ButtonGroup, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 
 interface DeleteProps {
   category: CategoryType;
@@ -60,8 +60,8 @@ export const Delete: FC<DeleteProps> = ({ category, id, visible, setModal }) => 
           justifyContent: 'center',
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
-          alignItems: 'flex-end',
+          gap: 4,
+          alignItems: 'center',
         }}
       >
         <Typography component="h4">{t('DeleteMess')}</Typography>

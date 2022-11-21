@@ -1,18 +1,17 @@
-import './Home.scss';
+import { Container } from '@mui/material';
+import { TEAM } from 'constants/constants';
 import Board from './assets/board.png';
 import Icon from './assets/icon.png';
+import { ReactComponent as RssLogo } from 'components/Footer/assets/rssLogo.svg';
 
-import { TEAM } from '../../constants/constants';
-import { ReactComponent as RssLogo } from '../../components/Footer/assets/rssLogo.svg';
-import { Container } from '@mui/material';
+import './Home.scss';
 
-export const Home = () => {
+const Home = () => {
   return (
     <Container component="main" className="public_page">
       <div className="home_section">
-        {/* <img src={Background2} alt="image background" className={styles.home_background_image} /> */}
         <div className="home_main">
-          <h1>Kanban Board</h1>
+          <h2>Kanban Board</h2>
           <p>
             <b>Kanban</b> - is an application with a wide range of possibilities for creating and
             managing boards.
@@ -21,7 +20,6 @@ export const Home = () => {
         <img src={Board} alt="image deskboard" className="home_image" />
       </div>
       <div className="project_section">
-        {/* <img src={Background} alt="image background" className="project_image" /> */}
         <div className="project_main">
           <h2>Project management system</h2>
           <span>with</span>
@@ -53,3 +51,5 @@ export const Home = () => {
     </Container>
   );
 };
+
+export default Home;
