@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
-import { Delete } from 'components';
+import { Delete } from '../../components';
 
 export const Task: FC<TaskProps> = ({ task, columnId }) => {
   const [isOpen, setOpen] = useState<boolean>(false);

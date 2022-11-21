@@ -11,7 +11,7 @@ import { columnsAPI } from '../../api/columnsApi';
 import { TaskList } from '../../components';
 
 import './Board.scss';
-import { Delete } from 'components';
+import { Delete } from '../../components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
