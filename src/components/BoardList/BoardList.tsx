@@ -2,29 +2,33 @@ import { MenuItem, TextField, Typography } from '@mui/material';
 import { Board, Loader } from 'components';
 import { useTranslation } from 'react-i18next';
 import styled from './BoardList.module.scss';
-import { usersAPI } from 'api/usersApi';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { updateUser } from 'store/slices/mainSlice';
 import { useFilterBoards } from 'hooks/useFilterBoards';
+import { ChangeEvent } from 'react';
 
 export const BoardList = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
-  const { data: users, error: usersError } = usersAPI.useGetUsersQuery('');
 
-  const { data: boards, isLoading, error, user: userFilter } = useFilterBoards(user);
+  const { boards, user: userFilter, users } = useFilterBoards(user, id);
+  console.log(id, user, userFilter);
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateUser({ user: e.target.value }));
+  };
 
   return (
     <>
-      {boards && (
+      {boards.data && (
         <div className={styled.block}>
           <TextField
             select
             label={t('Users')}
             value={userFilter}
-            onChange={(e) => dispatch(updateUser({ user: e.target.value }))}
+            onChange={onChange}
             sx={[
               {
                 width: 3 / 4,
@@ -38,31 +42,31 @@ export const BoardList = () => {
             <MenuItem value={'all'} key={'All'}>
               {t('All')}
             </MenuItem>
-            {users?.map((user) => (
+            {users.data?.map((user) => (
               <MenuItem key={user._id} value={user._id}>
                 {user.login}
               </MenuItem>
             ))}
           </TextField>
-          {isLoading && <Loader />}
+          {boards.isLoading && <Loader />}
           <div className={styled.list}>
-            {boards.map((user) => (
-              <Board key={user._id} data={user} allUsers={users} />
+            {boards.data.map((user) => (
+              <Board key={user._id} data={user} allUsers={users.data} />
             ))}
           </div>
         </div>
       )}
-      {boards?.length == 0 && userFilter == id && (
+      {boards.data?.length == 0 && userFilter == id && (
         <Typography variant="h2" component="h2" className={styled.empty}>
-          ${t('Empty')}
+          {t('Empty')}
         </Typography>
       )}
-      {boards?.length == 0 && userFilter !== id && (
+      {boards.data?.length == 0 && userFilter !== id && (
         <Typography variant="h2" component="h2" className={styled.empty}>
           {t('EmptyAll')}
         </Typography>
       )}
-      {usersError && (
+      {users.error && (
         <Typography variant="h2" component="h2" className={styled.empty}>
           error
         </Typography>

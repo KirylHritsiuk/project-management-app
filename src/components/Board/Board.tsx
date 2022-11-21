@@ -6,6 +6,7 @@ import { ReactComponent as OwnerIcon } from './Owner.svg';
 import { BoarderMenu } from './Menu/BoarderMenu';
 import { useTranslation } from 'react-i18next';
 import { getUserFromId } from 'utils/getUserFromId';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export const Board: React.FC<BoardProps> = ({ data, allUsers }) => {
   const { t } = useTranslation();
