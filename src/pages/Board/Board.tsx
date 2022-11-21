@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { Modal } from '../../components/UI/Modal/Modal';
@@ -22,7 +22,12 @@ export const Board = () => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [delId, setDelId] = useState('');
   const [addColumn] = columnsAPI.useCreateColumnMutation();
-  const order: number = data?.length ? data?.length + 1 : 0;
+
+  const [order, setOrder] = useState<number>(0);
+
+  useEffect(() => {
+    setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
+  }, [data]);
 
   const {
     register,

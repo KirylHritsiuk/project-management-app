@@ -1,5 +1,5 @@
 import { Button, LinearProgress, Stack } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { tasksAPI } from '../../api/tasksApi';
 import { Task } from '../Task/Task';
@@ -16,7 +16,16 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
   const { data, isLoading, error } = tasksAPI.useGetTasksQuery({ boardId, columnId });
   const [addTask] = tasksAPI.useCreateTaskMutation();
-  const order: number = data?.length ? data?.length + 1 : 0;
+
+  const [order, setOrder] = useState<number>(0);
+  // const [tasks, setTasks] = useState<TaskType[] | []>([]);
+
+  useEffect(() => {
+    // if (data) {
+    //   setTasks(data);
+    // }
+    setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
+  }, [data]);
 
   const {
     register,
