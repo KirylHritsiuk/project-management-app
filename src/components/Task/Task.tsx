@@ -9,7 +9,7 @@ import { Modal } from '../UI/Modal/Modal';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
-import { Delete } from 'components';
+import { Delete } from '../../components';
 
 export const Task: FC<TaskProps> = ({ task, columnId }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -50,12 +50,12 @@ export const Task: FC<TaskProps> = ({ task, columnId }) => {
         <p>Вы действительно хотите удалить колонку?</p>
         <Button onClick={() => deletedTask(task._id)}>Delete</Button>
       </Modal>
-      {/* <Delete
+      <Delete
         category="task"
         id={{ boardId: iddd, columnId: columnId, taskId: task._id }}
         visible={isOpen}
         setModal={setOpen}
-      /> */}
+      />
     </Card>
   );
 };

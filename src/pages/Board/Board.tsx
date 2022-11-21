@@ -8,10 +8,10 @@ import { Button, LinearProgress, Stack } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { columnsAPI } from '../../api/columnsApi';
-import { TaskList } from '../../components/TaskList/TaskList';
+import { TaskList } from '../../components';
 
 import './Board.scss';
-import { Delete } from 'components';
+import { Delete } from '../../components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
