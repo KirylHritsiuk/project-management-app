@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
-
-import { usePageNavigate } from '../../hooks/usePageNavigate';
+iimport { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
-import { columnsAPI } from '../../api/columnsApi';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+
+mport { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
@@ -43,6 +44,10 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
+  useEffect(() => {
+    console.log(columns);
+  }, [columns]);
+
   const changeVisible = () => {
     setVisible(!isVisible);
   };
@@ -65,6 +70,56 @@ export const Board = () => {
     }
   }
 
+  function handleOrderInColumn(result: DropResult) {
+    if (!result.destination) return;
+    const items = Array.from(columns);
+
+    setColumns(
+      items.map((item) => {
+        if (item.order === result.source?.index) {
+          return { ...item, order: result.destination ? result.destination.index : item.order };
+        }
+        if (item.order === result.destination?.index) {
+          return { ...item, order: result.source.index };
+        }
+        return item;
+      })
+    );
+  }
+
+  const sortCard = (a: GetColumnType, b: GetColumnType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
+
+  function handleOrderInColumn(result: DropResult) {
+    if (!result.destination) return;
+    const items = Array.from(columns);
+
+    setColumns(
+      items.map((item) => {
+        if (item.order === result.source?.index) {
+          return { ...item, order: result.destination ? result.destination.index : item.order };
+        }
+        if (item.order === result.destination?.index) {
+          return { ...item, order: result.source.index };
+        }
+        return item;
+      })
+    );
+  }
+
+  const sortCard = (a: GetColumnType, b: GetColumnType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
+
   return (
     <Box component="main" className="column_section">
       <Button variant="contained" onClick={() => goBack()} className="backButton">
@@ -74,7 +129,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+        <Droppable droppableId="COLUMN">
           {(provided) => (
             <Stack
               spacing={2}
@@ -84,28 +139,58 @@ export const Board = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
-              })}
+              {columns
+                .slice()
+                .sort(sortCard)
+                .map((item, index) => {
+                  return (
+                    <Draggable key={index} draggableId={String(item.order)} index={item.order}>
+                      {(provided) => (
+                        <div
+                          className="card_column"
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                        >
+                          <div className="card_title">
+                            <h3 className="column_title">{item.title}</h3>
+                            <DeleteForeverIcon
+                              fontSize="large"
+                              onClick={() => changeOpen(item._id)}
+                            ></DeleteForeverIcon>
+                          </div>
+                          <TaskList boardId={iddd} columnId={item._id} />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
               {provided.placeholder}
-              <Button
-                onClick={changeVisible}
-                sx={{
-                  width: '250px',
-                  padding: '10px 16px',
-                }}
-                variant="outlined"
-                color="success"
-                className="button_add"
-                startIcon={<AddIcon />}
-              >
-                {t('Create column')}
-              </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
-    </Box>
+      <Button onClick={changeVisible} variant="outlined" color="success">
+        +Add column
+      </Button>
+      {/* <Modal visible={isVisible} setModal={setVisible}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            type="text"
+            placeholder="Title Column"
+            {...register('title', { required: true })}
+            aria-invalid={errors.title ? 'true' : 'false'}
+          />
+          {errors.title && <p role="alert">Please, input title</p>}
+          <input type="submit" />
+        </form>
+      </Modal> */}
+      {/* <Delete
+        category="column"
+        id={{ boardId: iddd, columnId: delId }}
+        visible={isOpen}
+        setModal={setOpen}
+      /> */}
+    </div>
   );
 };
