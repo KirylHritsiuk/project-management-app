@@ -10,19 +10,20 @@ import { reorder, reorderQuoteMap } from './reorder';
 import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 import { GetColumnType } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { Delete } from '../../components';
+import { TaskList } from 'components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const iddd = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
+  const boardId = id ?? '1';
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: boardId });
   const [isVisible, setVisible] = useState<boolean>(false);
   const [addColumn] = columnsAPI.useCreateColumnMutation();
   const [order, setOrder] = useState<number>(0);
@@ -34,6 +35,10 @@ export const Board = () => {
     }
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
+
+  useEffect(() => {
+    console.log(columns);
+  }, [columns]);
 
   const {
     register,
@@ -47,7 +52,7 @@ export const Board = () => {
   };
 
   const onSubmit = (value: FieldValues) => {
-    addColumn({ boardId: iddd, body: { title: value.title, order: order } })
+    addColumn({ boardId: boardId, body: { title: value.title, order: order } })
       .then(() => {
         setVisible(false);
         reset();
@@ -59,21 +64,28 @@ export const Board = () => {
 
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
-    if (result.type === 'COLUMN') {
-      const state = reorder(columns, result.source.index, result.destination.index);
-      setColumns(state);
-      return;
-    } else {
-      const value = Number(result.draggableId.slice(0, 1));
-      const data = reorderQuoteMap({
-        columnTasks: columns,
-        source: result.source,
-        destination: result.destination,
-        value: value,
-      });
-      setColumns(data);
-    }
+    const items = Array.from(columns);
+
+    setColumns(
+      items.map((item) => {
+        if (item.order === result.source?.index) {
+          return { ...item, order: result.destination ? result.destination.index : item.order };
+        }
+        if (item.order === result.destination?.index) {
+          return { ...item, order: result.source.index };
+        }
+        return item;
+      })
+    );
   }
+
+  const sortCard = (a: GetColumnType, b: GetColumnType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
 
   return (
     <div className="column_section">
@@ -84,7 +96,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+        <Droppable droppableId="COLUMN">
           {(provided) => (
             <Stack
               spacing={2}
@@ -94,29 +106,40 @@ export const Board = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
-              })}
+              {columns
+                .slice()
+                .sort(sortCard)
+                .map((item, index) => {
+                  return (
+                    <Draggable key={index} draggableId={String(item.order)} index={item.order}>
+                      {(provided) => (
+                        <div
+                          className="card_column"
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                        >
+                          <div className="card_title">
+                            <h3 className="column_title">{item.title}</h3>
+                            <DeleteForeverIcon
+                              fontSize="large"
+                              onClick={() => changeOpen(item._id)}
+                            ></DeleteForeverIcon>
+                          </div>
+                          <TaskList boardId={boardId} columnId={item._id} />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
               {provided.placeholder}
-              <Button onClick={changeVisible} variant="outlined" color="success">
-                +Add column
-              </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Modal visible={isVisible} setModal={setVisible}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            placeholder="Title Column"
-            {...register('title', { required: true })}
-            aria-invalid={errors.title ? 'true' : 'false'}
-          />
-          {errors.title && <p role="alert">Please, input title</p>}
-          <input type="submit" />
-        </form>
-      </Modal>
+      <Button onClick={changeVisible} variant="outlined" color="success">
+        +Add column
+      </Button>
     </div>
   );
 };
