@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { Modal } from '../../components/UI/Modal/Modal';
-import { Column } from './Column/Column';
-
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 import {
   UpdatedAllColumns,
@@ -23,6 +21,7 @@ import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
 import { tasksAPI } from 'api/tasksApi';
+import { TaskList } from 'components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
@@ -43,6 +42,10 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
+  useEffect(() => {
+    console.log(columns);
+  }, [columns]);
+
   const {
     register,
     handleSubmit,
@@ -55,7 +58,7 @@ export const Board = () => {
   };
 
   const onSubmit = (value: FieldValues) => {
-    addColumn({ boardId, body: { title: value.title, order: order } })
+    addColumn({ boardId, body: { title: value.title, order } })
       .then(() => {
         setVisible(false);
         reset();
@@ -67,48 +70,28 @@ export const Board = () => {
 
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
-    if (result.type === 'COLUMN') {
-      const state = reorder(columns, result.source.index, result.destination.index);
-      setColumns(state);
-      const newSetColumns = state.map((column, index) => {
-        const obj = { ...column, order: index } as ChangedColumns;
-        delete obj.items;
-        delete obj.title;
-        delete obj.boardId;
-        return obj as UpdatedAllColumns;
-      });
-      updatedColumns(newSetColumns);
-      return;
-    } else {
-      const value = Number(result.draggableId.slice(0, 1));
-      const data = reorderQuoteMap({
-        columnTasks: columns,
-        source: result.source,
-        destination: result.destination,
-        value: value,
-      });
-      setColumns(data);
-      const newSetTasks = [] as TaskType[][];
-      data.map((column) => {
-        newSetTasks.push(column.items);
-      });
-      newSetTasks.map((arr) => {
-        const value = arr.map((tasks, index) => {
-          const obj = { ...tasks, order: index } as ChangedTasks;
-          delete obj.title;
-          delete obj.description;
-          delete obj.boardId;
-          delete obj.userId;
-          delete obj.users;
-          return obj;
-        });
-        if (value.length > 0) {
-          updateAllTasks(value);
+    const items = Array.from(columns);
+
+    setColumns(
+      items.map((item) => {
+        if (item.order === result.source?.index) {
+          return { ...item, order: result.destination ? result.destination.index : item.order };
         }
-        return value;
-      });
-    }
+        if (item.order === result.destination?.index) {
+          return { ...item, order: result.source.index };
+        }
+        return item;
+      })
+    );
   }
+
+  const sortCard = (a: GetColumnType, b: GetColumnType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
 
   return (
     <div className="column_section">
@@ -119,7 +102,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+        <Droppable droppableId="COLUMN">
           {(provided) => (
             <Stack
               spacing={2}
@@ -129,29 +112,40 @@ export const Board = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
-              })}
+              {columns
+                .slice()
+                .sort(sortCard)
+                .map((item, index) => {
+                  return (
+                    <Draggable key={index} draggableId={String(item.order)} index={item.order}>
+                      {(provided) => (
+                        <div
+                          className="card_column"
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                        >
+                          <div className="card_title">
+                            <h3 className="column_title">{item.title}</h3>
+                            <DeleteForeverIcon
+                              fontSize="large"
+                              onClick={() => changeOpen(item._id)}
+                            ></DeleteForeverIcon>
+                          </div>
+                          <TaskList boardId={boardId} columnId={item._id} />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
               {provided.placeholder}
-              <Button onClick={changeVisible} variant="outlined" color="success">
-                +Add column
-              </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Modal visible={isVisible} setModal={setVisible}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            placeholder="Title Column"
-            {...register('title', { required: true })}
-            aria-invalid={errors.title ? 'true' : 'false'}
-          />
-          {errors.title && <p role="alert">Please, input title</p>}
-          <input type="submit" />
-        </form>
-      </Modal>
+      <Button onClick={changeVisible} variant="outlined" color="success">
+        +Add column
+      </Button>
     </div>
   );
 };
