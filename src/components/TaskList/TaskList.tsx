@@ -1,23 +1,19 @@
-import { Button, LinearProgress, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
 import { Modal } from '../UI/Modal/Modal';
-import { Task } from '../../components';
-
-import { Task } from '../../components';
-
-import { Droppable } from 'react-beautiful-dnd';
-import { Button, Stack } from '@mui/material';
 import { Button, Stack } from '@mui/material';
 
 import { GetColumnType } from '../../types/types';
-import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
-
 import { tasksAPI } from '../../api/tasksApi';
 import AddIcon from '@mui/icons-material/Add';
+import { Task } from '../../components';
+import { Droppable } from 'react-beautiful-dnd';
 
 import './TaskList.scss';
+import { DroppableProvided, DropResult } from '../../pages/Board/react-beautiful-dnd';
+import { TaskType } from '../../types/types';
 
 interface TaskProps {
   boardId: string;
@@ -61,6 +57,32 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  function handleOrderInTasks(result: DropResult) {
+    if (!result.destination) return;
+    if (result.destination.droppableId === 'TASKS') {
+      const items = Array.from(tasks);
+      setTasks(
+        items.map((item) => {
+          if (item.order === result.source?.index) {
+            return { ...item, order: result.destination ? result.destination.index : item.order };
+          }
+          if (item.order === result.destination?.index) {
+            return { ...item, order: result.source.index };
+          }
+          return item;
+        })
+      );
+    }
+  }
+
+  const sortCard = (a: TaskType, b: TaskType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
   };
 
   return (

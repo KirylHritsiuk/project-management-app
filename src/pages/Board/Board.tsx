@@ -4,11 +4,13 @@ import { useParams } from 'react-router-dom';
 
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
-iimport { usePageNavigate } from '../../hooks/usePageNavigate';
-import { reorder, reorderQuoteMap } from './reorder';
+import { usePageNavigate } from '../../hooks/usePageNavigate';
+
+import { Button, LinearProgress, Stack } from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
-mport { columnsAPI } from '../../api/columnsApi';
+import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
@@ -21,6 +23,10 @@ import { tasksAPI } from 'api/tasksApi';
 import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
 import { TaskList } from '../../components';
+
+import './Board.scss';
+import { Delete } from '../../components';
+import { GetColumnType } from '../../types/types';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -44,9 +50,9 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  useEffect(() => {
-    console.log(columns);
-  }, [columns]);
+  // useEffect(() => {
+  //   console.log(columns);
+  // }, [columns]);
 
   const changeVisible = () => {
     setVisible(!isVisible);
@@ -97,19 +103,21 @@ export const Board = () => {
 
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
-    const items = Array.from(columns);
+    if (result.destination.droppableId === 'COLUMN') {
+      const items = Array.from(columns);
 
-    setColumns(
-      items.map((item) => {
-        if (item.order === result.source?.index) {
-          return { ...item, order: result.destination ? result.destination.index : item.order };
-        }
-        if (item.order === result.destination?.index) {
-          return { ...item, order: result.source.index };
-        }
-        return item;
-      })
-    );
+      setColumns(
+        items.map((item) => {
+          if (item.order === result.source?.index) {
+            return { ...item, order: result.destination ? result.destination.index : item.order };
+          }
+          if (item.order === result.destination?.index) {
+            return { ...item, order: result.source.index };
+          }
+          return item;
+        })
+      );
+    }
   }
 
   const sortCard = (a: GetColumnType, b: GetColumnType) => {

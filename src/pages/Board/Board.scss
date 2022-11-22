@@ -6,7 +6,7 @@
 .column_section {
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  // overflow: scroll;
   align-items: flex-start;
   padding: 0 16px;
   @media screen and (max-width: 331px) {
