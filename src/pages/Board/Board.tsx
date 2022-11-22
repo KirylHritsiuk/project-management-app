@@ -67,10 +67,10 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
+    console.log(result, result.type);
     if (!result.destination) return;
-    if (result.destination.droppableId === 'COLUMN') {
+    if (result.type === 'COLUMN') {
       const items = Array.from(columns);
-
       setColumns(
         items.map((item) => {
           if (item.order === result.source?.index) {
@@ -102,7 +102,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="COLUMN" direction="horizontal">
+        <Droppable droppableId="COLUMN" type="COLUMN" direction="horizontal" isCombineEnabled>
           {(provided) => (
             <Stack
               spacing={2}
