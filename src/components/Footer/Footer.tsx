@@ -1,33 +1,26 @@
-import styles from './Footer.module.scss';
+import { Container, Link, Box } from '@mui/material';
 import { ReactComponent as RssLogo } from './assets/rssLogo.svg';
-import { ReactComponent as GitLogo } from './assets/gitLogo.svg';
-import { ReactComponent as Copy } from './assets/copy.svg';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import { TEAM } from 'constants/constants';
 
-import { TEAM } from '../../constants/constants';
+import './Footer.scss';
 
 export const Footer = () => {
   return (
-    <footer className={styles.footer}>
-      <div className={styles.content}>
-        <a href="https://rs.school/react/">
-          <RssLogo className={styles.rss_logo} />
-        </a>
-        <ul className={styles.list}>
-          {TEAM.map((item, index) => (
-            <a href={item.link} key={index} className={styles.list_link}>
-              <li>
-                <GitLogo className={styles.git_hub} />
-                <p>{item.login}</p>
-              </li>
-            </a>
-          ))}
-        </ul>
-        <div className={styles.copy}>
-          <Copy className={styles.copy_icon} />
-          <p>2022</p>
-        </div>
-      </div>
-    </footer>
+    <Container component="footer" className="footer">
+      <Link href="https://rs.school/react/">
+        <RssLogo className="footer__rs" />
+      </Link>
+      <Box className="footer__git-links">
+        <p className="footer__git-text">&#169;&nbsp;2022</p>
+        <GitHubIcon className="footer__git-text" />
+        {TEAM.map((item, index) => (
+          <Link href={item.link} key={index} className="footer__git-link">
+            {item.login}
+          </Link>
+        ))}
+      </Box>
+    </Container>
   );
 };
 

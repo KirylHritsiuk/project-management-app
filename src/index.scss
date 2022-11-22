@@ -6,6 +6,11 @@
   --hoverLinkColor: #1b5e20;
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 body {
   margin: 0;
   background-color: var(--backgroundColor);
@@ -20,11 +25,19 @@ code {
 }
 
 #root {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
-  gap: 15px;
+  // display: grid;
+  // grid-template-rows: auto 1fr auto;
+  // min-height: 100vh;
   position: relative;
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  gap: 30px;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
 }
 
 a {
