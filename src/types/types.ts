@@ -88,6 +88,10 @@ export type GetTaskType = {
 export interface TaskProps {
   task: TaskType;
   columnId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  provided: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  innerRef(element: HTMLElement | null): any;
 }
 
 export type TaskType = {

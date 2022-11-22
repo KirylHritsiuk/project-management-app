@@ -1,11 +1,15 @@
 import { Button, LinearProgress, Stack } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
+
+import { Task } from '../../components';
 import { tasksAPI } from '../../api/tasksApi';
-import { Task } from '../Task/Task';
 import { Modal } from '../UI/Modal/Modal';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import './TaskList.scss';
+import { DroppableProvided, DropResult } from '../../pages/Board/react-beautiful-dnd';
+import { TaskType } from '../../types/types';
 
 interface TaskProps {
   boardId: string;
@@ -18,12 +22,12 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
   const [addTask] = tasksAPI.useCreateTaskMutation();
 
   const [order, setOrder] = useState<number>(0);
-  // const [tasks, setTasks] = useState<TaskType[] | []>([]);
+  const [tasks, setTasks] = useState<TaskType[] | []>([]);
 
   useEffect(() => {
-    // if (data) {
-    //   setTasks(data);
-    // }
+    if (data) {
+      setTasks(data);
+    }
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
@@ -55,13 +59,64 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       });
   };
 
+  function handleOrderInTasks(result: DropResult) {
+    if (!result.destination) return;
+    if (result.destination.droppableId === 'TASKS') {
+      const items = Array.from(tasks);
+      setTasks(
+        items.map((item) => {
+          if (item.order === result.source?.index) {
+            return { ...item, order: result.destination ? result.destination.index : item.order };
+          }
+          if (item.order === result.destination?.index) {
+            return { ...item, order: result.source.index };
+          }
+          return item;
+        })
+      );
+    }
+  }
+
+  const sortCard = (a: TaskType, b: TaskType) => {
+    if (a.order > b.order) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
+
   return (
     <Stack>
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
-      <div className="task_list">
-        {data && data.map((t) => <Task task={t} key={t._id} columnId={columnId} />)}
-      </div>
+      <DragDropContext onDragEnd={handleOrderInTasks}>
+        <Droppable droppableId="TASKS">
+          {(provided: DroppableProvided) => (
+            <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
+              {tasks &&
+                tasks
+                  .slice()
+                  .sort(sortCard)
+                  .map((t, index) => {
+                    return (
+                      <Draggable key={index} draggableId={String(t.order)} index={t.order}>
+                        {(provided) => (
+                          <Task
+                            task={t}
+                            key={t._id}
+                            columnId={columnId}
+                            provided={provided}
+                            innerRef={provided.innerRef}
+                          />
+                        )}
+                      </Draggable>
+                    );
+                  })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
       <Button onClick={() => setVisible(true)} variant="outlined" color="success">
         +Add task
       </Button>

@@ -9,7 +9,7 @@ import { tasksAPI } from '../../api/tasksApi';
 import { TaskProps } from '../../types/types';
 import { Delete } from '../../components';
 
-export const Task: FC<TaskProps> = ({ task, columnId }) => {
+export const Task: FC<TaskProps> = ({ task, columnId, provided, innerRef }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const { id } = useParams();
   const iddd = id ?? '1';
@@ -38,6 +38,9 @@ export const Task: FC<TaskProps> = ({ task, columnId }) => {
         alignItems: 'center',
         paddingLeft: '10px',
       }}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      ref={innerRef}
     >
       <Box sx={{ overflowX: 'scroll' }}>{task.title}</Box>
       <CardActions>
