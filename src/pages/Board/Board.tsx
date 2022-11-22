@@ -10,10 +10,10 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 
 import { columnsAPI } from '../../api/columnsApi';
 import { TaskList } from '../../components';
-
-import './Board.scss';
 import { Delete } from '../../components';
 import { GetColumnType } from '../../types/types';
+
+import './Board.scss';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
@@ -35,9 +35,9 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  useEffect(() => {
-    console.log(columns);
-  }, [columns]);
+  // useEffect(() => {
+  //   console.log(columns);
+  // }, [columns]);
 
   const {
     register,
@@ -68,19 +68,21 @@ export const Board = () => {
 
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
-    const items = Array.from(columns);
+    if (result.destination.droppableId === 'COLUMN') {
+      const items = Array.from(columns);
 
-    setColumns(
-      items.map((item) => {
-        if (item.order === result.source?.index) {
-          return { ...item, order: result.destination ? result.destination.index : item.order };
-        }
-        if (item.order === result.destination?.index) {
-          return { ...item, order: result.source.index };
-        }
-        return item;
-      })
-    );
+      setColumns(
+        items.map((item) => {
+          if (item.order === result.source?.index) {
+            return { ...item, order: result.destination ? result.destination.index : item.order };
+          }
+          if (item.order === result.destination?.index) {
+            return { ...item, order: result.source.index };
+          }
+          return item;
+        })
+      );
+    }
   }
 
   const sortCard = (a: GetColumnType, b: GetColumnType) => {
