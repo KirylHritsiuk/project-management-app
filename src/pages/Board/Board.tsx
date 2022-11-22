@@ -102,7 +102,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="COLUMN">
+        <Droppable droppableId="COLUMN" direction="horizontal">
           {(provided) => (
             <Stack
               spacing={2}
