@@ -9,7 +9,7 @@ import { TaskProps } from '../../types/types';
 import { Delete } from '../../components';
 import { Draggable } from 'react-beautiful-dnd';
 
-export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
+export const Task: FC<TaskProps> = ({ task, columnId }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const { id } = useParams();
   const taskId = id ?? '1';
@@ -20,7 +20,7 @@ export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
 
   return (
     <>
-      <Draggable draggableId={`${columnNum}${task._id}`} index={index}>
+      <Draggable draggableId={task._id} index={task.order}>
         {(provided) => (
           <Card
             sx={{

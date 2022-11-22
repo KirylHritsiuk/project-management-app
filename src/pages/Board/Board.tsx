@@ -10,14 +10,7 @@ import { Button, LinearProgress, Stack } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
-import {
-  UpdatedAllColumns,
-  GetColumnType,
-  ChangedColumns,
-  TaskType,
-  ChangedTasks,
-} from '../../types/types';
-import { DropResult } from './react-beautiful-dnd';
+import { GetColumnType } from '../../types/types';
 
 import './Board.scss';
 import { tasksAPI } from 'api/tasksApi';
@@ -69,20 +62,22 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
+    console.log(result, result.type);
     if (!result.destination) return;
-    const items = Array.from(columns);
-
-    setColumns(
-      items.map((item) => {
-        if (item.order === result.source?.index) {
-          return { ...item, order: result.destination ? result.destination.index : item.order };
-        }
-        if (item.order === result.destination?.index) {
-          return { ...item, order: result.source.index };
-        }
-        return item;
-      })
-    );
+    if (result.type === 'COLUMN') {
+      const items = Array.from(columns);
+      setColumns(
+        items.map((item) => {
+          if (item.order === result.source?.index) {
+            return { ...item, order: result.destination ? result.destination.index : item.order };
+          }
+          if (item.order === result.destination?.index) {
+            return { ...item, order: result.source.index };
+          }
+          return item;
+        })
+      );
+    }
   }
 
   const sortCard = (a: GetColumnType, b: GetColumnType) => {
@@ -102,7 +97,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="COLUMN">
+        <Droppable droppableId="COLUMN" type="COLUMN" direction="horizontal" isCombineEnabled>
           {(provided) => (
             <Stack
               spacing={2}
