@@ -10,8 +10,9 @@ import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
 import { Delete } from '../../components';
+import { Draggable } from 'react-beautiful-dnd';
 
-export const Task: FC<TaskProps> = ({ task, columnId, provided, innerRef }) => {
+export const Task: FC<TaskProps> = ({ task, columnId }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const { id } = useParams();
   const iddd = id ?? '1';
@@ -32,23 +33,30 @@ export const Task: FC<TaskProps> = ({ task, columnId, provided, innerRef }) => {
   };
 
   return (
-    <Card
-      sx={{
-        justifyContent: 'space-between',
-        display: 'flex',
-        border: '1px solid green',
-        alignItems: 'center',
-        paddingLeft: '10px',
-      }}
-      {...provided.draggableProps}
-      {...provided.dragHandleProps}
-      ref={innerRef}
-    >
-      <Box sx={{ overflowX: 'scroll' }}>{task.title}</Box>
-      <CardActions>
-        <EditIcon fontSize="small" />
-        <DeleteForeverIcon fontSize="small" onClick={changeOpen} />
-      </CardActions>
+    <>
+      <Draggable draggableId={task._id} index={task.order}>
+        {(provided) => (
+          <Card
+            sx={{
+              justifyContent: 'space-between',
+              display: 'flex',
+              border: '1px solid green',
+              alignItems: 'center',
+              paddingLeft: '10px',
+            }}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+          >
+            <Box sx={{ overflowX: 'scroll' }}>{task.title}</Box>
+            <CardActions>
+              <EditIcon fontSize="small" />
+              <DeleteForeverIcon fontSize="small" onClick={changeOpen} />
+            </CardActions>
+          </Card>
+        )}
+      </Draggable>
+
       <Modal visible={isOpen} setModal={setOpen}>
         <p>Вы действительно хотите удалить колонку?</p>
         <Button onClick={() => deletedTask(task._id)}>Delete</Button>
@@ -59,6 +67,6 @@ export const Task: FC<TaskProps> = ({ task, columnId, provided, innerRef }) => {
         visible={isOpen}
         setModal={setOpen}
       />
-    </Card>
+    </>
   );
 };

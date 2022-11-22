@@ -5,10 +5,10 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { Task } from '../../components';
 import { tasksAPI } from '../../api/tasksApi';
 import { Modal } from '../UI/Modal/Modal';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable } from 'react-beautiful-dnd';
 
 import './TaskList.scss';
-import { DroppableProvided, DropResult } from '../../pages/Board/react-beautiful-dnd';
+import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 import { TaskType } from '../../types/types';
 
 interface TaskProps {
@@ -59,64 +59,29 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       });
   };
 
-  function handleOrderInTasks(result: DropResult) {
-    if (!result.destination) return;
-    if (result.destination.droppableId === 'TASKS') {
-      const items = Array.from(tasks);
-      setTasks(
-        items.map((item) => {
-          if (item.order === result.source?.index) {
-            return { ...item, order: result.destination ? result.destination.index : item.order };
-          }
-          if (item.order === result.destination?.index) {
-            return { ...item, order: result.source.index };
-          }
-          return item;
-        })
-      );
-    }
-  }
-
-  const sortCard = (a: TaskType, b: TaskType) => {
-    if (a.order > b.order) {
-      return 1;
-    } else {
-      return -1;
-    }
-  };
-
   return (
     <Stack>
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
-      <DragDropContext onDragEnd={handleOrderInTasks}>
-        <Droppable droppableId="TASKS">
-          {(provided: DroppableProvided) => (
-            <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
-              {tasks &&
-                tasks
-                  .slice()
-                  .sort(sortCard)
-                  .map((t, index) => {
-                    return (
-                      <Draggable key={index} draggableId={String(t.order)} index={t.order}>
-                        {(provided) => (
-                          <Task
-                            task={t}
-                            key={t._id}
-                            columnId={columnId}
-                            provided={provided}
-                            innerRef={provided.innerRef}
-                          />
-                        )}
-                      </Draggable>
-                    );
-                  })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <Droppable droppableId={columnId} type="TASKS" isCombineEnabled>
+        {(provided: DroppableProvided) => (
+          <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
+            {tasks &&
+              tasks.map((t, index) => {
+                return (
+                  <Task
+                    task={t}
+                    key={index}
+                    columnId={columnId}
+                    provided={provided}
+                    innerRef={provided.innerRef}
+                  />
+                );
+              })}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
       <Button onClick={() => setVisible(true)} variant="outlined" color="success">
         +Add task
       </Button>
