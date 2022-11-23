@@ -67,5 +67,18 @@ export const tasksAPI = api.injectEndpoints({
             ]
           : [{ type: 'tasksSet', id: 'LIST' }],
     }),
+    getSearchTasks: build.query<TaskType[], { search: string }>({
+      query: ({ search }) => ({
+        url: `/tasksSet?search=${search}`,
+        method: 'GET',
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'tasks' as const, _id })),
+              { type: 'tasksSet', id: 'LIST' },
+            ]
+          : [{ type: 'tasksSet', id: 'LIST' }],
+    }),
   }),
 });
