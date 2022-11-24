@@ -2,30 +2,31 @@ import { FC } from 'react';
 import { ModalProps } from './Modal.props';
 import styles from './Modal.module.scss';
 import cn from 'classnames';
-import { Button } from '@mui/material';
 import { Portal } from '../Portal/Portal';
-import CloseIcon from '@mui/icons-material/Close';
+import { motion } from 'framer-motion';
+import { useMount } from 'hooks/useMount';
+
+const variants = {
+  open: { opacity: 1 },
+  closed: { opacity: 0, scale: 0 },
+};
 
 export const Modal: FC<ModalProps> = (props) => {
   const { className, visible, setModal, children } = props;
+  const { mounted } = useMount(visible);
 
-  if (visible) {
+  if (mounted) {
     return (
       <Portal>
-        <div className={styles.modal}>
+        <motion.div
+          className={styles.modal}
+          animate={visible ? 'open' : 'closed'}
+          transition={{ duration: 0.3 }}
+          variants={variants}
+        >
           <div className={styles.overlay} onClick={() => setModal(false)} />
-          <div className={cn(styles.content, className)}>
-            {/* <Button
-              variant="text"
-              onClick={() => setModal(false)}
-              className={styles.close}
-              size="small"
-            >
-              <CloseIcon />
-            </Button> */}
-            {children}
-          </div>
-        </div>
+          <div className={cn(styles.content, className)}>{children}</div>
+        </motion.div>
       </Portal>
     );
   }
