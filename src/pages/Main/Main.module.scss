@@ -3,14 +3,9 @@
 	align-items: center;
 	justify-content: flex-start;
     flex-direction: column;
+	gap: 20px;
 }
 
-.list {
-	display: grid;
-	width: 100%;
-	grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) );
-	gap: 20px 10px;
-	align-items: center;
-	justify-items: center;
-
+.loader {
+	margin: auto !important;
 }

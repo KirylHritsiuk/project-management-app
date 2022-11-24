@@ -55,7 +55,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://kirylhritsiuk-react-api.netlify.app",
+  "homepage": "https://kirylhritsiuk-react-pma.netlify.app",
   "devDependencies": {
     "@testing-library/react": "^13.4.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",

@@ -23,6 +23,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
+  const { t } = useTranslation();
   const { id } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const { data: allUsers, isLoading, error } = usersAPI.useGetUsersQuery('');
@@ -37,7 +38,6 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
   } = useForm<CreateBoardType>({
     defaultValues: { title: '', owner: id, users: [] },
   });
-  const { t } = useTranslation();
 
   const onSubmit: SubmitHandler<CreateBoardType> = async (data) => {
     const result = await addBoard(data);
@@ -46,7 +46,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         dispatch(
           showNotification({
             isShow: true,
-            text: `${status.error.status} error`,
+            text: `${status.error.status}! ${t(['board', 'addFailed'])}`,
             severity: 'error',
           })
         );
@@ -55,7 +55,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
       dispatch(
         showNotification({
           isShow: true,
-          text: `${result.error.status} error`,
+          text: `${result.error.status}! ${t(['board', 'addFailed'])}`,
           severity: 'error',
         })
       );
@@ -63,7 +63,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
       dispatch(
         showNotification({
           isShow: true,
-          text: 'Board add',
+          text: `${t('board')} ${t('addSuccess')}`,
           severity: 'success',
         })
       );
@@ -102,7 +102,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              options={allUsers!}
+              options={allUsers || []}
               getOptionLabel={(option) => option.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>

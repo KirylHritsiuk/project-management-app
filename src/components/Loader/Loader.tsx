@@ -1,7 +1,8 @@
 import React from 'react';
+import { LoaderProps } from './Loader.props';
+import cn from 'classnames';
+import styled from './Loader.module.scss';
 
-import './Loader.scss';
-
-export const Loader: React.FC = () => {
-  return <div className="loader"></div>;
+export const Loader: React.FC<LoaderProps> = ({ className, ...props }) => {
+  return <div className={cn(styled.loader, className)} {...props}></div>;
 };

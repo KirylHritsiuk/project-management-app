@@ -9,6 +9,7 @@ export const usersAPI = api.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: [{ type: 'users', id: 'LIST' }],
     }),
     loginUser: build.mutation<{ token: string }, LoginUserType>({
       query: (body) => ({
@@ -16,6 +17,7 @@ export const usersAPI = api.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: [{ type: 'users', id: 'LIST' }],
     }),
     deleteUser: build.mutation<string, { id: string }>({
       query: ({ id }) => ({
@@ -48,6 +50,7 @@ export const usersAPI = api.injectEndpoints({
         method: 'PUT',
         body,
       }),
+      invalidatesTags: [{ type: 'users', id: 'LIST' }],
     }),
   }),
 });

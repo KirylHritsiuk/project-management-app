@@ -7,11 +7,10 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import styled from './Edit.module.scss';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
-import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
 import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
-import { getUserFromId } from 'utils/getUserFromId';
+import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { LoadingButton } from '@mui/lab';
 import { showNotification } from 'store/slices/notificationSlice';
 import { useAppDispatch } from 'hooks/hooks';
@@ -28,21 +27,19 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { data: allUsers, error } = usersAPI.useGetUsersQuery('');
 
   const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
-  const usersLogins = data.users.map((user) => getUserFromId(user, allUsers));
-  const [owner, setOwner] = useState<string>(data.owner);
-  const [users, setUsers] = useState<GetUserType[]>(usersLogins);
-  const ids = users.map((u) => u._id);
+  const { users: allUsers, userList, error } = useGetUserFromId(data.owner, data.users);
 
+  const [owner, setOwner] = useState<string>(data.owner);
+  const [users, setUsers] = useState<GetUserType[]>(userList);
+  const ids = users.map((u) => u._id);
   const {
     register,
     handleSubmit,
     control,
     formState: { isDirty, errors },
-    reset,
   } = useForm<CreateBoardType>({
     defaultValues: { title: data.title, owner, users: ids },
   });
@@ -58,7 +55,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         dispatch(
           showNotification({
             isShow: true,
-            text: `${status.error.status} error`,
+            text: `${status.error.status}! ${t('board')} ${t('editFailed')}`,
             severity: 'error',
           })
         );
@@ -67,7 +64,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
       dispatch(
         showNotification({
           isShow: true,
-          text: `${result.error.status} error`,
+          text: `${result.error.status}! ${t('board')} ${t('editFailed')}`,
           severity: 'error',
         })
       );
@@ -75,12 +72,11 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
       dispatch(
         showNotification({
           isShow: true,
-          text: 'Board update',
+          text: `${t('board')} ${t('editSuccess')}`,
           severity: 'success',
         })
       );
       setModal(false);
-      reset();
     }
   };
 
@@ -121,10 +117,9 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              // defaultValue={usersLogins || null}
               value={users}
-              options={allUsers || usersLogins}
-              getOptionLabel={(option) => option.login}
+              options={allUsers || []}
+              getOptionLabel={(option) => option!.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -133,7 +128,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option.login}
+                  {option!.login}
                 </li>
               )}
               style={{ width: 300 }}
@@ -142,7 +137,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
               )}
               onChange={(_, data) => {
                 setUsers(data);
-                onChange(data.map((u) => u._id));
+                onChange(data.map((u) => u!._id));
                 return data;
               }}
             />
