@@ -1,28 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+
 import { Modal } from '../../components/UI/Modal/Modal';
+import { Column } from './Column/Column';
+
 import { usePageNavigate } from '../../hooks/usePageNavigate';
+import { reorder, reorderQuoteMap } from './reorder';
+import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { columnsAPI } from '../../api/columnsApi';
-import { TaskList } from '../../components';
+import { GetColumnType } from '../../types/types';
+import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { Delete } from 'components';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
   const iddd = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetColumnsQuery({ boardId: iddd });
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
   const [isVisible, setVisible] = useState<boolean>(false);
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const [delId, setDelId] = useState('');
   const [addColumn] = columnsAPI.useCreateColumnMutation();
-  const order: number = data?.length ? data?.length + 1 : 0;
+  const [order, setOrder] = useState<number>(0);
+  const [columns, setColumns] = useState<GetColumnType[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setColumns(data);
+    }
+    setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
+  }, [data]);
 
   const {
     register,
@@ -33,11 +43,6 @@ export const Board = () => {
 
   const changeVisible = () => {
     setVisible(!isVisible);
-  };
-
-  const changeOpen = (id: string) => {
-    setOpen(true);
-    setDelId(id);
   };
 
   const onSubmit = (value: FieldValues) => {
@@ -51,6 +56,24 @@ export const Board = () => {
       });
   };
 
+  function handleOrderInColumn(result: DropResult) {
+    if (!result.destination) return;
+    if (result.type === 'COLUMN') {
+      const state = reorder(columns, result.source.index, result.destination.index);
+      setColumns(state);
+      return;
+    } else {
+      const value = Number(result.draggableId.slice(0, 1));
+      const data = reorderQuoteMap({
+        columnTasks: columns,
+        source: result.source,
+        destination: result.destination,
+        value: value,
+      });
+      setColumns(data);
+    }
+  }
+
   return (
     <div className="column_section">
       <Button variant="contained" onClick={() => goBack()} className="backButton">
@@ -59,41 +82,40 @@ export const Board = () => {
       <h2>Columns {id}</h2>
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
-      <Stack spacing={2} direction="row" alignItems="flex-start" justifyContent="flex-start">
-        {data?.map((item, index) => (
-          <div key={index} className="card_column">
-            <div className="card_title">
-              <h3 className="column_title">{item.title}</h3>
-              <DeleteForeverIcon
-                fontSize="large"
-                onClick={() => changeOpen(item._id)}
-              ></DeleteForeverIcon>
-            </div>
-            <TaskList boardId={iddd} columnId={item._id} />
-          </div>
-        ))}
-        <Button onClick={changeVisible} variant="outlined" color="success">
-          +Add column
-        </Button>
-        {/* <Modal visible={isVisible} setModal={setVisible}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <input
-              type="text"
-              placeholder="Title Column"
-              {...register('title', { required: true })}
-              aria-invalid={errors.title ? 'true' : 'false'}
-            />
-            {errors.title && <p role="alert">Please, input title</p>}
-            <input type="submit" />
-          </form>
-        </Modal> */}
-        {/* <Delete
-          category="column"
-          id={{ boardId: iddd, columnId: delId }}
-          visible={isOpen}
-          setModal={setOpen}
-        /> */}
-      </Stack>
+      <DragDropContext onDragEnd={handleOrderInColumn}>
+        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+          {(provided) => (
+            <Stack
+              spacing={2}
+              direction="row"
+              alignItems="flex-start"
+              justifyContent="flex-start"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {columns.map((column, index) => {
+                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+              })}
+              {provided.placeholder}
+              <Button onClick={changeVisible} variant="outlined" color="success">
+                +Add column
+              </Button>
+            </Stack>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Modal visible={isVisible} setModal={setVisible}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            type="text"
+            placeholder="Title Column"
+            {...register('title', { required: true })}
+            aria-invalid={errors.title ? 'true' : 'false'}
+          />
+          {errors.title && <p role="alert">Please, input title</p>}
+          <input type="submit" />
+        </form>
+      </Modal>
     </div>
   );
 };

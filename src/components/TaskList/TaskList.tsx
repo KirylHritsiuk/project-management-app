@@ -1,22 +1,30 @@
-import { Button, LinearProgress, Stack } from '@mui/material';
 import { FC, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { tasksAPI } from '../../api/tasksApi';
-import { Task } from '../Task/Task';
+
 import { Modal } from '../UI/Modal/Modal';
+import { Task } from '../../components';
+
+import { Droppable } from 'react-beautiful-dnd';
+import { Button, Stack } from '@mui/material';
+
+import { GetColumnType } from '../../types/types';
+import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
+
+import { tasksAPI } from '../../api/tasksApi';
 
 import './TaskList.scss';
 
 interface TaskProps {
   boardId: string;
   columnId: string;
+  columnNum: number;
+  column: GetColumnType;
+  listType: string;
 }
 
-export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
+export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
-  const { data, isLoading, error } = tasksAPI.useGetTasksQuery({ boardId, columnId });
   const [addTask] = tasksAPI.useCreateTaskMutation();
-  const order: number = data?.length ? data?.length + 1 : 0;
 
   const {
     register,
@@ -31,8 +39,8 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       columnId: columnId,
       body: {
         title: value.title,
-        order: order,
-        description: '123',
+        order: 1,
+        description: '_',
         userId: 1,
         users: [],
       },
@@ -48,11 +56,27 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
 
   return (
     <Stack>
-      {error && <span>error</span>}
-      {isLoading && <LinearProgress />}
-      <div className="task_list">
-        {data && data.map((t) => <Task task={t} key={t._id} columnId={columnId} />)}
-      </div>
+      <Droppable droppableId={`droppable${column._id}${columnNum}`} type={listType}>
+        {(provided: DroppableProvided) => (
+          <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
+            {column.items &&
+              column.items.map((t, index) => {
+                return (
+                  <Task
+                    task={t}
+                    columnNum={columnNum}
+                    key={t._id}
+                    columnId={columnId}
+                    provided={provided}
+                    innerRef={provided.innerRef}
+                    index={index}
+                  />
+                );
+              })}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
       <Button onClick={() => setVisible(true)} variant="outlined" color="success">
         +Add task
       </Button>
