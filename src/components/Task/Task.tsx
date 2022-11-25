@@ -4,12 +4,10 @@ import { FC, useState } from 'react';
 import { Box, Button, Card, CardActions } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-
-import { Modal } from '../UI/Modal/Modal';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
-import { Delete } from '../../components';
+import { Delete, Modal } from '../../components';
 import { Draggable } from 'react-beautiful-dnd';
 
 export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {

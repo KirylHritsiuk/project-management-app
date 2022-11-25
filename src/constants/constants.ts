@@ -1,4 +1,5 @@
 export const API_BASE_URL = 'https://pma-kirylhritsiuk.up.railway.app';
+export const MODAL_ANIMATE_TIME = 400;
 
 export const TEAM = [
   {

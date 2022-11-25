@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
 import {
   List,
   ListItemButton,
@@ -13,10 +12,11 @@ import {
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { useTranslation } from 'react-i18next';
-
-import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
-import { authUser, logout } from '../../../store/slices/userSlice';
-import { Add } from '../../Board/Modals/Add';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { authUser, logout } from 'store/slices/userSlice';
+import { Add } from 'components/Board/Modals/Add';
+import { SearchForm } from '../SearchForm/SearchForm';
+import { updateUser } from 'store/slices/mainSlice';
 
 export const AuthNavBar: React.FC = () => {
   const { login } = useAppSelector(authUser);
@@ -36,19 +36,26 @@ export const AuthNavBar: React.FC = () => {
 
   const onExit = () => {
     dispatch(logout());
+    dispatch(updateUser({ user: undefined }));
     setAnchorEl(null);
   };
 
   return (
     <>
+      <SearchForm />
       <List className="header__navbar">
         {pathname === '/main' ? (
-          <ListItemButton component={Link} to="/main" onClick={() => setVisible(true)}>
+          <ListItemButton
+            component={Link}
+            to="/main"
+            onClick={() => setVisible(true)}
+            className="header__nav-link"
+          >
             <DashboardCustomizeIcon sx={{ mr: 1 }} color="action" fontSize="large" />
             <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Add Board')} />
           </ListItemButton>
         ) : (
-          <ListItemButton component={Link} to="/main">
+          <ListItemButton component={Link} to="/main" className="header__nav-link">
             <DashboardIcon sx={{ mr: 1 }} color="action" fontSize="large" />
             <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Boards')} />
           </ListItemButton>
