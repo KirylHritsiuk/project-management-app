@@ -21,7 +21,7 @@ export const UsersSelect: FC<UsersSelectProps> = ({ users, user, id, isLoading, 
     if (user !== e.target.value) dispatch(updateUser({ user: e.target.value }));
   };
 
-  if (isError) return null;
+  // if (isError && isLoading) return null;
 
   return (
     <TextField

@@ -87,7 +87,16 @@ export function Main() {
           <ReplayIcon />
         </IconButton>
       )}
-      <BoardList boards={boards.data} id={id} user={userFilter} isError={boards.isError} />
+      {!boards.isLoading && (
+        <BoardList
+          boards={boards.data}
+          id={id}
+          user={userFilter}
+          isError={boards.isError}
+          isLoading={boards.isLoading}
+          isFetching={boards.isFetching}
+        />
+      )}
     </Container>
   );
 }
