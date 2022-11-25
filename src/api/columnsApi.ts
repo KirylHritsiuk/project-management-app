@@ -1,3 +1,4 @@
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { ColumnType, GetColumnType, UpdateColumnType } from '../types/types';
 import { api } from './api';
 
@@ -56,6 +57,24 @@ export const columnsAPI = api.injectEndpoints({
         url: `/boards/${boardId}/columns/${columnId}`,
         method: 'GET',
       }),
+    }),
+    getBoard: build.query<GetColumnType[], { boardId: string }>({
+      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const data = await fetchWithBQ(`/boards/${_arg.boardId}/columns`);
+        if (data.error) return { error: data.error as FetchBaseQueryError };
+
+        const columns = data.data as GetColumnType[];
+
+        const promises = columns.map(async (column) => {
+          return {
+            ...column,
+            items: (await fetchWithBQ(`/boards/${_arg.boardId}/columns/${column._id}/tasks`)).data,
+          };
+        });
+
+        const result = await Promise.all(promises);
+        return { data: result as GetColumnType[] };
+      },
     }),
   }),
 });

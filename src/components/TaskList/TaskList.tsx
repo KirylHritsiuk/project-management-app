@@ -1,35 +1,30 @@
-import { Button, LinearProgress, Stack } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
-import { Task } from '../../components';
-import { tasksAPI } from '../../api/tasksApi';
 import { Modal } from '../UI/Modal/Modal';
+import { Task } from '../../components';
+
 import { Droppable } from 'react-beautiful-dnd';
+import { Button, Stack } from '@mui/material';
+
+import { GetColumnType } from '../../types/types';
+import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
+
+import { tasksAPI } from '../../api/tasksApi';
 
 import './TaskList.scss';
-import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
-import { TaskType } from '../../types/types';
 
 interface TaskProps {
   boardId: string;
   columnId: string;
+  columnNum: number;
+  column: GetColumnType;
+  listType: string;
 }
 
-export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
+export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
-  const { data, isLoading, error } = tasksAPI.useGetTasksQuery({ boardId, columnId });
   const [addTask] = tasksAPI.useCreateTaskMutation();
-
-  const [order, setOrder] = useState<number>(0);
-  const [tasks, setTasks] = useState<TaskType[] | []>([]);
-
-  useEffect(() => {
-    if (data) {
-      setTasks(data);
-    }
-    setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
-  }, [data]);
 
   const {
     register,
@@ -44,8 +39,8 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
       columnId: columnId,
       body: {
         title: value.title,
-        order: order,
-        description: '123',
+        order: 1,
+        description: '_',
         userId: 1,
         users: [],
       },
@@ -61,20 +56,20 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId }) => {
 
   return (
     <Stack>
-      {error && <span>error</span>}
-      {isLoading && <LinearProgress />}
-      <Droppable droppableId={columnId} type="TASKS" isCombineEnabled>
+      <Droppable droppableId={`droppable${column._id}${columnNum}`} type={listType}>
         {(provided: DroppableProvided) => (
           <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
-            {tasks &&
-              tasks.map((t, index) => {
+            {column.items &&
+              column.items.map((t, index) => {
                 return (
                   <Task
                     task={t}
-                    key={index}
+                    columnNum={columnNum}
+                    key={t._id}
                     columnId={columnId}
                     provided={provided}
                     innerRef={provided.innerRef}
+                    index={index}
                   />
                 );
               })}

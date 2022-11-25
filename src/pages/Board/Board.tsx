@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+
 import { Modal } from '../../components/UI/Modal/Modal';
+import { Column } from './Column/Column';
+
 import { usePageNavigate } from '../../hooks/usePageNavigate';
+import { reorder, reorderQuoteMap } from './reorder';
+import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { columnsAPI } from '../../api/columnsApi';
-import { TaskList } from '../../components';
-import { Delete } from '../../components';
 import { GetColumnType } from '../../types/types';
+import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
 
@@ -19,14 +21,11 @@ export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
   const iddd = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetColumnsQuery({ boardId: iddd });
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
   const [isVisible, setVisible] = useState<boolean>(false);
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const [delId, setDelId] = useState('');
   const [addColumn] = columnsAPI.useCreateColumnMutation();
-
   const [order, setOrder] = useState<number>(0);
-  const [columns, setColumns] = useState<GetColumnType[] | []>([]);
+  const [columns, setColumns] = useState<GetColumnType[]>([]);
 
   useEffect(() => {
     if (data) {
@@ -34,10 +33,6 @@ export const Board = () => {
     }
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
-
-  // useEffect(() => {
-  //   console.log(columns);
-  // }, [columns]);
 
   const {
     register,
@@ -48,11 +43,6 @@ export const Board = () => {
 
   const changeVisible = () => {
     setVisible(!isVisible);
-  };
-
-  const changeOpen = (id: string) => {
-    setOpen(true);
-    setDelId(id);
   };
 
   const onSubmit = (value: FieldValues) => {
@@ -67,31 +57,22 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
-    console.log(result, result.type);
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
-      const items = Array.from(columns);
-      setColumns(
-        items.map((item) => {
-          if (item.order === result.source?.index) {
-            return { ...item, order: result.destination ? result.destination.index : item.order };
-          }
-          if (item.order === result.destination?.index) {
-            return { ...item, order: result.source.index };
-          }
-          return item;
-        })
-      );
+      const state = reorder(columns, result.source.index, result.destination.index);
+      setColumns(state);
+      return;
+    } else {
+      const value = Number(result.draggableId.slice(0, 1));
+      const data = reorderQuoteMap({
+        columnTasks: columns,
+        source: result.source,
+        destination: result.destination,
+        value: value,
+      });
+      setColumns(data);
     }
   }
-
-  const sortCard = (a: GetColumnType, b: GetColumnType) => {
-    if (a.order > b.order) {
-      return 1;
-    } else {
-      return -1;
-    }
-  };
 
   return (
     <div className="column_section">
@@ -102,7 +83,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="COLUMN" type="COLUMN" direction="horizontal" isCombineEnabled>
+        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
           {(provided) => (
             <Stack
               spacing={2}
@@ -112,40 +93,17 @@ export const Board = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columns
-                .slice()
-                .sort(sortCard)
-                .map((item, index) => {
-                  return (
-                    <Draggable key={index} draggableId={String(item.order)} index={item.order}>
-                      {(provided) => (
-                        <div
-                          className="card_column"
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          <div className="card_title">
-                            <h3 className="column_title">{item.title}</h3>
-                            <DeleteForeverIcon
-                              fontSize="large"
-                              onClick={() => changeOpen(item._id)}
-                            ></DeleteForeverIcon>
-                          </div>
-                          <TaskList boardId={iddd} columnId={item._id} />
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
+              {columns.map((column, index) => {
+                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+              })}
               {provided.placeholder}
+              <Button onClick={changeVisible} variant="outlined" color="success">
+                +Add column
+              </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Button onClick={changeVisible} variant="outlined" color="success">
-        +Add column
-      </Button>
       <Modal visible={isVisible} setModal={setVisible}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <input
@@ -158,12 +116,6 @@ export const Board = () => {
           <input type="submit" />
         </form>
       </Modal>
-      <Delete
-        category="column"
-        id={{ boardId: iddd, columnId: delId }}
-        visible={isOpen}
-        setModal={setOpen}
-      />
     </div>
   );
 };
