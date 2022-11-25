@@ -8,9 +8,10 @@ import { useTranslation } from 'react-i18next';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const text = {
+export const text = {
   init: { opacity: 0, scale: 0.5 },
   anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+  exit: { opacity: 0, scale: 0.5, transition: { duration: 0.5 } },
 };
 const card = {
   init: { opacity: 0, scale: 0.5 },
@@ -43,10 +44,10 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
         <div className={styled.header}>
           <motion.div
             className={styled.owner}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.4 }}
+            variants={text}
+            initial="init"
+            animate="anim"
+            exit="exit"
           >
             <OwnerIcon />
             {user && user.login}
@@ -54,19 +55,24 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
           <BoarderMenu data={data} className={styled.menu} />
         </div>
         <div className={styled.body} onClick={() => navigate(`/main/${_id}`)}>
-          <motion.h2 variants={text} initial="init" animate="anim">
+          <motion.h2 variants={text} initial="init" animate="anim" exit="exit">
             {title}
           </motion.h2>
-
           <ul className={styled.users}>
             {userList && userList.length !== 0 ? (
               userList.map((user) => (
-                <motion.li variants={text} initial="init" animate="anim" key={user?._id}>
+                <motion.li
+                  variants={text}
+                  initial="init"
+                  animate="anim"
+                  exit="exit"
+                  key={user?._id}
+                >
                   {user?.login}
                 </motion.li>
               ))
             ) : (
-              <motion.li variants={text} initial="init" animate="anim" key={'NoUsers'}>
+              <motion.li variants={text} initial="init" animate="anim" exit="exit" key={'NoUsers'}>
                 {t('NoUsers')}
               </motion.li>
             )}

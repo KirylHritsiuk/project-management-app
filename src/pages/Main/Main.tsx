@@ -1,14 +1,18 @@
 import { BoardList, Loader } from 'components';
 import { IconButton, Container } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
-import { useAppSelector } from 'hooks/hooks';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { useFilterBoards } from 'hooks/useFilterBoards';
 import styled from './Main.module.scss';
 import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { showNotification } from 'store/slices/notificationSlice';
 
 export function Main() {
   const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const { boards, user: userFilter, users } = useFilterBoards(user, id);
   const [refetch, setRefetch] = useState<boolean>(false);
@@ -18,12 +22,58 @@ export function Main() {
       users.refetch();
       boards.refetch();
       setRefetch((prev) => !prev);
+      // if ('error' in boards && boards.error && 'status' in boards.error) {
+      //   dispatch(
+      //     showNotification({
+      //       isShow: true,
+      //       text: t(boards.error.status as string),
+      //       severity: 'error',
+      //     })
+      //   );
+      // } else {
+      //   dispatch(
+      //     showNotification({
+      //       isShow: true,
+      //       text: t('connect'),
+      //       severity: 'success',
+      //     })
+      //   );
+      // }
     }
-    console.log('effect');
   }, [refetch]);
 
+  useEffect(() => {
+    if (boards.isError && 'error' in boards && boards.error && 'status' in boards.error) {
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: t(boards.error.status as string),
+          severity: 'error',
+        })
+      );
+    }
+    // else {
+    //   dispatch(
+    //     showNotification({
+    //       isShow: true,
+    //       text: t('connect'),
+    //       severity: 'success',
+    //     })
+    //   );
+    // }
+  }, [boards.isError]);
+
   return (
-    <Container component="main" className={styled.main}>
+    <Container
+      component="main"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        gap: '20px',
+      }}
+    >
       <UsersSelect
         users={users.data}
         user={userFilter}
@@ -31,40 +81,13 @@ export function Main() {
         isLoading={users.isLoading}
         isError={users.isError}
       />
+      {boards.isLoading && <Loader className={styled.loader} />}
       {boards.isError && (
         <IconButton onClick={() => setRefetch((prev) => !prev)} color="primary">
           <ReplayIcon />
         </IconButton>
       )}
-      {boards.isLoading && <Loader className={styled.loader} />}
       <BoardList boards={boards.data} id={id} user={userFilter} isError={boards.isError} />
     </Container>
   );
 }
-// if (boards.error && status.isError && 'status' in status.error) {
-//   if ('status' in status.error) {
-//     dispatch(
-//       showNotification({
-//         isShow: true,
-//         text: `${status.error.status}! ${t(['board', 'addFailed'])}`,
-//         severity: 'error',
-//       })
-//     );
-//   }
-// } else if ('error' in result && 'status' in result.error) {
-//   dispatch(
-//     showNotification({
-//       isShow: true,
-//       text: `${result.error.status}! ${t(['board', 'addFailed'])}`,
-//       severity: 'error',
-//     })
-//   );
-// } else {
-//   dispatch(
-//     showNotification({
-//       isShow: true,
-//       text: `${t('board')} ${t('addSuccess')}`,
-//       severity: 'success',
-//     })
-//   );
-// }

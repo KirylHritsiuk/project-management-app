@@ -1,10 +1,9 @@
-import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
-import { FC, useState } from 'react';
+import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField, Box } from '@mui/material';
+import { FC, useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import styled from './Edit.module.scss';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { boardsAPI } from '../../../api/boardsApi';
@@ -48,27 +47,32 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     setOwner(event.target.value);
   };
 
-  const onSubmit = async (formData: CreateBoardType) => {
-    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
-    if (error && status.isError && 'status' in status.error) {
-      if ('status' in status.error) {
-        dispatch(
-          showNotification({
-            isShow: true,
-            text: `${status.error.status}! ${t('board')} ${t('editFailed')}`,
-            severity: 'error',
-          })
-        );
-      }
-    } else if ('error' in result && 'status' in result.error) {
+  useEffect(() => {
+    if ('error' in status && status.error && 'status' in status.error) {
       dispatch(
         showNotification({
           isShow: true,
-          text: `${result.error.status}! ${t('board')} ${t('editFailed')}`,
+          text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
           severity: 'error',
         })
       );
-    } else {
+    }
+  }, [status.isError]);
+
+  const onSubmit = async (formData: CreateBoardType) => {
+    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
+
+    if ('error' in result && 'status' in result.error) {
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${t(result.error.status as string)} ${t('board')} ${t('editFailed')}`,
+          severity: 'error',
+        })
+      );
+    }
+
+    if ('data' in result) {
       dispatch(
         showNotification({
           isShow: true,
@@ -76,13 +80,17 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           severity: 'success',
         })
       );
-      setModal(false);
+      setModal((prev) => !prev);
     }
   };
 
   return (
     <Modal visible={visible} setModal={setModal}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
+      <Box
+        component="form"
+        sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <TextField
           required
           label={t('Title')}
@@ -154,7 +162,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         >
           {t('Save')}
         </LoadingButton>
-      </form>
+      </Box>
     </Modal>
   );
 };
