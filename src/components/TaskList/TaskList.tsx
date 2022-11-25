@@ -1,10 +1,14 @@
 import { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
 import { Modal } from '../UI/Modal/Modal';
 import { Task } from '../../components';
 
+import { Task } from '../../components';
+
 import { Droppable } from 'react-beautiful-dnd';
+import { Button, Stack } from '@mui/material';
 import { Button, Stack } from '@mui/material';
 
 import { GetColumnType } from '../../types/types';
@@ -13,7 +17,6 @@ import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 import { tasksAPI } from '../../api/tasksApi';
 
 import './TaskList.scss';
-import { TaskType } from '../../types/types';
 
 interface TaskProps {
   boardId: string;
@@ -57,20 +60,20 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
 
   return (
     <Stack>
-      {error && <span>error</span>}
-      {isLoading && <LinearProgress />}
-      <Droppable droppableId={columnId} type="TASKS" isCombineEnabled>
+      <Droppable droppableId={`droppable${column._id}${columnNum}`} type={listType}>
         {(provided: DroppableProvided) => (
           <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
-            {tasks &&
-              tasks.map((t, index) => {
+            {column.items &&
+              column.items.map((t, index) => {
                 return (
                   <Task
                     task={t}
-                    key={index}
+                    columnNum={columnNum}
+                    key={t._id}
                     columnId={columnId}
                     provided={provided}
                     innerRef={provided.innerRef}
+                    index={index}
                   />
                 );
               })}
