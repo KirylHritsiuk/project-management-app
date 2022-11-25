@@ -1,19 +1,18 @@
-import { Button, Stack } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
 import { Modal } from '../UI/Modal/Modal';
+import { Task } from '../../components';
+
+import { Droppable } from 'react-beautiful-dnd';
 import { Button, Stack } from '@mui/material';
 
 import { GetColumnType } from '../../types/types';
+import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
+
 import { tasksAPI } from '../../api/tasksApi';
-import AddIcon from '@mui/icons-material/Add';
-import { Task } from '../../components';
-import { Droppable } from 'react-beautiful-dnd';
 
 import './TaskList.scss';
-import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
-import { TaskType } from '../../types/types';
 
 interface TaskProps {
   boardId: string;
@@ -44,7 +43,7 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
       columnId: columnId,
       body: {
         title: value.title,
-        order: order,
+        order,
         description: '_',
         userId: 1,
         users: [],

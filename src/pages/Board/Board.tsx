@@ -5,10 +5,9 @@ import { useParams } from 'react-router-dom';
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
 import { usePageNavigate } from '../../hooks/usePageNavigate';
+import { reorder, reorderQuoteMap } from './reorder';
 
-import { Button, LinearProgress, Stack } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { columnsAPI } from '../../api/columnsApi';
 
@@ -24,9 +23,7 @@ import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
 import { TaskList } from '../../components';
 
-import './Board.scss';
 import { Delete } from '../../components';
-import { GetColumnType } from '../../types/types';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -50,9 +47,12 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  // useEffect(() => {
-  //   console.log(columns);
-  // }, [columns]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   const changeVisible = () => {
     setVisible(!isVisible);
@@ -76,23 +76,6 @@ export const Board = () => {
     }
   }
 
-  function handleOrderInColumn(result: DropResult) {
-    if (!result.destination) return;
-    const items = Array.from(columns);
-
-    setColumns(
-      items.map((item) => {
-        if (item.order === result.source?.index) {
-          return { ...item, order: result.destination ? result.destination.index : item.order };
-        }
-        if (item.order === result.destination?.index) {
-          return { ...item, order: result.source.index };
-        }
-        return item;
-      })
-    );
-  }
-
   const sortCard = (a: GetColumnType, b: GetColumnType) => {
     if (a.order > b.order) {
       return 1;
@@ -102,31 +85,22 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
-    console.log(result, result.type);
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
-      const items = Array.from(columns);
-      setColumns(
-        items.map((item) => {
-          if (item.order === result.source?.index) {
-            return { ...item, order: result.destination ? result.destination.index : item.order };
-          }
-          if (item.order === result.destination?.index) {
-            return { ...item, order: result.source.index };
-          }
-          return item;
-        })
-      );
+      const state = reorder(columns, result.source.index, result.destination.index);
+      setColumns(state);
+      return;
+    } else {
+      const value = Number(result.draggableId.slice(0, 1));
+      const data = reorderQuoteMap({
+        columnTasks: columns,
+        source: result.source,
+        destination: result.destination,
+        value: value,
+      });
+      setColumns(data);
     }
   }
-
-  const sortCard = (a: GetColumnType, b: GetColumnType) => {
-    if (a.order > b.order) {
-      return 1;
-    } else {
-      return -1;
-    }
-  };
 
   return (
     <Box component="main" className="column_section">
@@ -137,7 +111,7 @@ export const Board = () => {
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="COLUMN" type="COLUMN" direction="horizontal" isCombineEnabled>
+        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
           {(provided) => (
             <Stack
               spacing={2}
@@ -147,41 +121,18 @@ export const Board = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {columns
-                .slice()
-                .sort(sortCard)
-                .map((item, index) => {
-                  return (
-                    <Draggable key={index} draggableId={String(item.order)} index={item.order}>
-                      {(provided) => (
-                        <div
-                          className="card_column"
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          <div className="card_title">
-                            <h3 className="column_title">{item.title}</h3>
-                            <DeleteForeverIcon
-                              fontSize="large"
-                              onClick={() => changeOpen(item._id)}
-                            ></DeleteForeverIcon>
-                          </div>
-                          <TaskList boardId={iddd} columnId={item._id} />
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
+              {columns.map((column, index) => {
+                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+              })}
               {provided.placeholder}
+              <Button onClick={changeVisible} variant="outlined" color="success">
+                +Add column
+              </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Button onClick={changeVisible} variant="outlined" color="success">
-        +Add column
-      </Button>
-      {/* <Modal visible={isVisible} setModal={setVisible}>
+      <Modal visible={isVisible} setModal={setVisible}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="text"
@@ -192,13 +143,7 @@ export const Board = () => {
           {errors.title && <p role="alert">Please, input title</p>}
           <input type="submit" />
         </form>
-      </Modal> */}
-      {/* <Delete
-        category="column"
-        id={{ boardId: iddd, columnId: delId }}
-        visible={isOpen}
-        setModal={setOpen}
-      /> */}
+      </Modal>
     </div>
   );
 };
