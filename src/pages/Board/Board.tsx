@@ -8,7 +8,7 @@ import { Button, LinearProgress, Stack } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { columnsAPI } from '../../api/columnsApi';
-import { TaskList } from '../../components/TaskList/TaskList';
+import { TaskList } from '../../components';
 
 import './Board.scss';
 import { Delete } from 'components';
@@ -75,7 +75,7 @@ export const Board = () => {
         <Button onClick={changeVisible} variant="outlined" color="success">
           +Add column
         </Button>
-        <Modal visible={isVisible} setModal={setVisible}>
+        {/* <Modal visible={isVisible} setModal={setVisible}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <input
               type="text"
@@ -86,13 +86,13 @@ export const Board = () => {
             {errors.title && <p role="alert">Please, input title</p>}
             <input type="submit" />
           </form>
-        </Modal>
-        <Delete
+        </Modal> */}
+        {/* <Delete
           category="column"
           id={{ boardId: iddd, columnId: delId }}
           visible={isOpen}
           setModal={setOpen}
-        />
+        /> */}
       </Stack>
     </div>
   );

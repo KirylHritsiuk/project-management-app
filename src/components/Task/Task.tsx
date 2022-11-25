@@ -1,11 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { FC, useState } from 'react';
 
-import { Box, Button, Card, CardActions } from '@mui/material';
+import { Box, Card, CardActions } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
-
-import { Modal } from '../UI/Modal/Modal';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { TaskProps } from '../../types/types';
@@ -46,16 +44,12 @@ export const Task: FC<TaskProps> = ({ task, columnId }) => {
         <EditIcon fontSize="small" />
         <DeleteForeverIcon fontSize="small" onClick={changeOpen} />
       </CardActions>
-      <Modal visible={isOpen} setModal={setOpen}>
-        <p>Вы действительно хотите удалить колонку?</p>
-        <Button onClick={() => deletedTask(task._id)}>Delete</Button>
-      </Modal>
-      {/* <Delete
+      <Delete
         category="task"
         id={{ boardId: iddd, columnId: columnId, taskId: task._id }}
         visible={isOpen}
         setModal={setOpen}
-      /> */}
+      />
     </Card>
   );
 };

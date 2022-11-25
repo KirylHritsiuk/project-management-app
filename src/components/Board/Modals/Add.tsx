@@ -1,12 +1,11 @@
-import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
-import { FC } from 'react';
+import { Autocomplete, Box, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
+import { FC, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
-import styled from './Edit.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hooks';
 import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
@@ -23,6 +22,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
+  const { t } = useTranslation();
   const { id } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const { data: allUsers, isLoading, error } = usersAPI.useGetUsersQuery('');
@@ -37,43 +37,50 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
   } = useForm<CreateBoardType>({
     defaultValues: { title: '', owner: id, users: [] },
   });
-  const { t } = useTranslation();
 
-  const onSubmit: SubmitHandler<CreateBoardType> = async (data) => {
-    const result = await addBoard(data);
-    if (error && status.isError && 'status' in status.error) {
-      if ('status' in status.error) {
-        dispatch(
-          showNotification({
-            isShow: true,
-            text: `${status.error.status} error`,
-            severity: 'error',
-          })
-        );
-      }
-    } else if ('error' in result && 'status' in result.error) {
+  useEffect(() => {
+    if ('error' in status && status.error && 'status' in status.error) {
       dispatch(
         showNotification({
           isShow: true,
-          text: `${result.error.status} error`,
+          text: `${t(status.error.status as string)} ${t('board')} ${t('addFailed')}`,
           severity: 'error',
         })
       );
-    } else {
+    }
+  }, [status.isError]);
+
+  const onSubmit: SubmitHandler<CreateBoardType> = async (data) => {
+    const result = await addBoard(data);
+    if ('error' in result && 'status' in result.error) {
       dispatch(
         showNotification({
           isShow: true,
-          text: 'Board add',
+          text: `${t(result.error.status as string)} ${t('board')} ${t('addFailed')}`,
+          severity: 'error',
+        })
+      );
+    }
+    if ('data' in result) {
+      setModal((prev) => !prev);
+      reset();
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${t('board')} ${t('addSuccess')}`,
           severity: 'success',
         })
       );
-      setModal(false);
-      reset();
     }
   };
+
   return (
     <Modal visible={visible} setModal={setModal}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
+      <Box
+        component="form"
+        sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <TextField required label={t('Title')} {...register('title', { required: true })} />
         <TextField
           select
@@ -102,7 +109,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              options={allUsers!}
+              options={allUsers || []}
               getOptionLabel={(option) => option.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
@@ -137,7 +144,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         >
           {t('Add')}
         </LoadingButton>
-      </form>
+      </Box>
     </Modal>
   );
 };

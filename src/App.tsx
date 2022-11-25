@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Main, NotFoundPage, Profile, Board, SignIn, SignUp, Search } from 'pages';
 import { Header, Footer, Notification, Loader } from 'components';
 import { CheckRedirect } from 'hoc/CheckRedirect';

@@ -12,11 +12,11 @@ import {
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { useTranslation } from 'react-i18next';
-
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { authUser, logout } from 'store/slices/userSlice';
 import { Add } from 'components/Board/Modals/Add';
 import { SearchForm } from '../SearchForm/SearchForm';
+import { updateUser } from 'store/slices/mainSlice';
 
 export const AuthNavBar: React.FC = () => {
   const { login } = useAppSelector(authUser);
@@ -36,6 +36,7 @@ export const AuthNavBar: React.FC = () => {
 
   const onExit = () => {
     dispatch(logout());
+    dispatch(updateUser({ user: undefined }));
     setAnchorEl(null);
   };
 

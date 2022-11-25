@@ -10,6 +10,7 @@ import { ProfileTasks } from './ProfileTasks/ProfileTasks';
 import { Delete, Loader } from 'components';
 
 import './Profile.scss';
+import { updateUser } from 'store/slices/mainSlice';
 
 export const Profile: React.FC = () => {
   const { id } = useAppSelector(authUser);

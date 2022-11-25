@@ -1,17 +1,15 @@
-import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
-import { FC, useState } from 'react';
+import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField, Box } from '@mui/material';
+import { FC, useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import styled from './Edit.module.scss';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
-import { usersAPI } from '../../../api/usersApi';
 import { boardsAPI } from '../../../api/boardsApi';
 import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
-import { getUserFromId } from 'utils/getUserFromId';
+import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { LoadingButton } from '@mui/lab';
 import { showNotification } from 'store/slices/notificationSlice';
 import { useAppDispatch } from 'hooks/hooks';
@@ -28,21 +26,19 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { data: allUsers, error } = usersAPI.useGetUsersQuery('');
 
   const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
-  const usersLogins = data.users.map((user) => getUserFromId(user, allUsers));
-  const [owner, setOwner] = useState<string>(data.owner);
-  const [users, setUsers] = useState<GetUserType[]>(usersLogins);
-  const ids = users.map((u) => u._id);
+  const { users: allUsers, userList, error } = useGetUserFromId(data.owner, data.users);
 
+  const [owner, setOwner] = useState<string>(data.owner);
+  const [users, setUsers] = useState<GetUserType[]>(userList);
+  const ids = users.map((u) => u._id);
   const {
     register,
     handleSubmit,
     control,
     formState: { isDirty, errors },
-    reset,
   } = useForm<CreateBoardType>({
     defaultValues: { title: data.title, owner, users: ids },
   });
@@ -51,42 +47,50 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     setOwner(event.target.value);
   };
 
-  const onSubmit = async (formData: CreateBoardType) => {
-    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
-    if (error && status.isError && 'status' in status.error) {
-      if ('status' in status.error) {
-        dispatch(
-          showNotification({
-            isShow: true,
-            text: `${status.error.status} error`,
-            severity: 'error',
-          })
-        );
-      }
-    } else if ('error' in result && 'status' in result.error) {
+  useEffect(() => {
+    if ('error' in status && status.error && 'status' in status.error) {
       dispatch(
         showNotification({
           isShow: true,
-          text: `${result.error.status} error`,
+          text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
           severity: 'error',
         })
       );
-    } else {
+    }
+  }, [status.isError]);
+
+  const onSubmit = async (formData: CreateBoardType) => {
+    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
+
+    if ('error' in result && 'status' in result.error) {
       dispatch(
         showNotification({
           isShow: true,
-          text: 'Board update',
+          text: `${t(result.error.status as string)} ${t('board')} ${t('editFailed')}`,
+          severity: 'error',
+        })
+      );
+    }
+
+    if ('data' in result) {
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${t('board')} ${t('editSuccess')}`,
           severity: 'success',
         })
       );
-      setModal(false);
-      reset();
+      setModal((prev) => !prev);
     }
   };
 
   return (
     <Modal visible={visible} setModal={setModal}>
-      <form onSubmit={handleSubmit(onSubmit)} className={styled.form}>
+      <Box
+        component="form"
+        sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <TextField
           required
           label={t('Title')}
@@ -121,10 +125,9 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              // defaultValue={usersLogins || null}
               value={users}
-              options={allUsers || usersLogins}
-              getOptionLabel={(option) => option.login}
+              options={allUsers || []}
+              getOptionLabel={(option) => option!.login}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -133,7 +136,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option.login}
+                  {option!.login}
                 </li>
               )}
               style={{ width: 300 }}
@@ -142,7 +145,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
               )}
               onChange={(_, data) => {
                 setUsers(data);
-                onChange(data.map((u) => u._id));
+                onChange(data.map((u) => u!._id));
                 return data;
               }}
             />
@@ -159,7 +162,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         >
           {t('Save')}
         </LoadingButton>
-      </form>
+      </Box>
     </Modal>
   );
 };

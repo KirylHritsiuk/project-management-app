@@ -7,16 +7,12 @@
 	justify-items: center;
 }
 
-.block {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	gap: 40px;
-}
-
 .empty {
+	display: flex;
 	text-transform: uppercase;
 	color: gray;
-	opacity: 0.8;
-	font-weight: 600;
+	text-align: center;
+	@media screen and (max-width: 767px) {
+		font-size: 2rem!important;
+	}
 }
