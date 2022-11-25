@@ -1,9 +1,10 @@
 .column_section {
   display: flex;
   flex-direction: column;
-  // overflow: scroll;
+  overflow: scroll;
   align-items: flex-start;
   margin: 20px;
+  height: calc(100vh - 275px);
 }
 
 .card_column {

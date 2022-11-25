@@ -48,14 +48,17 @@ export type GetColumnType = {
   _id: string;
   title: string;
   order: number;
+  borderId: string;
+  items: TaskType[] | [];
 };
 
 export type UpdateColumnType = {
   boardId: string;
   columnId: string;
   body: {
-    title: string;
-    order: number;
+    title?: string;
+    _id?: string;
+    order?: number;
   };
 };
 
@@ -92,6 +95,8 @@ export interface TaskProps {
   provided: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   innerRef(element: HTMLElement | null): any;
+  index: number;
+  columnNum: number;
 }
 
 export type TaskType = {
