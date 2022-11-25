@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { Board, text } from 'components';
+import { Board, Loader, text } from 'components';
 import { useTranslation } from 'react-i18next';
 import styled from './BoardList.module.scss';
 import { FC } from 'react';
@@ -11,27 +11,46 @@ interface BoardListProps {
   id: string;
   user: string;
   isError: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
-export const BoardList: FC<BoardListProps> = ({ boards, id, user, isError }) => {
+export const BoardList: FC<BoardListProps> = ({
+  boards,
+  id,
+  user,
+  isError,
+  isLoading,
+  isFetching,
+}) => {
   const { t } = useTranslation();
+  console.log(boards);
+
+  if ((boards && boards.length == 0 && !isError && !isFetching) || (isError && isLoading)) {
+    return (
+      <Typography
+        component={motion.h2}
+        variant="h2"
+        variants={text}
+        initial="init"
+        animate="anim"
+        exit="exit"
+        className={styled.empty}
+      >
+        {(user == id && t('Empty')) || (user !== id && t('EmptyAll'))}
+        {isError && t('BoardListError')}
+      </Typography>
+    );
+  }
+
   return (
     <AnimatePresence>
       <motion.div className={styled.list}>
-        {boards && !isError && boards.map((user) => <Board key={user._id} data={user} />)}
-        <Typography
-          component={motion.h2}
-          variant="h2"
-          variants={text}
-          initial="init"
-          animate="anim"
-          exit="exit"
-          className={styled.empty}
-        >
-          {(boards && boards.length == 0 && user == id && t('Empty')) ||
-            (boards && boards.length == 0 && user !== id && t('EmptyAll'))}
-          {isError && t('BoardListError')}
-        </Typography>
+        {boards && !isError && !isFetching ? (
+          boards.map((user) => <Board key={user._id} data={user} />)
+        ) : (
+          <Loader />
+        )}
       </motion.div>
     </AnimatePresence>
   );
