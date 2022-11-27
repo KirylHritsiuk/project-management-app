@@ -6,8 +6,6 @@ import AddIcon from '@mui/icons-material/Add';
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-
 import { columnsAPI } from '../../api/columnsApi';
 
 import { Button, LinearProgress, Stack, Box } from '@mui/material';
@@ -18,9 +16,7 @@ import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
 import { Add } from './Add';
-import AddIcon from '@mui/icons-material/Add';
 import { useTranslation } from 'react-i18next';
-import { Column } from './Column/Column';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -31,11 +27,6 @@ export const Board = () => {
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
-  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const [delId, setDelId] = useState('');
-  const [addColumn] = columnsAPI.useCreateColumnMutation();
 
   useEffect(() => {
     if (data) {
