@@ -33,7 +33,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitSuccessful, errors },
+    formState: { errors },
   } = useForm<CreateBoardType>({
     defaultValues: { title: '', owner: id, users: [] },
   });
@@ -48,6 +48,9 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         })
       );
     }
+    return () => {
+      reset();
+    };
   }, [status.isError]);
 
   const onSubmit: SubmitHandler<CreateBoardType> = async (data) => {
@@ -78,7 +81,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
     <Modal visible={visible} setModal={setModal}>
       <Box
         component="form"
-        sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+        sx={{ display: 'flex', flexDirection: 'column' }}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
@@ -94,25 +97,6 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
           helperText={errors?.title ? errors.title.message : null}
           className={errors.title ? 'auth__error-input' : 'auth__input'}
         />
-        <TextField
-          select
-          label={t('Owner')}
-          defaultValue={id}
-          {...register('owner')}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <OwnerIcon />
-              </InputAdornment>
-            ),
-          }}
-        >
-          {allUsers?.map((user) => (
-            <MenuItem key={user._id} value={user._id}>
-              {user.login}
-            </MenuItem>
-          ))}
-        </TextField>
         <Controller
           name="users"
           control={control}
@@ -149,6 +133,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
           type="submit"
           variant="contained"
           color="secondary"
+          sx={{ marginTop: '20px' }}
           disabled={!!errors.title}
           loading={status.isLoading}
           loadingPosition="center"

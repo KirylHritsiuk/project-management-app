@@ -24,7 +24,6 @@ export const BoardList: FC<BoardListProps> = ({
   isFetching,
 }) => {
   const { t } = useTranslation();
-  console.log(boards);
 
   if ((boards && boards.length == 0 && !isError && !isFetching) || (isError && isLoading)) {
     return (

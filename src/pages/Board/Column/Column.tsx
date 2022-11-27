@@ -12,7 +12,7 @@ type ColumnType = {
 
 export const Column = ({ column, boardId, index }: ColumnType) => {
   const [isOpen, setOpen] = useState<boolean>(false);
-  const open = () => {
+  const openDel = () => {
     setOpen(true);
   };
 
@@ -31,7 +31,7 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
               columnId={column._id}
               title={column.title}
               order={column.order}
-              openDel={open}
+              openDel={openDel}
             />
             <TaskList
               listType="TASKS"
