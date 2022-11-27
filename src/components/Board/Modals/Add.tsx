@@ -33,7 +33,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
     handleSubmit,
     control,
     reset,
-    formState: { isValid },
+    formState: { isSubmitSuccessful, errors },
   } = useForm<CreateBoardType>({
     defaultValues: { title: '', owner: id, users: [] },
   });
@@ -81,7 +81,19 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
         sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <TextField required label={t('Title')} {...register('title', { required: true })} />
+        <TextField
+          label={`${t('Title')}*`}
+          {...register('title', {
+            required: { value: true, message: t('Required field') },
+            pattern: {
+              value: /^[\S]/,
+              message: t('No spaces'),
+            },
+          })}
+          error={!!errors.title}
+          helperText={errors?.title ? errors.title.message : null}
+          className={errors.title ? 'auth__error-input' : 'auth__input'}
+        />
         <TextField
           select
           label={t('Owner')}
@@ -137,7 +149,7 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
           type="submit"
           variant="contained"
           color="secondary"
-          disabled={!isValid}
+          disabled={!!errors.title}
           loading={status.isLoading}
           loadingPosition="center"
           startIcon={<SaveIcon />}

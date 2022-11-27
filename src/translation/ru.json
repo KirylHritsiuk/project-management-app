@@ -13,6 +13,7 @@
   "Only english letters and numbers": "Только цифры и буквы",
   "Required field": "Обязательное поле",
   "Minimum 8 characters": "Минимум 8 символов",
+  "No spaces": "Заголовок не может начинаться или состоять из пробелов",
   "Password must contain letters and numbers": "Должен состоять из цифр и букв",
   "I don’t have an account": "У меня нету аккаунта",
   "Create new account": "Создать новый аккаунт",
@@ -48,5 +49,6 @@
   "PARSING_ERROR": "Ошибка обработки данных!",
   "TIMEOUT_ERROR": "Ошибка, время ответа от сервера истекло!",
   "CUSTOM_ERROR": "Не предвиденная ошибка ",
-  "connect": "Подключено!"
+  "connect": "Подключено!",
+  "Create column": "Создать колонку"
 }

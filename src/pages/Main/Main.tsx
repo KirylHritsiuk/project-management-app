@@ -65,6 +65,7 @@ export function Main() {
 
   return (
     <Container
+      className={styled.main}
       component="main"
       sx={{
         display: 'flex',

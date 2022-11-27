@@ -14,6 +14,7 @@ import { GetColumnType } from '../../types/types';
 import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 
 import { tasksAPI } from '../../api/tasksApi';
+import AddIcon from '@mui/icons-material/Add';
 
 import './TaskList.scss';
 
@@ -62,7 +63,7 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
   };
 
   return (
-    <Stack>
+    <Stack className="tasklist_container">
       <Droppable droppableId={`droppable${column._id}${columnNum}`} type={listType}>
         {(provided: DroppableProvided) => (
           <div className="task_list" {...provided.droppableProps} ref={provided.innerRef}>
@@ -84,9 +85,14 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
           </div>
         )}
       </Droppable>
-      <Button onClick={() => setVisible(true)} variant="outlined" color="success">
-        +Add task
-      </Button>
+      <Button
+        onClick={() => setVisible(true)}
+        sx={{
+          padding: '10px 46px',
+        }}
+        className="button_add"
+        startIcon={<AddIcon />}
+      />
       <Modal visible={isVisible} setModal={setVisible}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <input

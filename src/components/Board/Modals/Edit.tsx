@@ -38,7 +38,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     register,
     handleSubmit,
     control,
-    formState: { isDirty, errors },
+    formState: { errors },
   } = useForm<CreateBoardType>({
     defaultValues: { title: data.title, owner, users: ids },
   });
@@ -92,11 +92,18 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
-          required
-          label={t('Title')}
+          label={`${t('Title')}*`}
           defaultValue={data.title}
-          {...register('title', { required: true })}
-          aria-invalid={errors.title ? 'true' : 'false'}
+          {...register('title', {
+            required: { value: true, message: t('Required field') },
+            pattern: {
+              value: /^[\S]/,
+              message: t('No spaces'),
+            },
+          })}
+          error={!!errors.title}
+          helperText={errors?.title ? errors.title.message : null}
+          className={errors.title ? 'auth__error-input' : 'auth__input'}
         />
         <TextField
           select
@@ -155,7 +162,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           type="submit"
           variant="contained"
           color="secondary"
-          disabled={!isDirty}
+          disabled={!!errors.title}
           loading={status.isLoading}
           loadingPosition="center"
           startIcon={<SaveIcon />}
