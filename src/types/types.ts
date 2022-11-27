@@ -48,8 +48,28 @@ export type GetColumnType = {
   _id: string;
   title: string;
   order: number;
-  borderId: string;
+  boardId: string;
   items: TaskType[] | [];
+};
+
+export type ResponceUpdatedColumns = {
+  _id: string;
+  title: string;
+  order: number;
+  boardId: string;
+};
+
+export type ChangedColumns = {
+  _id: string;
+  title?: string;
+  order: number;
+  boardId?: string;
+  items?: TaskType[] | [];
+};
+
+export type UpdatedAllColumns = {
+  _id: string;
+  order: number;
 };
 
 export type UpdateColumnType = {
@@ -59,6 +79,16 @@ export type UpdateColumnType = {
     title?: string;
     _id?: string;
     order?: number;
+  };
+};
+
+export type UpdateAllColumns = {
+  body: {
+    title: string;
+    boardId: string;
+    _id: string;
+    order: number;
+    items: TaskType[];
   };
 };
 

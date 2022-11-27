@@ -12,7 +12,7 @@ import { columnsAPI } from '../../api/columnsApi';
 import { Button, LinearProgress, Stack } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { GetColumnType } from '../../types/types';
+import { UpdatedAllColumns, GetColumnType, ChangedColumns } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
@@ -24,8 +24,10 @@ export const Board = () => {
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
   const [isVisible, setVisible] = useState<boolean>(false);
   const [addColumn] = columnsAPI.useCreateColumnMutation();
+  // const [deleteColumn] = columnsAPI.useDeleteColumnMutation();
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
+  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
 
   useEffect(() => {
     if (data) {
@@ -61,6 +63,14 @@ export const Board = () => {
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
+      const newResult = state.map((column, index) => {
+        const obj = { ...column, order: index } as ChangedColumns;
+        delete obj.items;
+        delete obj.title;
+        delete obj.boardId;
+        return obj as UpdatedAllColumns;
+      });
+      updatedColunms(newResult);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -71,6 +81,7 @@ export const Board = () => {
         value: value,
       });
       setColumns(data);
+      console.log('data', data);
     }
   }
 
