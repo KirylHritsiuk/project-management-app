@@ -12,10 +12,17 @@ import { columnsAPI } from '../../api/columnsApi';
 import { Button, LinearProgress, Stack } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { UpdatedAllColumns, GetColumnType, ChangedColumns } from '../../types/types';
+import {
+  UpdatedAllColumns,
+  GetColumnType,
+  ChangedColumns,
+  TaskType,
+  ChangedTasks,
+} from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
+import { tasksAPI } from '../../api/tasksApi';
 
 export const Board = () => {
   const { goBack } = usePageNavigate();
@@ -28,6 +35,7 @@ export const Board = () => {
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
   const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
     if (data) {
@@ -63,14 +71,14 @@ export const Board = () => {
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
-      const newResult = state.map((column, index) => {
+      const newSetColumns = state.map((column, index) => {
         const obj = { ...column, order: index } as ChangedColumns;
         delete obj.items;
         delete obj.title;
         delete obj.boardId;
         return obj as UpdatedAllColumns;
       });
-      updatedColunms(newResult);
+      updatedColunms(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -81,7 +89,23 @@ export const Board = () => {
         value: value,
       });
       setColumns(data);
-      console.log('data', data);
+      const newSetTasks = [] as TaskType[][];
+      data.map((column) => {
+        newSetTasks.push(column.items);
+      });
+      newSetTasks.map((arr) => {
+        const value = arr.map((tasks, index) => {
+          const obj = { ...tasks, order: index } as ChangedTasks;
+          delete obj.title;
+          delete obj.description;
+          delete obj.boardId;
+          delete obj.userId;
+          delete obj.users;
+          return obj;
+        });
+        updateAllTasks(value);
+        return value;
+      });
     }
   }
 

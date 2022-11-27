@@ -3,6 +3,7 @@ import {
   ColumnType,
   GetColumnType,
   ResponceUpdatedColumns,
+  TaskType,
   UpdateColumnType,
   UpdatedAllColumns,
 } from '../types/types';
@@ -76,6 +77,11 @@ export const columnsAPI = api.injectEndpoints({
 
         const result = await Promise.all(promises);
         result.sort((a: { order: number }, b: { order: number }) => a.order - b.order);
+        result.map((columnTask) => {
+          (columnTask.items as TaskType[]).sort(
+            (a: { order: number }, b: { order: number }) => a.order - b.order
+          );
+        });
         return { data: result as GetColumnType[] };
       },
     }),

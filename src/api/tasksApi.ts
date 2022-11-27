@@ -1,5 +1,12 @@
 import { api } from './api';
-import { CreateTaskType, GetTaskType, TaskType, UpdateTaskType } from '../types/types';
+import {
+  CreateTaskType,
+  GetTaskType,
+  ResponceSetTask,
+  TaskType,
+  UpdateSetType,
+  UpdateTaskType,
+} from '../types/types';
 
 export const tasksAPI = api.injectEndpoints({
   endpoints: (build) => ({
@@ -79,6 +86,17 @@ export const tasksAPI = api.injectEndpoints({
               { type: 'tasksSet', id: 'LIST' },
             ]
           : [{ type: 'tasksSet', id: 'LIST' }],
+    }),
+    updateAllTasks: build.mutation<ResponceSetTask[], UpdateSetType[]>({
+      query: (result) => ({
+        url: `/tasksSet`,
+        method: 'PATCH',
+        body: [...result],
+      }),
+      invalidatesTags: [
+        { type: 'tasksSet', id: 'LIST' },
+        { type: 'tasksSet', id: 'LIST' },
+      ],
     }),
   }),
 });

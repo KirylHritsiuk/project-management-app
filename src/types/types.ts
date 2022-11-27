@@ -118,6 +118,19 @@ export type GetTaskType = {
   userId: string;
 };
 
+export type ChangedTasks = {
+  _id: string;
+  title?: string;
+  order: number;
+  boardId?: string;
+  items?: TaskType[] | [];
+  description?: string;
+  userId?: string;
+  columnId: string;
+  files?: FilesType[];
+  users?: [];
+};
+
 export interface TaskProps {
   task: TaskType;
   columnId: string;
@@ -138,6 +151,23 @@ export type TaskType = {
   boardId: string;
   columnId: string;
   files: FilesType[];
+};
+
+export type UpdateSetType = {
+  _id: string;
+  order: number;
+  columnId: string;
+};
+
+export type ResponceSetTask = {
+  _id: string;
+  title: string;
+  order: number;
+  description: string;
+  userId: string;
+  boardId: string;
+  columnId: string;
+  users: string[];
 };
 
 export type UpdateTaskType = {
