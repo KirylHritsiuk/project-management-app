@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
 import { Modal } from '../UI/Modal/Modal';
@@ -25,6 +25,7 @@ interface TaskProps {
 export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
   const [isVisible, setVisible] = useState<boolean>(false);
   const [addTask] = tasksAPI.useCreateTaskMutation();
+  const [order, setOrder] = useState<number>(0);
 
   const {
     register,
@@ -33,13 +34,16 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
     reset,
   } = useForm();
 
+  useEffect(() => {
+    setOrder(column.items.length > 0 ? Math.max(...column.items.map((o) => o.order)) + 1 : 0);
+  }, [column.items]);
   const onSubmit = (value: FieldValues) => {
     addTask({
       boardId: boardId,
       columnId: columnId,
       body: {
         title: value.title,
-        order: 1,
+        order: order,
         description: '_',
         userId: 1,
         users: [],

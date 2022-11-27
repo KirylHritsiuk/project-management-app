@@ -48,8 +48,28 @@ export type GetColumnType = {
   _id: string;
   title: string;
   order: number;
-  borderId: string;
+  boardId: string;
   items: TaskType[] | [];
+};
+
+export type ResponceUpdatedColumns = {
+  _id: string;
+  title: string;
+  order: number;
+  boardId: string;
+};
+
+export type ChangedColumns = {
+  _id: string;
+  title?: string;
+  order: number;
+  boardId?: string;
+  items?: TaskType[] | [];
+};
+
+export type UpdatedAllColumns = {
+  _id: string;
+  order: number;
 };
 
 export type UpdateColumnType = {
@@ -59,6 +79,16 @@ export type UpdateColumnType = {
     title?: string;
     _id?: string;
     order?: number;
+  };
+};
+
+export type UpdateAllColumns = {
+  body: {
+    title: string;
+    boardId: string;
+    _id: string;
+    order: number;
+    items: TaskType[];
   };
 };
 
@@ -88,6 +118,19 @@ export type GetTaskType = {
   userId: string;
 };
 
+export type ChangedTasks = {
+  _id: string;
+  title?: string;
+  order: number;
+  boardId?: string;
+  items?: TaskType[] | [];
+  description?: string;
+  userId?: string;
+  columnId: string;
+  files?: FilesType[];
+  users?: [];
+};
+
 export interface TaskProps {
   task: TaskType;
   columnId: string;
@@ -108,6 +151,23 @@ export type TaskType = {
   boardId: string;
   columnId: string;
   files: FilesType[];
+};
+
+export type UpdateSetType = {
+  _id: string;
+  order: number;
+  columnId: string;
+};
+
+export type ResponceSetTask = {
+  _id: string;
+  title: string;
+  order: number;
+  description: string;
+  userId: string;
+  boardId: string;
+  columnId: string;
+  users: string[];
 };
 
 export type UpdateTaskType = {
