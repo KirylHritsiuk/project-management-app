@@ -12,11 +12,8 @@ type ColumnType = {
 
 export const Column = ({ column, boardId, index }: ColumnType) => {
   const [isOpen, setOpen] = useState<boolean>(false);
-  const [delId, setDelId] = useState('');
-
-  const changeOpen = (id: string) => {
+  const open = () => {
     setOpen(true);
-    setDelId(id);
   };
 
   return (
@@ -30,10 +27,11 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
             ref={provided.innerRef}
           >
             <Title
-              boardId={column.borderId}
+              boardId={column.boardId}
               columnId={column._id}
               title={column.title}
               order={column.order}
+              openDel={open}
             />
             <TaskList
               listType="TASKS"
@@ -47,7 +45,7 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
       </Draggable>
       <Delete
         category="column"
-        id={{ boardId: boardId, columnId: delId }}
+        id={{ boardId: boardId, columnId: column._id }}
         visible={isOpen}
         setModal={setOpen}
       />

@@ -7,8 +7,9 @@ interface TitleProps {
   columnId: string;
   title: string;
   order: number;
+  openDel: () => void;
 }
-export const Title: FC<TitleProps> = ({ title, order, boardId, columnId }) => {
+export const Title: FC<TitleProps> = ({ title, order, boardId, columnId, openDel }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const close = () => {
@@ -39,6 +40,7 @@ export const Title: FC<TitleProps> = ({ title, order, boardId, columnId }) => {
           </div>
           <DeleteForeverIcon
             fontSize="medium"
+            onClick={openDel}
             sx={{ cursor: 'pointer', position: 'absolute', right: '10px' }}
           />
         </>
