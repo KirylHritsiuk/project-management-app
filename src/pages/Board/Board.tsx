@@ -18,7 +18,9 @@ import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
 import { Add } from './Add';
+import AddIcon from '@mui/icons-material/Add';
 import { useTranslation } from 'react-i18next';
+import { Column } from './Column/Column';
 
 export const Board = () => {
   const { t } = useTranslation();
