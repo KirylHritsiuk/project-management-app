@@ -1,27 +1,33 @@
 import { useEffect, useState } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
+// import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+
+// import { Modal } from '../../components/UI/Modal/Modal';
+import { Column } from './Column/Column';
+import AddIcon from '@mui/icons-material/Add';
 
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 import { columnsAPI } from '../../api/columnsApi';
 
-import { Button, LinearProgress, Stack } from '@mui/material';
+import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { GetColumnType } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
+import { Add } from './Add';
+import { useTranslation } from 'react-i18next';
 import { TaskList } from 'components';
 
 export const Board = () => {
+  const { t } = useTranslation();
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const boardId = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: boardId });
+  const boardId = id ?? '';
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
   const [isVisible, setVisible] = useState<boolean>(false);
-  const [addColumn] = columnsAPI.useCreateColumnMutation();
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
 
@@ -32,26 +38,8 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
   const changeVisible = () => {
     setVisible(!isVisible);
-  };
-
-  const onSubmit = (value: FieldValues) => {
-    addColumn({ boardId: boardId, body: { title: value.title, order: order } })
-      .then(() => {
-        setVisible(false);
-        reset();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   function handleOrderInColumn(result: DropResult) {
@@ -73,7 +61,7 @@ export const Board = () => {
   }
 
   return (
-    <div className="column_section">
+    <Box component="main" className="column_section">
       <Button variant="contained" onClick={() => goBack()} className="backButton">
         Go Back
       </Button>
@@ -92,19 +80,27 @@ export const Board = () => {
               ref={provided.innerRef}
             >
               {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
               })}
               {provided.placeholder}
-              <Button onClick={changeVisible} variant="outlined" color="success">
-                +Add column
+              <Button
+                onClick={changeVisible}
+                sx={{
+                  width: '250px',
+                  padding: '10px 16px',
+                }}
+                variant="outlined"
+                color="success"
+                className="button_add"
+                startIcon={<AddIcon />}
+              >
+                {t('Create column')}
               </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Button onClick={changeVisible} variant="outlined" color="success">
-        +Add column
-      </Button>
-    </div>
+      <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
+    </Box>
   );
 };

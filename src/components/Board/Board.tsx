@@ -7,6 +7,7 @@ import { BoarderMenu } from './Menu/BoarderMenu';
 import { useTranslation } from 'react-i18next';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useAppSelector } from 'hooks/hooks';
 
 export const text = {
   init: { opacity: 0, scale: 0.5 },
@@ -17,12 +18,13 @@ const card = {
   init: { opacity: 0, scale: 0.5 },
   anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
   exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
-  hover: { scale: 1.03 },
-  tab: { scale: 1.03 },
+  hover: { scale: 1.07 },
+  tab: { scale: 1.07 },
 };
 
 export const Board: React.FC<BoardProps> = ({ data }) => {
   const { t } = useTranslation();
+  const { id } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const { _id, title, owner, users } = data;
 
@@ -33,12 +35,12 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
       <Card
         variant="outlined"
         component={motion.div}
-        variants={card}
-        whileHover="hover"
-        whileTap="tab"
-        initial="init"
-        animate="anim"
-        exit="exit"
+        // variants={card}
+        // whileHover="hover"
+        // whileTap="tab"
+        // initial="init"
+        // animate="anim"
+        // exit="exit"
         className={styled.card}
       >
         <div className={styled.header}>
@@ -52,9 +54,18 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
             <OwnerIcon />
             {user && user.login}
           </motion.div>
-          <BoarderMenu data={data} className={styled.menu} />
+          {user?._id === id && <BoarderMenu data={data} className={styled.menu} />}
         </div>
-        <div className={styled.body} onClick={() => navigate(`/main/${_id}`)}>
+        <motion.div
+          className={styled.body}
+          onClick={() => navigate(`/main/${_id}`)}
+          variants={card}
+          whileHover="hover"
+          whileTap="tab"
+          initial="init"
+          animate="anim"
+          exit="exit"
+        >
           <motion.h2 variants={text} initial="init" animate="anim" exit="exit">
             {title}
           </motion.h2>
@@ -77,7 +88,7 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
               </motion.li>
             )}
           </ul>
-        </div>
+        </motion.div>
       </Card>
     </AnimatePresence>
   );

@@ -1,8 +1,8 @@
 import { Delete, TaskList } from '../../../components';
 import { Draggable } from 'react-beautiful-dnd';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { GetColumnType } from '../../../types/types';
 import { useState } from 'react';
+import { Title } from './Title/Title';
 
 type ColumnType = {
   column: GetColumnType;
@@ -29,13 +29,12 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
           >
-            <div className="card_title">
-              <h3 className="column_title">{column.title}</h3>
-              <DeleteForeverIcon
-                fontSize="large"
-                onClick={() => changeOpen(column._id)}
-              ></DeleteForeverIcon>
-            </div>
+            <Title
+              boardId={column.borderId}
+              columnId={column._id}
+              title={column.title}
+              order={column.order}
+            />
             <TaskList
               listType="TASKS"
               boardId={boardId}

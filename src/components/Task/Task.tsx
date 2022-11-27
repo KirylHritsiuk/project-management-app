@@ -12,7 +12,7 @@ import { Draggable } from 'react-beautiful-dnd';
 export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const { id } = useParams();
-  const taskId = id ?? '1';
+  const taskId = id ?? '';
 
   const changeOpen = () => {
     setOpen(true);
@@ -26,9 +26,10 @@ export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
             sx={{
               justifyContent: 'space-between',
               display: 'flex',
-              border: '1px solid green',
               alignItems: 'center',
               paddingLeft: '10px',
+              marginBottom: '10px',
+              height: '50px',
             }}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
