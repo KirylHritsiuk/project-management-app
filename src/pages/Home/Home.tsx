@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
 import { TEAM } from 'constants/constants';
-import Board from './assets/board.png';
+// import Board from './assets/board.png';
+import Board from './assets/Example.png';
 import Icon from './assets/icon.png';
 import { ReactComponent as RssLogo } from 'components/Footer/assets/rssLogo.svg';
 

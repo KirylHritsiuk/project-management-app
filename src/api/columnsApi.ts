@@ -84,6 +84,13 @@ export const columnsAPI = api.injectEndpoints({
         });
         return { data: result as GetColumnType[] };
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'columns' as const, _id })),
+              { type: 'columns', id: 'LIST' },
+            ]
+          : [{ type: 'columns', id: 'LIST' }],
     }),
     updateAllColumns: build.mutation<ResponceUpdatedColumns[], UpdatedAllColumns[]>({
       query: (result) => ({

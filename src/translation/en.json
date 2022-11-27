@@ -13,6 +13,7 @@
   "Only english letters and numbers": "Only letters and numbers",
   "Required field": "Required field",
   "Minimum 8 characters": "Minimum 8 characters",
+  "No spaces": "Title doesn’t start letters or consist of spaces",
   "Password must contain letters and numbers": "Must contain letters and numbers",
   "I don’t have an account": "I don’t have an account",
   "Create new account": "Create new account",
@@ -48,5 +49,6 @@
   "PARSING_ERROR": "Error, incorrect data",
   "TIMEOUT_ERROR": "Error, request timed out!",
   "CUSTOM_ERROR": "Error, check connection",
-  "Connect": "Connected!"
+  "Connect": "Connected!",
+  "Create column": "Create column"
 }

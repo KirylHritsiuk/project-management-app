@@ -1,8 +1,8 @@
 import { Delete, TaskList } from '../../../components';
 import { Draggable } from 'react-beautiful-dnd';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { GetColumnType } from '../../../types/types';
 import { useState } from 'react';
+import { Title } from './Title/Title';
 
 type ColumnType = {
   column: GetColumnType;
@@ -12,11 +12,8 @@ type ColumnType = {
 
 export const Column = ({ column, boardId, index }: ColumnType) => {
   const [isOpen, setOpen] = useState<boolean>(false);
-  const [delId, setDelId] = useState('');
-
-  const changeOpen = (id: string) => {
+  const open = () => {
     setOpen(true);
-    setDelId(id);
   };
 
   return (
@@ -29,13 +26,13 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
           >
-            <div className="card_title">
-              <h3 className="column_title">{column.title}</h3>
-              <DeleteForeverIcon
-                fontSize="large"
-                onClick={() => changeOpen(column._id)}
-              ></DeleteForeverIcon>
-            </div>
+            <Title
+              boardId={column.boardId}
+              columnId={column._id}
+              title={column.title}
+              order={column.order}
+              openDel={open}
+            />
             <TaskList
               listType="TASKS"
               boardId={boardId}
@@ -48,7 +45,7 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
       </Draggable>
       <Delete
         category="column"
-        id={{ boardId: boardId, columnId: delId }}
+        id={{ boardId: boardId, columnId: column._id }}
         visible={isOpen}
         setModal={setOpen}
       />

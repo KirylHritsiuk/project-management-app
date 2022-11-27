@@ -1,41 +1,32 @@
 import { useEffect, useState } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-
-import { Modal } from '../../components/UI/Modal/Modal';
 import { Column } from './Column/Column';
+import AddIcon from '@mui/icons-material/Add';
 
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
+
 import { columnsAPI } from '../../api/columnsApi';
 
-import { Button, LinearProgress, Stack } from '@mui/material';
+import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import {
-  UpdatedAllColumns,
-  GetColumnType,
-  ChangedColumns,
-  TaskType,
-  ChangedTasks,
-} from '../../types/types';
+import { GetColumnType } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { tasksAPI } from '../../api/tasksApi';
+import { Add } from './Add';
+import { useTranslation } from 'react-i18next';
 
 export const Board = () => {
+  const { t } = useTranslation();
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const iddd = id ?? '1';
-  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId: iddd });
+  const boardId = id ?? '';
+  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
   const [isVisible, setVisible] = useState<boolean>(false);
-  const [addColumn] = columnsAPI.useCreateColumnMutation();
-  // const [deleteColumn] = columnsAPI.useDeleteColumnMutation();
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
-  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
     if (data) {
@@ -44,26 +35,8 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
   const changeVisible = () => {
     setVisible(!isVisible);
-  };
-
-  const onSubmit = (value: FieldValues) => {
-    addColumn({ boardId: iddd, body: { title: value.title, order: order } })
-      .then(() => {
-        setVisible(false);
-        reset();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   function handleOrderInColumn(result: DropResult) {
@@ -71,14 +44,6 @@ export const Board = () => {
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
-      const newSetColumns = state.map((column, index) => {
-        const obj = { ...column, order: index } as ChangedColumns;
-        delete obj.items;
-        delete obj.title;
-        delete obj.boardId;
-        return obj as UpdatedAllColumns;
-      });
-      updatedColunms(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -89,30 +54,11 @@ export const Board = () => {
         value: value,
       });
       setColumns(data);
-      const newSetTasks = [] as TaskType[][];
-      data.map((column) => {
-        newSetTasks.push(column.items);
-      });
-      newSetTasks.map((arr) => {
-        const value = arr.map((tasks, index) => {
-          const obj = { ...tasks, order: index } as ChangedTasks;
-          delete obj.title;
-          delete obj.description;
-          delete obj.boardId;
-          delete obj.userId;
-          delete obj.users;
-          return obj;
-        });
-        if (value.length > 0) {
-          updateAllTasks(value);
-        }
-        return value;
-      });
     }
   }
 
   return (
-    <div className="column_section">
+    <Box component="main" className="column_section">
       <Button variant="contained" onClick={() => goBack()} className="backButton">
         Go Back
       </Button>
@@ -131,28 +77,27 @@ export const Board = () => {
               ref={provided.innerRef}
             >
               {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
               })}
               {provided.placeholder}
-              <Button onClick={changeVisible} variant="outlined" color="success">
-                +Add column
+              <Button
+                onClick={changeVisible}
+                sx={{
+                  width: '250px',
+                  padding: '10px 16px',
+                }}
+                variant="outlined"
+                color="success"
+                className="button_add"
+                startIcon={<AddIcon />}
+              >
+                {t('Create column')}
               </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Modal visible={isVisible} setModal={setVisible}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            placeholder="Title Column"
-            {...register('title', { required: true })}
-            aria-invalid={errors.title ? 'true' : 'false'}
-          />
-          {errors.title && <p role="alert">Please, input title</p>}
-          <input type="submit" />
-        </form>
-      </Modal>
-    </div>
+      <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
+    </Box>
   );
 };
