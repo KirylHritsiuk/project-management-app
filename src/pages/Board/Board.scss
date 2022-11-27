@@ -1,28 +1,68 @@
+@mixin topBorders($radius) {
+  border-top-left-radius: $radius ;
+  border-top-right-radius: $radius;
+}
+
 .column_section {
   display: flex;
   flex-direction: column;
   overflow: scroll;
   align-items: flex-start;
-  margin: 20px;
-  height: calc(100vh - 275px);
+  padding: 0 16px;
+  @media screen and (max-width: 331px) {
+    padding: var(--padding320);
+  }
 }
 
 .card_column {
-  width: 350px;
+  width: 346px;
   min-height: 50px;
   flex-shrink: 0;
+  background: var(--containerCardBG);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+
+  @media screen and (max-width: 374px){
+    width: 300px;
+  }
 }
 
 .card_title {
+  position: relative;
   display: flex;
-  background-color: #106354;
   color: white;
-  font-size: 1em;
-  font-weight: 700;
   text-align: center;
   align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background-color: var(--headerColumnBG);
+  @include topBorders(var(--radius))
 }
 
-.card_title h3 {
+.card_title {
   flex-grow: 1;
+  height: var(--headerCardTitleHeight);
+
+  h3 {
+    text-align: center;
+
+    font-size: var(--headerCardTitleSize);
+    font-weight: var(--headerCardTitleWeight);
+    line-height: var(--headerCardTitleLineHeight);
+    color: var(--headerCardTitleColor);
+  
+    cursor: pointer;
+  } 
+  
+  input {
+    font-size: var(--headerCardTitleSize);
+    font-weight: var(--headerCardTitleWeight);
+    line-height: var(--headerCardTitleLineHeight);
+    color: var(--headerCardTitleColor);
+    box-sizing: border-box!important;
+    height: 35px;
+
+  }
 }
+
+

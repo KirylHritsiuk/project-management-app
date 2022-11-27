@@ -75,6 +75,13 @@ export const columnsAPI = api.injectEndpoints({
         const result = await Promise.all(promises);
         return { data: result as GetColumnType[] };
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: 'columns' as const, _id })),
+              { type: 'columns', id: 'LIST' },
+            ]
+          : [{ type: 'columns', id: 'LIST' }],
     }),
   }),
 });

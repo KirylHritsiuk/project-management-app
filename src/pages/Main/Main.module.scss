@@ -1,3 +1,8 @@
+.main {
+	@media screen and (max-width: 331px) {
+		padding: var(--padding320)!important;
+	}
+}
 .loader {
 	margin: auto !important;
 }
