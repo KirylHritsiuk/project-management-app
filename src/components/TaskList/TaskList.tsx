@@ -1,14 +1,10 @@
 import { FC, useState } from 'react';
-import { FC, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
 
 import { Modal } from '../UI/Modal/Modal';
 import { Task } from '../../components';
 
-import { Task } from '../../components';
-
 import { Droppable } from 'react-beautiful-dnd';
-import { Button, Stack } from '@mui/material';
 import { Button, Stack } from '@mui/material';
 
 import { GetColumnType } from '../../types/types';

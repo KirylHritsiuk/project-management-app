@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react';
-// import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-
-// import { Modal } from '../../components/UI/Modal/Modal';
-import { Column } from './Column/Column';
-import AddIcon from '@mui/icons-material/Add';
-
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 import { columnsAPI } from '../../api/columnsApi';
@@ -19,7 +13,6 @@ import { DropResult } from './react-beautiful-dnd';
 import './Board.scss';
 import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
-import { TaskList } from 'components';
 
 export const Board = () => {
   const { t } = useTranslation();
