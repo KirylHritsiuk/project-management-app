@@ -103,7 +103,9 @@ export const Board = () => {
           delete obj.users;
           return obj;
         });
-        updateAllTasks(value);
+        if (value.length > 0) {
+          updateAllTasks(value);
+        }
         return value;
       });
     }
