@@ -11,6 +11,7 @@ import { GetColumnType } from '../../types/types';
 import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 
 import { tasksAPI } from '../../api/tasksApi';
+import AddIcon from '@mui/icons-material/Add';
 
 import './TaskList.scss';
 

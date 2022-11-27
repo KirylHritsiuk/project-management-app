@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
-
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
+
 import { usePageNavigate } from '../../hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 
@@ -18,12 +17,8 @@ import { GetColumnType } from '../../types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { tasksAPI } from 'api/tasksApi';
 import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
-import { TaskList } from '../../components';
-
-import { Delete } from '../../components';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -47,41 +42,8 @@ export const Board = () => {
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
   const changeVisible = () => {
     setVisible(!isVisible);
-  };
-
-  function handleOrderInColumn(result: DropResult) {
-    if (!result.destination) return;
-    if (result.type === 'COLUMN') {
-      const state = reorder(columns, result.source.index, result.destination.index);
-      setColumns(state);
-      return;
-    } else {
-      const value = Number(result.draggableId.slice(0, 1));
-      const data = reorderQuoteMap({
-        columnTasks: columns,
-        source: result.source,
-        destination: result.destination,
-        value: value,
-      });
-      setColumns(data);
-    }
-  }
-
-  const sortCard = (a: GetColumnType, b: GetColumnType) => {
-    if (a.order > b.order) {
-      return 1;
-    } else {
-      return -1;
-    }
   };
 
   function handleOrderInColumn(result: DropResult) {
@@ -122,28 +84,27 @@ export const Board = () => {
               ref={provided.innerRef}
             >
               {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={iddd} />;
+                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
               })}
               {provided.placeholder}
-              <Button onClick={changeVisible} variant="outlined" color="success">
-                +Add column
+              <Button
+                onClick={changeVisible}
+                sx={{
+                  width: '250px',
+                  padding: '10px 16px',
+                }}
+                variant="outlined"
+                color="success"
+                className="button_add"
+                startIcon={<AddIcon />}
+              >
+                {t('Create column')}
               </Button>
             </Stack>
           )}
         </Droppable>
       </DragDropContext>
-      <Modal visible={isVisible} setModal={setVisible}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            placeholder="Title Column"
-            {...register('title', { required: true })}
-            aria-invalid={errors.title ? 'true' : 'false'}
-          />
-          {errors.title && <p role="alert">Please, input title</p>}
-          <input type="submit" />
-        </form>
-      </Modal>
-    </div>
+      <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
+    </Box>
   );
 };
