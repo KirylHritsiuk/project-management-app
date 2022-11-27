@@ -38,7 +38,8 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    reset,
+    formState: { errors, isDirty },
   } = useForm<CreateBoardType>({
     defaultValues: { title: data.title, owner, users: ids },
   });
@@ -58,6 +59,12 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
       );
     }
   }, [status.isError]);
+
+  useEffect(() => {
+    if (!visible) {
+      reset();
+    }
+  }, [visible]);
 
   const onSubmit = async (formData: CreateBoardType) => {
     const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
@@ -88,7 +95,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     <Modal visible={visible} setModal={setModal}>
       <Box
         component="form"
-        sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+        sx={{ display: 'flex', flexDirection: 'column' }}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
@@ -107,6 +114,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
         />
         <TextField
           select
+          sx={{ marginBottom: '20px' }}
           label={t('Owner')}
           value={owner}
           {...register('owner', { onChange: (e) => handleChange(e) })}
@@ -162,8 +170,9 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           type="submit"
           variant="contained"
           color="secondary"
-          disabled={!!errors.title}
+          disabled={!!errors.title || !isDirty}
           loading={status.isLoading}
+          sx={{ marginTop: '20px' }}
           loadingPosition="center"
           startIcon={<SaveIcon />}
         >

@@ -70,7 +70,7 @@ export const Add: FC<AddProps> = ({ visible, setModal, boardId, order }) => {
     <Modal visible={visible} setModal={setModal}>
       <Box
         component="form"
-        sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '300px' }}
+        sx={{ display: 'flex', flexDirection: 'column', width: '300px' }}
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextField
