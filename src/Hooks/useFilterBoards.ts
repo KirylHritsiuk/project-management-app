@@ -1,19 +1,22 @@
 import { boardsAPI } from 'api/boardsApi';
 import { usersAPI } from 'api/usersApi';
+import { useAppSelector } from './hooks';
 
-export function useFilterBoards(user: string | undefined, id: string) {
+export function useFilterBoards() {
+  const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
   const data = usersAPI.useGetUsersQuery('');
   if (user && user !== 'all') {
     return {
+      id,
       boards: boardsAPI.useGetBoardsSetByUserIdQuery(user),
       user,
       users: data,
     };
   } else if (user && user === 'all') {
-    return { boards: boardsAPI.useGetBoardsQuery(''), user, users: data };
+    return { id, boards: boardsAPI.useGetBoardsQuery(''), user, users: data };
   } else {
-    // if (!data.data?.find((user) => user._id === id)) data.refetch();
     return {
+      id,
       boards: boardsAPI.useGetBoardsSetByUserIdQuery(id),
       user: id,
       users: data,

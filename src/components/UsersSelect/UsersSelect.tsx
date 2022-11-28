@@ -18,7 +18,10 @@ export const UsersSelect: FC<UsersSelectProps> = ({ users, user, id, isLoading, 
   const dispatch = useAppDispatch();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (user !== e.target.value) dispatch(updateUser({ user: e.target.value }));
+    if (user !== e.target.value) {
+      dispatch(updateUser({ user: e.target.value }));
+      localStorage.setItem('userFilter', e.target.value);
+    }
   };
 
   // if (isError && isLoading) return null;

@@ -1,7 +1,7 @@
 import { BoardList, Loader } from 'components';
 import { IconButton, Container } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { useAppDispatch } from 'hooks/hooks';
 import { useFilterBoards } from 'hooks/useFilterBoards';
 import styled from './Main.module.scss';
 import { UsersSelect } from 'components';
@@ -10,36 +10,38 @@ import { useTranslation } from 'react-i18next';
 import { showNotification } from 'store/slices/notificationSlice';
 
 export function Main() {
-  const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const { boards, user: userFilter, users } = useFilterBoards(user, id);
+  const { id, boards, user: userFilter, users } = useFilterBoards();
   const [refetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
-    if (refetch) {
-      users.refetch();
-      boards.refetch();
-      setRefetch((prev) => !prev);
-      // if ('error' in boards && boards.error && 'status' in boards.error) {
-      //   dispatch(
-      //     showNotification({
-      //       isShow: true,
-      //       text: t(boards.error.status as string),
-      //       severity: 'error',
-      //     })
-      //   );
-      // } else {
-      //   dispatch(
-      //     showNotification({
-      //       isShow: true,
-      //       text: t('connect'),
-      //       severity: 'success',
-      //     })
-      //   );
-      // }
-    }
+    const refetchFun = async () => {
+      if (refetch) {
+        await users.refetch();
+        await boards.refetch();
+        setRefetch((prev) => !prev);
+        if ('error' in boards && boards.error && 'status' in boards.error) {
+          dispatch(
+            showNotification({
+              isShow: true,
+              text: t(boards.error.status as string),
+              severity: 'error',
+            })
+          );
+        } else if (boards.isSuccess || users.isSuccess) {
+          dispatch(
+            showNotification({
+              isShow: true,
+              text: t('connect'),
+              severity: 'success',
+            })
+          );
+        }
+      }
+    };
+    refetchFun();
   }, [refetch]);
 
   useEffect(() => {
@@ -52,16 +54,20 @@ export function Main() {
         })
       );
     }
-    // else {
-    //   dispatch(
-    //     showNotification({
-    //       isShow: true,
-    //       text: t('connect'),
-    //       severity: 'success',
-    //     })
-    //   );
-    // }
   }, [boards.isError]);
+
+  useEffect(() => {
+    if (users.isError && 'error' in users && users.error && 'status' in users.error) {
+      // console.log(users.error);
+      dispatch(
+        showNotification({
+          isShow: true,
+          text: `${t(users.error.status as string)}`,
+          severity: 'error',
+        })
+      );
+    }
+  }, [users.isError]);
 
   return (
     <Container

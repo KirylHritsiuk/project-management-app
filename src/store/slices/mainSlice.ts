@@ -4,16 +4,17 @@ import { RootState } from 'store/store';
 import { DecodedTokenType } from 'types/types';
 
 const token = localStorage.getItem('token');
+const userFilter = localStorage.getItem('userFilter');
 let decodedToken;
 if (token) {
   decodedToken = decodeToken<DecodedTokenType>(token);
 }
 
 interface Main {
-  user: string | undefined;
+  user: string | undefined | null;
 }
 const initialState: Main = {
-  user: decodedToken?.id,
+  user: userFilter ?? decodedToken?.id,
 };
 
 export const mainSlice = createSlice({
@@ -22,6 +23,10 @@ export const mainSlice = createSlice({
   reducers: {
     updateUser: (state, action: { payload: Main }) => {
       state.user = action.payload.user;
+      if (action.payload.user) localStorage.setItem('userFilter', action.payload.user);
+      else {
+        localStorage.removeItem('userFilter');
+      }
     },
   },
 });
