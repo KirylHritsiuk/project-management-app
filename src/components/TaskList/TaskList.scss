@@ -1,6 +1,16 @@
 .task_list {
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: calc(100vh - 400px);
+}
+
+.task_list::-webkit-scrollbar {
+  width: 5px;
+  background-color: #f9f9fd;
+}
+
+.task_list::-webkit-scrollbar-thumb {
+  background-color: #106354;
+  border-radius: 5px;
 }
 
 .tasklist_container {
