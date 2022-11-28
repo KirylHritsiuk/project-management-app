@@ -49,8 +49,9 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
           </div>
         )}
       </Droppable>
-      <Button onClick={() => setShowTaskModal(true)} 
-      sx={{
+      <Button
+        onClick={() => setShowTaskModal(true)}
+        sx={{
           padding: '10px 46px',
         }}
         className="button_add"

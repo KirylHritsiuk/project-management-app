@@ -1,6 +1,6 @@
 .task_list {
   overflow-y: auto;
-  max-height: calc(100vh - 400px);
+  max-height: calc(100vh - 410px);
 }
 
 .task_list::-webkit-scrollbar {
@@ -22,7 +22,6 @@
 .button_add {
   background: var(--bodyCardBG)!important;
   border: transparent;
-  justify-content: flex-start!important;
   align-items: center!important;
   box-shadow: var(--boxShadow);
   height: 50px;

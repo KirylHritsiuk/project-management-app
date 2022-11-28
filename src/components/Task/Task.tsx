@@ -13,9 +13,10 @@ export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const [showTask, setShowTask] = useState<boolean>(false);
   const { id } = useParams();
-  const taskId = id ?? '';
+  const boardId = id ?? '';
 
-  const changeOpen = () => {
+  const changeOpen = (ev: React.MouseEvent<SVGSVGElement>) => {
+    ev.stopPropagation();
     setShowDelete(true);
   };
 
@@ -39,7 +40,6 @@ export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
           >
             <Box>{task.title}</Box>
             <CardActions>
-              <EditIcon fontSize="small" />
               <DeleteForeverIcon fontSize="small" onClick={changeOpen} />
             </CardActions>
           </Card>
@@ -48,7 +48,7 @@ export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
 
       <Delete
         category="task"
-        id={{ boardId: taskId, columnId: columnId, taskId: task._id }}
+        id={{ boardId: boardId, columnId: columnId, taskId: task._id }}
         visible={showDelete}
         setModal={setShowDelete}
       />

@@ -34,7 +34,7 @@ export const Board = () => {
   const { id } = useParams();
   const boardId = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
-  const { data: board } = boardsAPI.useGetBoardByIdQuery({ id: iddd });
+  const { data: board } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
   const {} = usersAPI.useGetUsersQuery('');
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
@@ -45,7 +45,6 @@ export const Board = () => {
   useEffect(() => {
     if (data) {
       setColumns(data);
-      console.log(data);
     }
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
   }, [data]);
@@ -100,7 +99,7 @@ export const Board = () => {
   }
 
   return (
-    <Container component="main" className="column_section">
+    <Box component="main" className="column_section">
       <Button variant="contained" onClick={() => goBack()} className="backButton">
         Go Back
       </Button>
@@ -140,6 +139,6 @@ export const Board = () => {
         </Droppable>
       </DragDropContext>
       <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
-    </Container>
+    </Box>
   );
 };
