@@ -1,32 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { usePageNavigate } from '../../hooks/usePageNavigate';
 
-import { Modal } from 'components/UI/Modal/Modal';
-import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
-
-import { usePageNavigate } from 'hooks/usePageNavigate';
-import { reorder, reorderQuoteMap } from './reorder';
-import { columnsAPI } from 'api/columnsApi';
-import { boardsAPI } from 'api/boardsApi';
-import { usersAPI } from 'api/usersApi';
-
-import { Container, Button, LinearProgress, Stack, Box } from '@mui/material';
+import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
+import { columnsAPI } from '../../api/columnsApi';
+import { boardsAPI } from '../../api/boardsApi';
+import { usersAPI } from '../../api/usersApi';
+import { tasksAPI } from '../../api/tasksApi';
+
+import { reorder, reorderQuoteMap } from './reorder';
+
+import { Add } from './Add';
+import { Column } from './Column/Column';
+
+import { DropResult } from './react-beautiful-dnd';
 import {
   ChangedColumns,
   ChangedTasks,
   GetColumnType,
   TaskType,
   UpdatedAllColumns,
-} from 'types/types';
-import { DropResult } from './react-beautiful-dnd';
+} from '../../types/types';
 
 import './Board.scss';
-import { Add } from './Add';
-import { useTranslation } from 'react-i18next';
-import { tasksAPI } from 'api/tasksApi';
 
 export const Board = () => {
   const { t } = useTranslation();

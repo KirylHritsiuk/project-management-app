@@ -1,13 +1,14 @@
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Draggable } from 'react-beautiful-dnd';
+
 import { Box, Card, CardActions } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
-import { TaskProps } from 'types/types';
-import { Delete } from 'components';
+
+import { Delete, Modal } from '..';
 import { TaskModal } from './TaskModal/TaskModal';
-import { Modal } from 'components/UI/Modal/Modal';
+
+import { TaskProps } from '../../types/types';
 
 export const Task: FC<TaskProps> = ({ task, columnId, index, columnNum }) => {
   const [showDelete, setShowDelete] = useState<boolean>(false);

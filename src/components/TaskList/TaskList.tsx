@@ -1,12 +1,15 @@
 import { FC, useEffect, useState } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+
 import { Button, Stack } from '@mui/material';
-import { Modal } from '../UI/Modal/Modal';
-import { Task } from 'components';
-import { AddTask } from 'components/Task/AddTask/AddTask';
-import { GetColumnType } from 'types/types';
-import { DroppableProvided } from 'pages/Board/react-beautiful-dnd';
 import AddIcon from '@mui/icons-material/Add';
+
+import { Modal } from '../UI/Modal/Modal';
+import { Task } from '..';
+import { AddTask } from '../Task/AddTask/AddTask';
+
+import { GetColumnType } from '../../types/types';
+import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 
 import './TaskList.scss';
 
