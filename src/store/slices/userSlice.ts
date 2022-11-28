@@ -15,6 +15,7 @@ const getInitialState = () => {
       name: '',
       login: decodedToken!.login,
       status: 'idle',
+      users: null,
     };
   } else {
     localStorage.removeItem('token');
@@ -25,6 +26,7 @@ const getInitialState = () => {
       name: '',
       login: '',
       status: 'idle',
+      users: null,
     };
   }
 };
@@ -44,6 +46,7 @@ export const authUserSlice = createSlice({
         name: '',
         login: '',
         status: 'idle',
+        users: null,
       };
     },
     editUser: (state, { payload }: { payload: { name: string; login: string } }) => {
@@ -99,6 +102,9 @@ export const authUserSlice = createSlice({
       })
       .addMatcher(usersAPI.endpoints.deleteUser.matchRejected, (state) => {
         state.status = 'failed';
+      })
+      .addMatcher(usersAPI.endpoints.getUsers.matchFulfilled, (state, action) => {
+        state.users = action.payload;
       });
   },
 });

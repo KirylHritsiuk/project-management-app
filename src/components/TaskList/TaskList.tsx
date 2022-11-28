@@ -1,16 +1,11 @@
 import { FC, useEffect, useState } from 'react';
-import { FieldValues, useForm } from 'react-hook-form';
-
-import { Modal } from '../UI/Modal/Modal';
-import { Task } from '../../components';
-
 import { Droppable } from 'react-beautiful-dnd';
 import { Button, Stack } from '@mui/material';
-
-import { GetColumnType } from '../../types/types';
-import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
-
-import { tasksAPI } from '../../api/tasksApi';
+import { Modal } from '../UI/Modal/Modal';
+import { Task } from 'components';
+import { AddTask } from 'components/Task/AddTask/AddTask';
+import { GetColumnType } from 'types/types';
+import { DroppableProvided } from 'pages/Board/react-beautiful-dnd';
 import AddIcon from '@mui/icons-material/Add';
 
 import './TaskList.scss';
@@ -24,40 +19,12 @@ interface TaskProps {
 }
 
 export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
-  const [isVisible, setVisible] = useState<boolean>(false);
-  const [addTask] = tasksAPI.useCreateTaskMutation();
+  const [showTaskModal, setShowTaskModal] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
 
   useEffect(() => {
     setOrder(column.items.length > 0 ? Math.max(...column.items.map((o) => o.order)) + 1 : 0);
   }, [column.items]);
-  const onSubmit = (value: FieldValues) => {
-    addTask({
-      boardId: boardId,
-      columnId: columnId,
-      body: {
-        title: value.title,
-        order,
-        description: '_',
-        userId: 1,
-        users: [],
-      },
-    })
-      .then(() => {
-        setVisible(false);
-        reset();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   return (
     <Stack className="tasklist_container">
@@ -83,25 +50,15 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
         )}
       </Droppable>
       <Button
-        onClick={() => setVisible(true)}
+        onClick={() => setShowTaskModal(true)}
         sx={{
           padding: '10px 46px',
         }}
         className="button_add"
         startIcon={<AddIcon />}
       />
-      <Modal visible={isVisible} setModal={setVisible}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            placeholder="Title Column"
-            {...register('title', { required: true })}
-            aria-invalid={errors.title ? 'true' : 'false'}
-          />
-          {errors.title && <p role="alert">Please, input title</p>}
-          <Button type="submit">Создать</Button>
-          <Button onClick={() => setVisible(false)}>Отменить</Button>
-        </form>
+      <Modal visible={showTaskModal} setModal={setShowTaskModal}>
+        <AddTask boardId={boardId} columnId={columnId} setShowTaskModal={setShowTaskModal} />
       </Modal>
     </Stack>
   );

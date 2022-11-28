@@ -22,6 +22,7 @@ export type UserStateType = {
   name: string;
   login: string;
   status: string;
+  users: GetUserType[] | null;
 };
 
 export type CreateBoardType = {
@@ -105,7 +106,7 @@ export type CreateTaskType = {
   body: {
     title: string;
     description: string;
-    userId: number;
+    userId: string;
     order: number;
     users: Array<string> | [];
   };
@@ -150,7 +151,7 @@ export type TaskType = {
   userId: string;
   boardId: string;
   columnId: string;
-  files: FilesType[];
+  users: string[];
 };
 
 export type UpdateSetType = {
@@ -179,8 +180,8 @@ export type UpdateTaskType = {
     order: number;
     description: string;
     userId: string;
-    boardId: string;
     columnId: string;
+    users: string[];
   };
 };
 

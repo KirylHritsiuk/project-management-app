@@ -6,17 +6,17 @@
 .column_section {
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  overflow: auto;
   align-items: flex-start;
   padding: 0 16px;
   @media screen and (max-width: 331px) {
     padding: var(--padding320);
   }
+  flex-grow: 1;
 }
 
 .card_column {
-  width: 346px;
-  min-height: 50px;
+  width: 300px;
   flex-shrink: 0;
   background: var(--containerCardBG);
   border-bottom-left-radius: var(--radius);
