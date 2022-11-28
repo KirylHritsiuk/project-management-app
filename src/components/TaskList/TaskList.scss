@@ -1,6 +1,16 @@
 .task_list {
-  overflow-y: scroll;
-  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  max-height: calc(100vh - 410px);
+}
+
+.task_list::-webkit-scrollbar {
+  width: 5px;
+  background-color: #f9f9fd;
+}
+
+.task_list::-webkit-scrollbar-thumb {
+  background-color: #106354;
+  border-radius: 5px;
 }
 
 .tasklist_container {
@@ -12,7 +22,6 @@
 .button_add {
   background: var(--bodyCardBG)!important;
   border: transparent;
-  justify-content: flex-start!important;
   align-items: center!important;
   box-shadow: var(--boxShadow);
   height: 50px;

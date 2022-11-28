@@ -1,22 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
+import { Modal } from 'components/UI/Modal/Modal';
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
 
-import { usePageNavigate } from '../../hooks/usePageNavigate';
+import { usePageNavigate } from 'hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
+import { columnsAPI } from 'api/columnsApi';
+import { boardsAPI } from 'api/boardsApi';
+import { usersAPI } from 'api/usersApi';
 
-import { columnsAPI } from '../../api/columnsApi';
-
-import { Button, LinearProgress, Stack, Box } from '@mui/material';
+import { Container, Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import { GetColumnType } from '../../types/types';
+import {
+  ChangedColumns,
+  ChangedTasks,
+  GetColumnType,
+  TaskType,
+  UpdatedAllColumns,
+} from 'types/types';
 import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
 import { Add } from './Add';
 import { useTranslation } from 'react-i18next';
+import { tasksAPI } from 'api/tasksApi';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -24,9 +34,13 @@ export const Board = () => {
   const { id } = useParams();
   const boardId = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
+  const { data: board } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
+  const {} = usersAPI.useGetUsersQuery('');
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
+  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
     if (data) {
@@ -44,6 +58,14 @@ export const Board = () => {
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
+      const newSetColumns = state.map((column, index) => {
+        const obj = { ...column, order: index } as ChangedColumns;
+        delete obj.items;
+        delete obj.title;
+        delete obj.boardId;
+        return obj as UpdatedAllColumns;
+      });
+      updatedColunms(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -54,6 +76,25 @@ export const Board = () => {
         value: value,
       });
       setColumns(data);
+      const newSetTasks = [] as TaskType[][];
+      data.map((column) => {
+        newSetTasks.push(column.items);
+      });
+      newSetTasks.map((arr) => {
+        const value = arr.map((tasks, index) => {
+          const obj = { ...tasks, order: index } as ChangedTasks;
+          delete obj.title;
+          delete obj.description;
+          delete obj.boardId;
+          delete obj.userId;
+          delete obj.users;
+          return obj;
+        });
+        if (value.length > 0) {
+          updateAllTasks(value);
+        }
+        return value;
+      });
     }
   }
 
@@ -62,7 +103,7 @@ export const Board = () => {
       <Button variant="contained" onClick={() => goBack()} className="backButton">
         Go Back
       </Button>
-      <h2>Columns {id}</h2>
+      <h2>{board?.title}</h2>
       {error && <span>error</span>}
       {isLoading && <LinearProgress />}
       <DragDropContext onDragEnd={handleOrderInColumn}>

@@ -50,5 +50,9 @@
   "TIMEOUT_ERROR": "Error, request timed out!",
   "CUSTOM_ERROR": "Error, check connection",
   "Connect": "Connected!",
+  "Task": "Task",
+  "Add task": "Add task",
+  "Description": "Description",
+  "Creator": "Creator",
   "Create column": "Create column"
 }
