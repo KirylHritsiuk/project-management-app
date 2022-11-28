@@ -7,12 +7,13 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { boardsAPI } from '../../../api/boardsApi';
-import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
+import { CreateBoardType, GetBoardType, GetUserType, NotificationType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { LoadingButton } from '@mui/lab';
-import { showNotification } from 'store/slices/notificationSlice';
-import { useAppDispatch } from 'hooks/hooks';
+// import { showNotification } from 'store/slices/notificationSlice';
+// import { useAppDispatch } from 'hooks/hooks';
+import { useNotification } from 'hooks/useNotification';
 
 interface EditProps {
   data: GetBoardType;
@@ -25,7 +26,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
+  const { setShow } = useNotification();
 
   const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
@@ -48,17 +49,23 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     setOwner(event.target.value);
   };
 
-  useEffect(() => {
-    if ('error' in status && status.error && 'status' in status.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
-  }, [status.isError]);
+  // useEffect(() => {
+  //   if ('error' in status && status.error && 'status' in status.error) {
+  //     // dispatch(
+  //     //   showNotification({
+  //     //     isShow: true,
+  //     //     text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
+  //     //     severity: 'error',
+  //     //   })
+  //     // );
+  //     setShow({
+  //       ...isShow,
+  //       isShow: true,
+  //       text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
+  //       severity: 'error',
+  //     });
+  //   }
+  // }, [status.isError]);
 
   useEffect(() => {
     if (!visible) {
@@ -70,23 +77,38 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
 
     if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('board')} ${t('editFailed')}`,
-          severity: 'error',
-        })
-      );
+      console.log('onSubmit error');
+      // dispatch(
+      //   showNotification({
+      //     isShow: true,
+      //     text: `${t(result.error.status as string)} ${t('board')} ${t('editFailed')}`,
+      //     severity: 'error',
+      //   })
+      // );
+      const message = result.error.status as string;
+      setShow((prev) => ({
+        ...prev,
+        isShow: true,
+        text: `${t(message)} ${t('board')} ${t('editFailed')}`,
+        severity: 'error',
+      }));
     }
 
     if ('data' in result) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('board')} ${t('editSuccess')}`,
-          severity: 'success',
-        })
-      );
+      console.log('onSubmit data');
+      // dispatch(
+      //   showNotification({
+      //     isShow: true,
+      //     text: ,
+      //     severity: ,
+      //   })
+      // );
+      setShow((prev) => ({
+        ...prev,
+        isShow: true,
+        text: `${t('board')} ${t('editSuccess')}`,
+        severity: 'success',
+      }));
       setModal((prev) => !prev);
     }
   };

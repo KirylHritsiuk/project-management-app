@@ -5,6 +5,7 @@ import { useAppSelector } from './hooks';
 export function useFilterBoards() {
   const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
   const data = usersAPI.useGetUsersQuery('');
+  console.log('users', data);
   if (user && user !== 'all') {
     return {
       id,

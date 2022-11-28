@@ -8,10 +8,12 @@ import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { showNotification } from 'store/slices/notificationSlice';
+import { useNotification } from 'hooks/useNotification';
 
 export function Main() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { setShow } = useNotification();
 
   const { id, boards, user: userFilter, users } = useFilterBoards();
   const [refetch, setRefetch] = useState<boolean>(false);
@@ -23,21 +25,27 @@ export function Main() {
         await boards.refetch();
         setRefetch((prev) => !prev);
         if ('error' in boards && boards.error && 'status' in boards.error) {
-          dispatch(
-            showNotification({
-              isShow: true,
-              text: t(boards.error.status as string),
-              severity: 'error',
-            })
-          );
-        } else if (boards.isSuccess || users.isSuccess) {
-          dispatch(
-            showNotification({
-              isShow: true,
-              text: t('connect'),
-              severity: 'success',
-            })
-          );
+          const message = boards.error.status as string;
+          console.log('error main refetch');
+          // dispatch(
+          //   showNotification({
+          //     isShow: true,
+          //     text: t(),
+          //     severity: 'error',
+          //   })
+          // );
+          setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
+        }
+        if (boards.isSuccess || users.isSuccess) {
+          console.log('main success');
+          // dispatch(
+          //   showNotification({
+          //     isShow: true,
+          //     text: t('connect'),
+          //     severity: 'success',
+          //   })
+          // );
+          setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
         }
       }
     };
@@ -45,27 +53,36 @@ export function Main() {
   }, [refetch]);
 
   useEffect(() => {
-    if (boards.isError && 'error' in boards && boards.error && 'status' in boards.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: t(boards.error.status as string),
-          severity: 'error',
-        })
-      );
+    console.log(boards);
+    if ('error' in boards && boards.error && 'status' in boards.error) {
+      const message = boards.error.status as string;
+      // dispatch(
+      //   showNotification({
+      //     isShow: true,
+      //     text: ,
+      //     severity: 'error',
+      //   })
+      // );
+      console.log('useEffect board error ');
+
+      setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
+    } else {
+      setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
     }
   }, [boards.isError]);
 
   useEffect(() => {
-    if (users.isError && 'error' in users && users.error && 'status' in users.error) {
-      // console.log(users.error);
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(users.error.status as string)}`,
-          severity: 'error',
-        })
-      );
+    if ('error' in users && users.error && 'status' in users.error) {
+      console.log('useEffect  users.error');
+      const message = users.error.status as string;
+      // dispatch(
+      //   showNotification({
+      //     isShow: true,
+      //     text: t(message),
+      //     severity: 'error',
+      //   })
+      // );
+      setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
     }
   }, [users.isError]);
 
