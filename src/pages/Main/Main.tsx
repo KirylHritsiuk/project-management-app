@@ -36,17 +36,10 @@ export function Main() {
           // );
           setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
         }
-        if (boards.isSuccess || users.isSuccess) {
-          console.log('main success');
-          // dispatch(
-          //   showNotification({
-          //     isShow: true,
-          //     text: t('connect'),
-          //     severity: 'success',
-          //   })
-          // );
-          setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
-        }
+        // if (boards.isSuccess || users.isSuccess) {
+        //   console.log('main success');
+        //   setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
+        // }
       }
     };
     refetchFun();

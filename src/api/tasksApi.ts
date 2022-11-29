@@ -2,7 +2,7 @@ import { api } from './api';
 import {
   CreateTaskType,
   GetTaskType,
-  ResponceSetTask,
+  ResponseSetTask,
   TaskType,
   UpdateSetType,
   UpdateTaskType,
@@ -69,7 +69,7 @@ export const tasksAPI = api.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: 'tasks' as const, _id })),
+              ...result.map(({ _id }) => ({ type: 'tasksSet' as const, _id })),
               { type: 'tasksSet', id: 'LIST' },
             ]
           : [{ type: 'tasksSet', id: 'LIST' }],
@@ -82,19 +82,19 @@ export const tasksAPI = api.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ _id }) => ({ type: 'tasks' as const, _id })),
+              ...result.map(({ _id }) => ({ type: 'tasksSet' as const, _id })),
               { type: 'tasksSet', id: 'LIST' },
             ]
           : [{ type: 'tasksSet', id: 'LIST' }],
     }),
-    updateAllTasks: build.mutation<ResponceSetTask[], UpdateSetType[]>({
+    updateAllTasks: build.mutation<ResponseSetTask[], UpdateSetType[]>({
       query: (result) => ({
         url: `/tasksSet`,
         method: 'PATCH',
         body: [...result],
       }),
       invalidatesTags: [
-        { type: 'tasksSet', id: 'LIST' },
+        { type: 'tasks', id: 'LIST' },
         { type: 'tasksSet', id: 'LIST' },
       ],
     }),

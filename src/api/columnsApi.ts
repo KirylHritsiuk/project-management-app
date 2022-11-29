@@ -2,7 +2,7 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import {
   ColumnType,
   GetColumnType,
-  ResponceUpdatedColumns,
+  ResponseUpdatedColumns,
   TaskType,
   UpdateColumnType,
   UpdatedAllColumns,
@@ -20,6 +20,10 @@ export const columnsAPI = api.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: [
+        { type: 'columns', id: 'LIST' },
+        { type: 'columnsSet', id: 'LIST' },
+      ],
     }),
     getColumns: build.query<GetColumnType[], { boardId: string }>({
       query: ({ boardId }) => ({
@@ -92,7 +96,7 @@ export const columnsAPI = api.injectEndpoints({
             ]
           : [{ type: 'columns', id: 'LIST' }],
     }),
-    updateAllColumns: build.mutation<ResponceUpdatedColumns[], UpdatedAllColumns[]>({
+    updateAllColumns: build.mutation<ResponseUpdatedColumns[], UpdatedAllColumns[]>({
       query: (result) => ({
         url: `/columnsSet`,
         method: 'PATCH',

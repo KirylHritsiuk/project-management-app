@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Modal } from 'components/UI/Modal/Modal';
 import { Column } from './Column/Column';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -9,9 +8,8 @@ import { usePageNavigate } from 'hooks/usePageNavigate';
 import { reorder, reorderQuoteMap } from './reorder';
 import { columnsAPI } from 'api/columnsApi';
 import { boardsAPI } from 'api/boardsApi';
-import { usersAPI } from 'api/usersApi';
 
-import { Container, Button, LinearProgress, Stack, Box } from '@mui/material';
+import { Button, LinearProgress, Stack, Box } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import {
@@ -35,11 +33,11 @@ export const Board = () => {
   const boardId = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
   const { data: board } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
-  const {} = usersAPI.useGetUsersQuery('');
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
+  // const [updateColumn] = columnsAPI.useUpdateColumnMutation({ boardId });
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
@@ -65,7 +63,7 @@ export const Board = () => {
         delete obj.boardId;
         return obj as UpdatedAllColumns;
       });
-      updatedColunms(newSetColumns);
+      updatedColumns(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));

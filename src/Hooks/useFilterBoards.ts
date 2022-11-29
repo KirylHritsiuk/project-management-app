@@ -1,11 +1,13 @@
 import { boardsAPI } from 'api/boardsApi';
 import { usersAPI } from 'api/usersApi';
+import { useEffect } from 'react';
 import { useAppSelector } from './hooks';
 
 export function useFilterBoards() {
   const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
   const data = usersAPI.useGetUsersQuery('');
-  console.log('users', data);
+  useEffect(() => {}, []);
+  // console.log('users', data);
   if (user && user !== 'all') {
     return {
       id,
