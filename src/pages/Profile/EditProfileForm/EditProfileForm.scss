@@ -1,35 +1,23 @@
 .profile__form {
   display: flex;
   width: 300px;
-  min-height: 300px;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
-.profile__field {
+.profile-form__title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-form__field {
   display: flex;
-  height: 64px;
-  justify-content: space-between;
-  align-items: center;
   gap: 10px;
+  align-items: flex-start;
 }
 
-.profile__field * {
-  margin: 0;
-}
-
-.profile__field-label,
-.profile__field-btn,
-.profile__field-input {
+.profile__input {
+  flex-grow: 1;
   margin-bottom: 24px !important;
 }
 
-.profile__field-value {
-  margin-bottom: 24px !important;
-  justify-self: start;
-}
-
-.profile__form-button {
-  display: block !important;
-  margin: 0 auto !important;
-}

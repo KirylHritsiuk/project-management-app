@@ -1,3 +1,5 @@
+import { DroppableProvided } from '../pages/Board/react-beautiful-dnd';
+
 export type CreateUserType = {
   name: string;
   login: string;
@@ -135,13 +137,23 @@ export type ChangedTasks = {
 export interface TaskProps {
   task: TaskType;
   columnId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provided: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  innerRef(element: HTMLElement | null): any;
+  provided: DroppableProvided;
+  innerRef(element: HTMLElement | null): void;
   index: number;
   columnNum: number;
 }
+
+export interface TaskListProps {
+  boardId: string;
+  columnId: string;
+  columnNum: number;
+  column: GetColumnType;
+  listType: string;
+}
+
+export type Props = {
+  task: TaskType;
+};
 
 export type TaskType = {
   _id: string;
