@@ -1,3 +1,5 @@
+import { DroppableProvided } from '../pages/Board/react-beautiful-dnd';
+
 export type CreateUserType = {
   name: string;
   login: string;
@@ -130,6 +132,27 @@ export type ChangedTasks = {
   columnId: string;
   files?: FilesType[];
   users?: [];
+};
+
+export interface TaskProps {
+  task: TaskType;
+  columnId: string;
+  provided: DroppableProvided;
+  innerRef(element: HTMLElement | null): void;
+  index: number;
+  columnNum: number;
+}
+
+export interface TaskListProps {
+  boardId: string;
+  columnId: string;
+  columnNum: number;
+  column: GetColumnType;
+  listType: string;
+}
+
+export type Props = {
+  task: TaskType;
 };
 
 export type TaskType = {

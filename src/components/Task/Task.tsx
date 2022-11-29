@@ -1,19 +1,18 @@
 import { FC, useState } from 'react';
+
 import { Card, IconButton } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { TaskType } from 'types/types';
-import { Delete } from 'components';
+
+import { Delete, Modal } from '..';
 import { TaskModal } from './TaskModal/TaskModal';
-import { Modal } from 'components/UI/Modal/Modal';
-import { useAppSelector } from 'hooks/hooks';
-import { authUser } from 'store/slices/userSlice';
+
+import { useAppSelector } from '../../hooks/hooks';
+import { authUser } from '../../store/slices/userSlice';
+
+import { Props } from '../../types/types';
+
 import { ReactComponent as OwnerIcon } from './Owner.svg';
-
 import './Task.scss';
-
-type Props = {
-  task: TaskType;
-};
 
 export const Task: FC<Props> = ({ task }) => {
   const [showDelete, setShowDelete] = useState<boolean>(false);
