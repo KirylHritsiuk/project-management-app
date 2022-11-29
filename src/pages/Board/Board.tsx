@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-
-import { Modal } from 'components/UI/Modal/Modal';
-import { Column } from './Column/Column';
-import AddIcon from '@mui/icons-material/Add';
-
-import { usePageNavigate } from 'hooks/usePageNavigate';
-import { reorder, reorderQuoteMap } from './reorder';
+import { Navigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DropResult } from './react-beautiful-dnd';
+import { Button, Box, IconButton, Divider } from '@mui/material';
 import { columnsAPI } from 'api/columnsApi';
 import { boardsAPI } from 'api/boardsApi';
 import { usersAPI } from 'api/usersApi';
-
-import { Container, Button, LinearProgress, Stack, Box } from '@mui/material';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-
+import { tasksAPI } from 'api/tasksApi';
+import { usePageNavigate } from 'hooks/usePageNavigate';
+import { Column } from './Column/Column';
+import { Add } from './Add';
+import { reorder, reorderQuoteMap } from './reorder';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import {
   ChangedColumns,
   ChangedTasks,
@@ -21,12 +21,9 @@ import {
   TaskType,
   UpdatedAllColumns,
 } from 'types/types';
-import { DropResult } from './react-beautiful-dnd';
 
 import './Board.scss';
-import { Add } from './Add';
-import { useTranslation } from 'react-i18next';
-import { tasksAPI } from 'api/tasksApi';
+import { Loader } from 'components';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -34,12 +31,16 @@ export const Board = () => {
   const { id } = useParams();
   const boardId = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
-  const { data: board } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
+  const {
+    data: board,
+    isLoading: boardLoad,
+    error: boardErr,
+  } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
   const {} = usersAPI.useGetUsersQuery('');
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColunms] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export const Board = () => {
         delete obj.boardId;
         return obj as UpdatedAllColumns;
       });
-      updatedColunms(newSetColumns);
+      updatedColumns(newSetColumns);
       return;
     } else {
       const value = Number(result.draggableId.slice(0, 1));
@@ -100,45 +101,45 @@ export const Board = () => {
 
   return (
     <Box component="main" className="column_section">
-      <Button variant="contained" onClick={() => goBack()} className="backButton">
-        Go Back
-      </Button>
-      <h2>{board?.title}</h2>
       {error && <span>error</span>}
-      {isLoading && <LinearProgress />}
-      <DragDropContext onDragEnd={handleOrderInColumn}>
-        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
-          {(provided) => (
-            <Stack
-              spacing={2}
-              direction="row"
-              alignItems="flex-start"
-              justifyContent="flex-start"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
+      {boardErr && <Navigate to="/404" />}
+      {isLoading || boardLoad ? (
+        <Loader />
+      ) : (
+        <>
+          <Box className="board__title-container">
+            <IconButton onClick={() => goBack()} color="primary" className="board__back-btn">
+              <ArrowBackIosNewIcon />
+            </IconButton>
+            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+
+            <h2 className="board__title">{board?.title}</h2>
+            <Button
+              onClick={changeVisible}
+              variant="contained"
+              className="board__add-column-btn"
+              startIcon={<AddIcon />}
             >
-              {columns.map((column, index) => {
-                return <Column column={column} index={index} key={column._id} boardId={boardId} />;
-              })}
-              {provided.placeholder}
-              <Button
-                onClick={changeVisible}
-                sx={{
-                  width: '250px',
-                  padding: '10px 16px',
-                }}
-                variant="outlined"
-                color="success"
-                className="button_add"
-                startIcon={<AddIcon />}
-              >
-                {t('Create column')}
-              </Button>
-            </Stack>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
+              {t('Create column')}
+            </Button>
+          </Box>
+          <DragDropContext onDragEnd={handleOrderInColumn}>
+            <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+              {(provided) => (
+                <Box className="columns" {...provided.droppableProps} ref={provided.innerRef}>
+                  {columns.map((column, index) => {
+                    return (
+                      <Column column={column} index={index} key={column._id} boardId={boardId} />
+                    );
+                  })}
+                  {provided.placeholder}
+                </Box>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
+        </>
+      )}
     </Box>
   );
 };

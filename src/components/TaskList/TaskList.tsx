@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
-import { Droppable } from 'react-beautiful-dnd';
-import { Button, Stack } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Button, Stack, Box } from '@mui/material';
 import { Modal } from '../UI/Modal/Modal';
 import { Task } from 'components';
 import { AddTask } from 'components/Task/AddTask/AddTask';
@@ -21,6 +22,7 @@ interface TaskProps {
 export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
   const [showTaskModal, setShowTaskModal] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setOrder(column.items.length > 0 ? Math.max(...column.items.map((o) => o.order)) + 1 : 0);
@@ -34,15 +36,17 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
             {column.items &&
               column.items.map((t, index) => {
                 return (
-                  <Task
-                    task={t}
-                    columnNum={columnNum}
-                    key={t._id}
-                    columnId={columnId}
-                    provided={provided}
-                    innerRef={provided.innerRef}
-                    index={index}
-                  />
+                  <Draggable draggableId={`${columnNum}${t._id}`} index={index} key={t._id}>
+                    {(provided) => (
+                      <Box
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <Task task={t} />
+                      </Box>
+                    )}
+                  </Draggable>
                 );
               })}
             {provided.placeholder}
@@ -51,12 +55,12 @@ export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, 
       </Droppable>
       <Button
         onClick={() => setShowTaskModal(true)}
-        sx={{
-          padding: '10px 46px',
-        }}
-        className="button_add"
+        variant="outlined"
+        className="task-list__add-task-btn"
         startIcon={<AddIcon />}
-      />
+      >
+        {t('Create task')}
+      </Button>
       <Modal visible={showTaskModal} setModal={setShowTaskModal}>
         <AddTask boardId={boardId} columnId={columnId} setShowTaskModal={setShowTaskModal} />
       </Modal>

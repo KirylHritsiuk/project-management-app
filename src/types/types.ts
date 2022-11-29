@@ -132,17 +132,6 @@ export type ChangedTasks = {
   users?: [];
 };
 
-export interface TaskProps {
-  task: TaskType;
-  columnId: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  provided: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  innerRef(element: HTMLElement | null): any;
-  index: number;
-  columnNum: number;
-}
-
 export type TaskType = {
   _id: string;
   title: string;

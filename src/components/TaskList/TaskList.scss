@@ -1,30 +1,18 @@
-.task_list {
-  overflow-y: auto;
-  max-height: calc(100vh - 410px);
-}
-
-.task_list::-webkit-scrollbar {
-  width: 5px;
-  background-color: #f9f9fd;
-}
-
-.task_list::-webkit-scrollbar-thumb {
-  background-color: #106354;
-  border-radius: 5px;
-}
-
 .tasklist_container {
-  padding: 16px 10px;
-  display: flex;
-  flex-direction: column;
+  flex-grow: 1;
+  padding: 15px 10px;
 }
 
-.button_add {
-  background: var(--bodyCardBG)!important;
-  border: transparent;
-  align-items: center!important;
-  box-shadow: var(--boxShadow);
-  height: 50px;
-  min-width: 250px;
-  width: 100%;
+.task_list {
+  max-height: calc(100vh - 380px);
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+}
+
+.task-list__add-task-btn {
+  margin-top: 10px !important;
+  background: var(--bodyCardBG) !important;
 }
