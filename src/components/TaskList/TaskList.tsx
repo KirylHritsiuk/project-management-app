@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
 import { Button, Stack } from '@mui/material';
@@ -8,26 +8,13 @@ import { Modal } from '../UI/Modal/Modal';
 import { Task } from '..';
 import { AddTask } from '../Task/AddTask/AddTask';
 
-import { GetColumnType } from '../../types/types';
+import { TaskListProps } from '../../types/types';
 import { DroppableProvided } from '../../pages/Board/react-beautiful-dnd';
 
 import './TaskList.scss';
 
-interface TaskProps {
-  boardId: string;
-  columnId: string;
-  columnNum: number;
-  column: GetColumnType;
-  listType: string;
-}
-
-export const TaskList: FC<TaskProps> = ({ boardId, columnId, column, columnNum, listType }) => {
+export const TaskList: FC<TaskListProps> = ({ boardId, columnId, column, columnNum, listType }) => {
   const [showTaskModal, setShowTaskModal] = useState<boolean>(false);
-  const [order, setOrder] = useState<number>(0);
-
-  useEffect(() => {
-    setOrder(column.items.length > 0 ? Math.max(...column.items.map((o) => o.order)) + 1 : 0);
-  }, [column.items]);
 
   return (
     <Stack className="tasklist_container">

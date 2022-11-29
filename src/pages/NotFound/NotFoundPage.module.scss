@@ -1,0 +1,25 @@
+.section_notFound {
+  height: calc(100vh - 220px);
+  @media screen and (max-width: 600px) {
+    height: calc(100vh - 300px);
+  }
+}
+
+.section_images {
+  justify-content: center;
+  display: flex;
+  position: relative;
+  height: 60%;
+  width: 50%;
+  align-items: center;
+}
+
+.section_images img {
+  position: absolute;
+  width: 100%;
+  height: auto;
+}
+
+.section_images img:last-child {
+  width: 50%;
+}
