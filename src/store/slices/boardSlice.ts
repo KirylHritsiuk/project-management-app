@@ -1,13 +1,13 @@
 export {};
 import { createSlice } from '@reduxjs/toolkit';
-import { GetBoardType, GetColumnType } from 'types/types';
+import { ErrorResponseType, GetBoardType, GetColumnType } from 'types/types';
 import { RootState } from 'store/store';
 import { boardsAPI } from 'api/boardsApi';
 import { columnsAPI } from 'api/columnsApi';
 
 type InitialStateType = {
   status: 'idle' | 'loading' | 'failed';
-  board: GetBoardType | null;
+  board: GetBoardType | ErrorResponseType | null;
   columns: GetColumnType[] | null;
 };
 

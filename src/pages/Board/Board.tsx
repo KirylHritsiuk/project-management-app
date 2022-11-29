@@ -36,17 +36,17 @@ export const Board = () => {
   const { id } = useParams();
   const boardId = id ?? '';
   const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
+  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
+  // const [updateColumn] = columnsAPI.useUpdateColumnMutation({ boardId });
   const {
-    data: board,
+    // data: board,
+    currentData: board,
     isLoading: boardLoad,
     error: boardErr,
-  } = boardsAPI.useGetBoardByIdQuery({ id: boardId });
-  const {} = usersAPI.useGetUsersQuery('');
+  } = boardsAPI.useGetBoardByIdQuery({ boardId });
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
-  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
-  // const [updateColumn] = columnsAPI.useUpdateColumnMutation({ boardId });
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const Board = () => {
             </IconButton>
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-            <h2 className="board__title">{board?.title}</h2>
+            {/* <h2 className="board__title">{board?.title}</h2> */}
             <Button
               onClick={changeVisible}
               variant="contained"
