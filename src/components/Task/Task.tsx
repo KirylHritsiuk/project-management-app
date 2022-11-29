@@ -6,16 +6,13 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Delete, Modal } from '..';
 import { TaskModal } from './TaskModal/TaskModal';
 
-import { TaskType } from '../../types/types';
-
-import './Task.scss';
 import { useAppSelector } from '../../hooks/hooks';
 import { authUser } from '../../store/slices/userSlice';
-import { ReactComponent as OwnerIcon } from './Owner.svg';
 
-type Props = {
-  task: TaskType;
-};
+import { Props } from '../../types/types';
+
+import { ReactComponent as OwnerIcon } from './Owner.svg';
+import './Task.scss';
 
 export const Task: FC<Props> = ({ task }) => {
   const [showDelete, setShowDelete] = useState<boolean>(false);
