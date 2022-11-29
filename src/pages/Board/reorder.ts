@@ -32,11 +32,13 @@ export const reorderQuoteMap = ({ columnTasks, source, destination, value }: Typ
   } else {
     const fromCol = Number(source.droppableId.slice(-1));
     const toCol = Number(destination.droppableId.slice(-1));
+    const colId = destination.droppableId.slice(9, 33);
     const target = columnTasks[fromCol].items.filter((i, index) => source.index === index);
     const newCol1 = columnTasks[fromCol].items.filter((i, index) => source.index !== index);
-    //const newCol2 = (columnTasks[toCol].items as TaskType[]).concat(target);
+    const updateTask = { ...target[0] };
+    updateTask.columnId = colId;
     const addArr = [...columnTasks[toCol].items];
-    (addArr as TaskType[]).splice(destination.index, 0, target[0]);
+    (addArr as TaskType[]).splice(destination.index, 0, updateTask);
     const newResult = columnTasks.map((col, index) => {
       if (index === fromCol) return { ...col, items: newCol1 };
       if (index === toCol) return { ...col, items: addArr };
