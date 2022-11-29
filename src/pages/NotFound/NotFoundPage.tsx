@@ -1,10 +1,14 @@
+import { useTranslation } from 'react-i18next';
+
 import { Box, Button } from '@mui/material';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+
 import NotFound from './assets/notFound.svg';
 import Face from './assets/tired.svg';
 import styles from './NotFoundPage.module.scss';
 
 export const NotFoundPage = () => {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -34,7 +38,7 @@ export const NotFoundPage = () => {
             fontSize: '20px',
           }}
         >
-          Go Home
+          {t('go home')}
         </a>
       </Button>
     </Box>
