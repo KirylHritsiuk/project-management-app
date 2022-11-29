@@ -51,8 +51,13 @@
   "CUSTOM_ERROR": "Не предвиденная ошибка ",
   "connect": "Подключено!",
   "Task": "Задача",
-  "Add task": "Добавить задачу",
+  "Create task": "Добавить задачу",
   "Description": "Описание",
   "Creator": "Постановщик",
-  "Create column": "Создать колонку"
+  "Create column": "Создать колонку",
+  "Edit profile": "Редактировать профиль",
+  "Personal information": "Персональная информация",
+  "Edit": "Редактировать",
+  "Tasks not found": "Задачи не найдены",
+  "You tasks": "Ваши задачи"
 }

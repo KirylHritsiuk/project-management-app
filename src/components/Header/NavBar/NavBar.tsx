@@ -10,11 +10,11 @@ export const NavBar: React.FC = () => {
 
   return (
     <List className="header__navbar">
-      <ListItemButton component={Link} to="/signin">
+      <ListItemButton component={Link} to="/signin" className="header__nav-link">
         <LoginIcon sx={{ mr: 1 }} color="action" fontSize="large" />
         <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Sign In')} />
       </ListItemButton>
-      <ListItemButton component={Link} to="/signup">
+      <ListItemButton component={Link} to="/signup" className="header__nav-link">
         <PersonAddAltIcon sx={{ mr: 1 }} color="action" fontSize="large" />
         <ListItemText sx={{ display: { xs: 'none', sm: 'inline' } }} primary={t('Sign Up')} />
       </ListItemButton>

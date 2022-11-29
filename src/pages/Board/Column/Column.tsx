@@ -17,7 +17,7 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
   };
 
   return (
-    <>
+    <div className="card_column-wrapper">
       <Draggable draggableId={column._id} index={index}>
         {(provided) => (
           <div
@@ -49,6 +49,6 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
         visible={isOpen}
         setModal={setOpen}
       />
-    </>
+    </div>
   );
 };

@@ -19,12 +19,15 @@ const editValuesInitial: { [key: string]: boolean } = {
   password: false,
 };
 
-export const EditProfileForm: React.FC = () => {
+type Props = {
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const EditProfileForm: React.FC<Props> = ({ setModal }) => {
   const { id, login, name } = useAppSelector(authUser);
   const [updateUser, { isLoading }] = usersAPI.useUpdateUserMutation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
   const [editValues, setEditValues] = useState({ ...editValuesInitial });
 
   const {
@@ -48,44 +51,38 @@ export const EditProfileForm: React.FC = () => {
   };
 
   const onSubmitForm = async (data: CreateUserType) => {
-    const user: Partial<CreateUserType> = { login: data.login, name: data.name };
-    if (data.password === '') user.password = data.password;
-
-    const newUser = await updateUser({ id, body: user });
+    const newUser = await updateUser({ id, body: data });
     if ('data' in newUser) {
       dispatch(showNotification({ isShow: true, text: `${t('Saved')}!`, severity: 'success' }));
       dispatch(editUser({ name: data.name, login: data.login }));
       setEditValues({ ...editValuesInitial });
+      setModal(false);
     }
     if ('error' in newUser) {
       let message;
       if ('status' in newUser.error) message = (newUser.error.data as { message: string }).message;
       else message = newUser.error.message!;
       dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
-      reset({ name: user?.name, login: user?.login, password: '' });
+      reset({ name: data?.name, login: data?.login, password: '' });
     }
   };
 
   return (
     <>
-      <BackdropLoader open={isLoading} />
       <form onSubmit={handleSubmit(onSubmitForm)} className="profile__form">
-        <div className="profile__field">
-          <p className="profile__field-label">{t('Name')}: </p>
-          {editValues.name ? (
-            <TextField
-              {...register('name', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 3, message: t('Minimum 3 characters') },
-              })}
-              size="small"
-              error={!!errors.name}
-              helperText={errors?.name ? errors.name.message : null}
-              className={errors.name ? 'profile__field-error-input' : 'profile__field-input'}
-            />
-          ) : (
-            <p className="profile__field-value">{name}</p>
-          )}
+        <h2 className="profile-form__title">{t('Edit profile')}</h2>
+        <div className="profile-form__field">
+          <TextField
+            label={t('Name')}
+            disabled={!editValues.name}
+            {...register('name', {
+              minLength: { value: 3, message: t('Minimum 3 characters') },
+            })}
+            size="small"
+            error={!!errors.name}
+            helperText={errors?.name ? errors.name.message : null}
+            className={errors.name ? 'profile__error-input' : 'profile__input'}
+          />
           <IconButton
             name="name"
             onClick={onEditClick}
@@ -95,27 +92,22 @@ export const EditProfileForm: React.FC = () => {
             {editValues.name ? <ReplayIcon /> : <EditIcon />}
           </IconButton>
         </div>
-
-        <div className="profile__field">
-          <p className="profile__field-label">{t('Login')}: </p>
-          {editValues.login ? (
-            <TextField
-              {...register('login', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 3, message: t('Minimum 3 characters') },
-                pattern: {
-                  value: /^^[a-zA-Z0-9]+$/,
-                  message: t('Only english letters and numbers'),
-                },
-              })}
-              size="small"
-              error={!!errors.login}
-              helperText={errors?.login ? errors.login.message : null}
-              className={errors.login ? 'profile__field-error-input' : 'profile__field-input'}
-            />
-          ) : (
-            <p className="profile__field-value">{login}</p>
-          )}
+        <div className="profile-form__field">
+          <TextField
+            label={t('Login')}
+            disabled={!editValues.login}
+            {...register('login', {
+              minLength: { value: 3, message: t('Minimum 3 characters') },
+              pattern: {
+                value: /^^[a-zA-Z0-9]+$/,
+                message: t('Only english letters and numbers'),
+              },
+            })}
+            size="small"
+            error={!!errors.login}
+            helperText={errors?.login ? errors.login.message : null}
+            className={errors.login ? 'profile__error-input' : 'profile__input'}
+          />
           <IconButton
             name="login"
             onClick={onEditClick}
@@ -125,49 +117,36 @@ export const EditProfileForm: React.FC = () => {
             {editValues.login ? <ReplayIcon /> : <EditIcon />}
           </IconButton>
         </div>
-
-        <div className="profile__field">
-          <p className="profile__field-label">{t('Password')}: </p>
-          {editValues.password ? (
-            <TextField
-              {...register('password', {
-                required: { value: true, message: t('Required field') },
-                minLength: { value: 8, message: t('Minimum 8 characters') },
-                pattern: {
-                  value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
-                  message: t('Password must contain letters and numbers'),
-                },
-              })}
-              type="password"
-              size="small"
-              error={!!errors.password}
-              helperText={errors?.password ? errors.password.message : null}
-              className={errors.password ? 'profile__field-error-input' : 'profile__field-input'}
-            />
-          ) : (
-            <p className="profile__field-value">********</p>
-          )}
-          <IconButton
-            name="password"
-            onClick={onEditClick}
-            color="primary"
-            className="profile__field-btn"
-          >
-            {editValues.password ? <ReplayIcon /> : <EditIcon />}
-          </IconButton>
+        <div className="profile-form__field">
+          <TextField
+            required
+            label={t('Password')}
+            type="password"
+            {...register('password', {
+              required: { value: true, message: t('Required field') },
+              minLength: { value: 8, message: t('Minimum 8 characters') },
+              pattern: {
+                value: /^(?=.*[A-Za-z])(?=.*[0-9])/,
+                message: t('Password must contain letters and numbers'),
+              },
+            })}
+            size="small"
+            error={!!errors.password}
+            helperText={errors?.password ? errors.password.message : null}
+            className={errors.password ? 'profile__error-input' : 'profile__input'}
+          />
+          <div style={{ width: '40px', height: '40px' }}></div>
         </div>
-
-        {Object.values(editValues).some((item) => item) && (
-          <Button
-            type="submit"
-            variant="contained"
-            disabled={!isDirty || !isValid}
-            className="profile__form-button"
-          >
-            {t('Save')}
-          </Button>
-        )}
+        <Button
+          type="submit"
+          variant="contained"
+          className="profile__button"
+          disabled={!isDirty || !isValid}
+        >
+          {t('Save')}
+        </Button>
       </form>
+      <BackdropLoader open={isLoading} />
     </>
   );
 };

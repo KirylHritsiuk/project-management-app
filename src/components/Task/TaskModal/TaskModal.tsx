@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { TextField, Autocomplete, Checkbox, IconButton } from '@mui/material';
-import ReplayIcon from '@mui/icons-material/Replay';
-import EditIcon from '@mui/icons-material/Edit';
-import { LoadingButton } from '@mui/lab';
+import { TextField, Autocomplete, Checkbox, IconButton, Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { tasksAPI } from 'api/tasksApi';
 import { authUser } from 'store/slices/userSlice';
+import ReplayIcon from '@mui/icons-material/Replay';
+import EditIcon from '@mui/icons-material/Edit';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
-import { BackdropLoader } from 'components';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { BackdropLoader, Delete } from 'components';
 import { showNotification } from 'store/slices/notificationSlice';
 import { selectBoard } from 'store/slices/boardSlice';
 import { GetUserType, TaskType } from 'types/types';
+import { ReactComponent as OwnerIcon } from '../Owner.svg';
+import { main } from 'store/slices/mainSlice';
 
 import './TaskModal.scss';
 
 type Props = {
-  columnId: string;
   task: TaskType;
 };
 
@@ -30,16 +32,19 @@ const editValuesInitial: { [key: string]: boolean } = {
   column: false,
 };
 
-export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
+export const TaskModal: React.FC<Props> = ({ task }) => {
   const { users: allUsers } = useAppSelector(authUser);
-  const { board, columns } = useAppSelector(selectBoard);
+  const { columns } = useAppSelector(selectBoard);
+  const profileBoard = useAppSelector(main).boards.find((item) => item._id === task.boardId);
   const [updateTask, status] = tasksAPI.useUpdateTaskMutation();
   const [editValues, setEditValues] = useState({ ...editValuesInitial });
+  const [showDelete, setShowDelete] = useState<boolean>(false);
   const [users, setUsers] = useState<GetUserType[]>(
     allUsers?.filter((item) => task.users.includes(item._id)) as GetUserType[]
   );
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
 
   const {
     register,
@@ -64,7 +69,12 @@ export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
       userId: task.userId,
       columnId: task.columnId,
     };
-    const result = await updateTask({ boardId: board!._id, columnId, taskId: task._id, body });
+    const result = await updateTask({
+      boardId: task.boardId,
+      columnId: task.columnId,
+      taskId: task._id,
+      body,
+    });
     if ('error' in result && 'status' in result.error) {
       dispatch(
         showNotification({
@@ -88,11 +98,11 @@ export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
 
   return (
     <form className="task-modal__form" onSubmit={handleSubmit(onSubmit)}>
-      <p className="task-modal__field-title">{t('Title')}:</p>
       <div className="task-modal__field">
         {editValues.title ? (
           <TextField
             className="task-modal__input"
+            variant="standard"
             required
             size="small"
             {...register('title', { required: true })}
@@ -110,28 +120,48 @@ export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
         </IconButton>
       </div>
 
-      <p className="task-modal__field-title">{t('Description')}:</p>
-      <div className="task-modal__field">
-        {editValues.description ? (
-          <TextField
-            required
-            className="task-modal__input"
-            multiline
-            rows={3}
-            size="small"
-            {...register('description', { required: true })}
-          />
+      <div className="task-modal__desc-container">
+        <div className="task-modal__desc-header">
+          <p className="task-modal__field-title">{t('Description')}:</p>
+          <IconButton
+            name="description"
+            onClick={onEditClick}
+            color="primary"
+            className="task-modal__desc-btn"
+          >
+            {editValues.description ? <ReplayIcon /> : <EditIcon />}
+          </IconButton>
+        </div>
+        <div className="task-modal__field">
+          {editValues.description ? (
+            <textarea
+              required
+              className="task-modal__input-desc"
+              rows={3}
+              {...register('description', { required: true })}
+            />
+          ) : (
+            <p className="task-modal__desc">{task.description}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="task-modal__info">
+        <div className="task__creator">
+          <OwnerIcon />
+          {`${allUsers?.find((item) => item._id === task.userId)?.login} (${
+            allUsers?.find((item) => item._id === task.userId)?.name
+          })`}
+        </div>
+        {pathname.includes('/main') ? (
+          <p className="task-modal__field-title">
+            {`${t('column')}: ${columns?.find((item) => item._id === task.columnId)?.title}`}
+          </p>
         ) : (
-          <p className="task-modal__desc">{task.description}</p>
-        )}{' '}
-        <IconButton
-          name="description"
-          onClick={onEditClick}
-          color="primary"
-          className="task-modal__field-btn"
-        >
-          {editValues.description ? <ReplayIcon /> : <EditIcon />}
-        </IconButton>
+          <Link to={`/main/${profileBoard?._id}`} className="task-modal__field-title">{`${t(
+            'board'
+          )}: ${profileBoard?.title}`}</Link>
+        )}
       </div>
 
       <p className="task-modal__field-title">{t('Users')}:</p>
@@ -179,7 +209,7 @@ export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
               .map((it) => it.login)
               .join(', ')}
           </p>
-        )}{' '}
+        )}
         <IconButton
           name="users"
           onClick={onEditClick}
@@ -190,30 +220,33 @@ export const TaskModal: React.FC<Props> = ({ columnId, task }) => {
         </IconButton>
       </div>
 
-      <p className="task-modal__field-title">
-        {`${t('Creator')}: ${allUsers?.find((item) => item._id === task.userId)?.login}`}
-      </p>
-      <p className="task-modal__field-title">{`${t('board')}: ${board?.title}`}</p>
-      <p className="task-modal__field-title">
-        {`${t('column')}: ${columns?.find((item) => item._id === task.columnId)?.title}`}
-      </p>
-
-      {Object.values(editValues).some((item) => item) ? (
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          color="secondary"
-          disabled={!isValid || !isDirty}
-          loading={status.isLoading}
-          className="task-modal__btn"
-          loadingPosition="center"
-          startIcon={<SaveIcon />}
+      <div className="task-modal__btns">
+        {Object.values(editValues).some((item) => item) && (
+          <Button
+            type="submit"
+            disabled={!isValid || !isDirty}
+            variant="outlined"
+            startIcon={<SaveIcon />}
+          >
+            {t('Save')}
+          </Button>
+        )}
+        <Button
+          variant="outlined"
+          startIcon={<DeleteForeverIcon />}
+          disabled={Object.values(editValues).some((item) => item)}
+          onClick={() => setShowDelete(true)}
         >
-          {t('Save')}
-        </LoadingButton>
-      ) : (
-        <div className="false-button"></div>
-      )}
+          {t('Delete')}
+        </Button>
+      </div>
+
+      <Delete
+        category="task"
+        id={{ boardId: task.boardId, columnId: task.columnId, taskId: task._id }}
+        visible={showDelete}
+        setModal={setShowDelete}
+      />
       <BackdropLoader open={status.isLoading} />
     </form>
   );
