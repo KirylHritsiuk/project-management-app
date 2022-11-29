@@ -1,0 +1,31 @@
+.profile__info {
+  display: flex;
+  height: max-content;
+  padding: 20px 25px;
+  flex-direction: column;
+  border-radius: var(--radius);
+  gap: 15px;
+  background-color: #fff;
+}
+
+.info__title {
+  color: var(--headerColumnBG);
+  margin-bottom: 20px;
+}
+
+.info__label {
+  line-height: 16px;
+  color: #80878f;
+}
+
+.info__value {
+  color: black;
+  font-weight: bolder;
+}
+
+.info__btns {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-around;
+  gap: 20px;
+}

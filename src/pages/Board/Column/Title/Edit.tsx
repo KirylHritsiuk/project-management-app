@@ -8,6 +8,7 @@ import { useAppDispatch } from 'hooks/hooks';
 import { columnsAPI } from 'api/columnsApi';
 import DoneIcon from '@mui/icons-material/Done';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { BackdropLoader } from 'components';
 
 interface EditProps {
   boardId: string;
@@ -41,7 +42,7 @@ export const Edit = ({ boardId, columnId, title, order, close }: EditProps) => {
         })
       );
     }
-  }, [status.isError]);
+  }, [dispatch, status, status.isError, t]);
 
   const onSubmit: SubmitHandler<{ title: string }> = async (data) => {
     const result = await editColumn({
@@ -87,7 +88,7 @@ export const Edit = ({ boardId, columnId, title, order, close }: EditProps) => {
       <Input
         autoFocus={true}
         placeholder={`${t('Title')}*`}
-        sx={{ width: '300px', padding: '0' }}
+        sx={{ width: '300px', p: 2 }}
         {...register('title', {
           required: { value: true, message: t('Required field') },
           pattern: {
@@ -122,6 +123,7 @@ export const Edit = ({ boardId, columnId, title, order, close }: EditProps) => {
           <CancelIcon fontSize="medium" sx={{ path: { fill: 'white' } }} />
         </IconButton>
       </Box>
+      <BackdropLoader open={status.isLoading} />
     </Box>
   );
 };

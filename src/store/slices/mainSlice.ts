@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { boardsAPI } from 'api/boardsApi';
 import { decodeToken } from 'react-jwt';
 import { RootState } from 'store/store';
-import { DecodedTokenType } from 'types/types';
+import { DecodedTokenType, GetBoardType } from 'types/types';
 
 const token = localStorage.getItem('token');
 const userFilter = localStorage.getItem('userFilter');
@@ -12,22 +13,30 @@ if (token) {
 
 interface Main {
   user: string | undefined | null;
+  boards: GetBoardType[];
 }
+
 const initialState: Main = {
   user: userFilter ?? decodedToken?.id,
+  boards: [],
 };
 
 export const mainSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {
-    updateUser: (state, action: { payload: Main }) => {
+    updateUser: (state, action: { payload: { user: string | undefined | null } }) => {
       state.user = action.payload.user;
       if (action.payload.user) localStorage.setItem('userFilter', action.payload.user);
       else {
         localStorage.removeItem('userFilter');
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(boardsAPI.endpoints.getBoards.matchFulfilled, (state, action) => {
+      state.boards = action.payload;
+    });
   },
 });
 

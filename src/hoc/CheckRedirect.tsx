@@ -13,7 +13,10 @@ export const CheckRedirect: React.FC<Props> = ({ Component }) => {
   if ((isAuth || !isExpired(token!)) && (pathname === '/signin' || pathname === '/signup'))
     return <Navigate to="/main" />;
 
-  if ((!isAuth || isExpired(token!)) && (pathname.includes('/main') || pathname === '/profile'))
+  if (
+    (!isAuth || isExpired(token!)) &&
+    (pathname.includes('/main') || pathname === '/profile' || pathname === '/search')
+  )
     return <Navigate to="/" />;
 
   return Component;

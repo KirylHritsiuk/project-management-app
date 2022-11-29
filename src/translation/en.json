@@ -51,7 +51,7 @@
   "CUSTOM_ERROR": "Error, check connection",
   "Connect": "Connected!",
   "Task": "Task",
-  "Add task": "Add task",
+  "Create task": "Add task",
   "Description": "Description",
   "Creator": "Creator",
   "Create column": "Create column",
@@ -67,5 +67,10 @@
   "Kiryl work": "",
   "Natalia work": "",
   "Kate work": "Home Page. Board Page. 'Not Found' Page.",
-  "go home": "Go Home"
+  "go home": "Go Home",
+  "Edit profile": "Edit profile",
+  "Personal information": "Personal information",
+  "Edit": "Edit",
+  "Tasks not found": "Tasks not found",
+  "You tasks": "You tasks"
 }
