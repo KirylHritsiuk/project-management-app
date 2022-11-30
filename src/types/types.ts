@@ -148,7 +148,6 @@ export interface TaskListProps {
   columnId: string;
   columnNum: number;
   column: GetColumnType;
-  listType: string;
 }
 
 export type Props = {
