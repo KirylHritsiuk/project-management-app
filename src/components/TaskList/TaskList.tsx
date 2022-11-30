@@ -48,7 +48,12 @@ export const TaskList: FC<TaskListProps> = ({ boardId, columnId, column, columnN
         {t('Create task')}
       </Button>
       <Modal visible={showTaskModal} setModal={setShowTaskModal}>
-        <AddTask boardId={boardId} columnId={columnId} setShowTaskModal={setShowTaskModal} />
+        <AddTask
+          boardId={boardId}
+          columnId={columnId}
+          setShowTaskModal={setShowTaskModal}
+          order={order}
+        />
       </Modal>
     </Stack>
   );
