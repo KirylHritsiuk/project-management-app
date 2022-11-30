@@ -18,9 +18,10 @@ type Props = {
   boardId: string;
   columnId: string;
   setShowTaskModal: React.Dispatch<React.SetStateAction<boolean>>;
+  order: number;
 };
 
-export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal }) => {
+export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal, order }) => {
   const { id: userId, users } = useAppSelector(authUser);
   const [createTask, status] = tasksAPI.useCreateTaskMutation();
   const dispatch = useAppDispatch();
@@ -37,7 +38,7 @@ export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal }
   const onSubmit = async (data: FieldValues) => {
     const body = {
       title: data.title,
-      order: 0,
+      order: order + 1,
       description: data.description,
       userId: userId,
       users: data.users,

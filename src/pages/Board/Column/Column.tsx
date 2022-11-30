@@ -1,8 +1,9 @@
 import { Delete, TaskList } from '../../../components';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable, Droppable, DroppableProvided } from 'react-beautiful-dnd';
 import { GetColumnType } from '../../../types/types';
 import { useState } from 'react';
 import { Title } from './Title/Title';
+import styles from './Column.module.scss';
 
 type ColumnType = {
   column: GetColumnType;
@@ -33,13 +34,23 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
               order={column.order}
               openDel={openDel}
             />
-            <TaskList
-              listType="TASKS"
-              boardId={boardId}
-              columnId={column._id}
-              columnNum={index}
-              column={column}
-            />
+            <Droppable droppableId={`droppable${column._id}${index}`} type="tasks">
+              {(provided: DroppableProvided) => (
+                <div
+                  className={styles.task_list}
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  <TaskList
+                    boardId={boardId}
+                    columnId={column._id}
+                    columnNum={index}
+                    column={column}
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </div>
         )}
       </Draggable>

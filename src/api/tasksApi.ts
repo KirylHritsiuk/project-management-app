@@ -19,6 +19,7 @@ export const tasksAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'tasks', id: 'LIST' },
         { type: 'tasksSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     getTasks: build.query<TaskType[], { boardId: string; columnId: string }>({
@@ -42,6 +43,7 @@ export const tasksAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'tasks', id: 'LIST' },
         { type: 'tasksSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     updateTask: build.mutation<TaskType, UpdateTaskType>({
