@@ -9,7 +9,6 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { columnsAPI } from '../../api/columnsApi';
 import { boardsAPI } from '../../api/boardsApi';
-import { usersAPI } from '../../api/usersApi';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { reorder, reorderQuoteMap } from './reorder';
@@ -22,6 +21,7 @@ import { DropResult } from './react-beautiful-dnd';
 import {
   ChangedColumns,
   ChangedTasks,
+  GetBoardType,
   GetColumnType,
   TaskType,
   UpdatedAllColumns,
@@ -119,7 +119,7 @@ export const Board = () => {
             </IconButton>
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-            {/* <h2 className="board__title">{board?.title}</h2> */}
+            <h2 className="board__title">{(board as GetBoardType).title}</h2>
             <Button
               onClick={changeVisible}
               variant="contained"

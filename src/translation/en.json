@@ -25,6 +25,7 @@
   "Owner": "Owner",
   "Users": "Users",
   "NoUsers": "No selected users",
+  "NoUsersError": "Failed to get users",
   "Search": "Search",
   "Empty": "Create your project",
   "Delete": "Delete",

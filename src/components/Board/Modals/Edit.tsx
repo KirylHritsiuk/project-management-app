@@ -74,17 +74,10 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   }, [visible]);
 
   const onSubmit = async (formData: CreateBoardType) => {
-    const result = await editBoard({ id: data._id, body: { ...formData, users: ids } });
+    const result = await editBoard({ boardId: data._id, body: { ...formData, users: ids } });
 
     if ('error' in result && 'status' in result.error) {
       console.log('onSubmit error');
-      // dispatch(
-      //   showNotification({
-      //     isShow: true,
-      //     text: `${t(result.error.status as string)} ${t('board')} ${t('editFailed')}`,
-      //     severity: 'error',
-      //   })
-      // );
       const message = result.error.status as string;
       setShow((prev) => ({
         ...prev,
@@ -96,13 +89,6 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
 
     if ('data' in result) {
       console.log('onSubmit data');
-      // dispatch(
-      //   showNotification({
-      //     isShow: true,
-      //     text: ,
-      //     severity: ,
-      //   })
-      // );
       setShow((prev) => ({
         ...prev,
         isShow: true,

@@ -42,9 +42,9 @@ export const boardsAPI = api.injectEndpoints({
 
     updateBoard: build.mutation<
       GetBoardType | ErrorResponseType,
-      { id: string; body: CreateBoardType }
+      { boardId: string; body: CreateBoardType }
     >({
-      query: ({ id, body }) => ({
+      query: ({ boardId: id, body }) => ({
         url: `/boards/${id}`,
         method: 'PUT',
         body,

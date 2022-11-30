@@ -1,9 +1,10 @@
-import { CircularProgress, InputAdornment, MenuItem, TextField } from '@mui/material';
+import { CircularProgress, IconButton, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from 'hooks/hooks';
 import { ChangeEvent, FC } from 'react';
 import { updateUser } from 'store/slices/mainSlice';
 import { GetUserType } from 'types/types';
+import ReplayIcon from '@mui/icons-material/Replay';
 import { ReactComponent as OwnerIcon } from '../Board/Owner.svg';
 
 interface UsersSelectProps {
@@ -12,30 +13,41 @@ interface UsersSelectProps {
   isLoading: boolean;
   isError: boolean;
   id: string;
+  refetch: () => void;
 }
-export const UsersSelect: FC<UsersSelectProps> = ({ users, user, id, isLoading, isError }) => {
+
+export const UsersSelect: FC<UsersSelectProps> = ({
+  users,
+  user,
+  id,
+  isLoading,
+  isError,
+  refetch,
+}) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (user !== e.target.value) {
       dispatch(updateUser({ user: e.target.value }));
-      localStorage.setItem('userFilter', e.target.value);
     }
   };
-
-  // if (isError && isLoading) return null;
 
   return (
     <TextField
       select
-      label={t('Users')}
+      label={!isError ? t('Users') : t('NoUsersError')}
       value={isLoading ? '' : user}
       onChange={onChange}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
             {isLoading && <CircularProgress size={20} />}
+            {isError && (
+              <IconButton onClick={refetch} color="primary">
+                <ReplayIcon />
+              </IconButton>
+            )}
           </InputAdornment>
         ),
       }}
