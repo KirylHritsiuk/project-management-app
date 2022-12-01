@@ -3,15 +3,6 @@
   padding: 15px 10px;
 }
 
-.task_list {
-  max-height: calc(100vh - 380px);
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  gap: 15px;
-  overflow-y: auto;
-}
-
 .task-list__add-task-btn {
   margin-top: 10px !important;
   background: var(--bodyCardBG) !important;

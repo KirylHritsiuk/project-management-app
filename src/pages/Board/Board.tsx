@@ -61,6 +61,7 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
+    console.log('result', result);
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);

@@ -1,0 +1,8 @@
+.task_list {
+  max-height: calc(100vh - 380px);
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+}
