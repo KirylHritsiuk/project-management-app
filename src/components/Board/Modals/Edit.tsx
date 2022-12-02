@@ -7,13 +7,11 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { boardsAPI } from '../../../api/boardsApi';
-import { CreateBoardType, GetBoardType, GetUserType, NotificationType } from '../../../types/types';
+import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { LoadingButton } from '@mui/lab';
-// import { showNotification } from 'store/slices/notificationSlice';
-// import { useAppDispatch } from 'hooks/hooks';
-import { useNotification } from 'hooks/useNotification';
+import { useError } from 'hooks/useError';
 
 interface EditProps {
   data: GetBoardType;
@@ -26,11 +24,11 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
-  const { setShow } = useNotification();
+  const { catchError, setShow } = useError();
 
   const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
-  const { users: allUsers, userList, error } = useGetUserFromId(data.owner, data.users);
+  const { users: allUsers, userList } = useGetUserFromId(data.owner, data.users);
 
   const [owner, setOwner] = useState<string>(data.owner);
   const [users, setUsers] = useState<GetUserType[]>(userList);
@@ -39,8 +37,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     register,
     handleSubmit,
     control,
-    reset,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<CreateBoardType>({
     defaultValues: { title: data.title, owner, users: ids },
   });
@@ -49,53 +46,17 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
     setOwner(event.target.value);
   };
 
-  // useEffect(() => {
-  //   if ('error' in status && status.error && 'status' in status.error) {
-  //     // dispatch(
-  //     //   showNotification({
-  //     //     isShow: true,
-  //     //     text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
-  //     //     severity: 'error',
-  //     //   })
-  //     // );
-  //     setShow({
-  //       ...isShow,
-  //       isShow: true,
-  //       text: `${t(status.error.status as string)} ${t('board')} ${t('editFailed')}`,
-  //       severity: 'error',
-  //     });
-  //   }
-  // }, [status.isError]);
-
-  useEffect(() => {
-    if (!visible) {
-      reset();
-    }
-  }, [visible]);
-
   const onSubmit = async (formData: CreateBoardType) => {
     const result = await editBoard({ boardId: data._id, body: { ...formData, users: ids } });
-
-    if ('error' in result && 'status' in result.error) {
-      console.log('onSubmit error');
-      const message = result.error.status as string;
-      setShow((prev) => ({
-        ...prev,
-        isShow: true,
-        text: `${t(message)} ${t('board')} ${t('editFailed')}`,
-        severity: 'error',
-      }));
-    }
-
     if ('data' in result) {
-      console.log('onSubmit data');
-      setShow((prev) => ({
-        ...prev,
+      setModal((prev) => !prev);
+      setShow({
         isShow: true,
         text: `${t('board')} ${t('editSuccess')}`,
         severity: 'success',
-      }));
-      setModal((prev) => !prev);
+      });
+    } else {
+      catchError(result.error, `${t('board')} ${t('editFailed')}`);
     }
   };
 
@@ -178,7 +139,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
           type="submit"
           variant="contained"
           color="secondary"
-          disabled={!!errors.title || !isDirty}
+          disabled={!!errors.title}
           loading={status.isLoading}
           sx={{ marginTop: '20px' }}
           loadingPosition="center"
