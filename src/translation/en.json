@@ -53,6 +53,7 @@
   "TIMEOUT_ERROR": "TIMEOUT ERROR, request timed out!",
   "CUSTOM_ERROR": "CUSTOM ERROR, check connection",
   "403": "Authorization Error!",
+  "Authorization error": "Authorization Error!",
   "Connect": "Connected!",
   "Task": "Task",
   "Create task": "Add task",

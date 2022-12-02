@@ -10,7 +10,7 @@ export const useError = () => {
   const catchError = (error: unknown, text?: string) => {
     if (isFetchBaseQueryError(error)) {
       const message = error.status as string;
-      console.log('catch fetch', message, text, error);
+      // console.log('catch fetch', message, text, error);
       setShow((prev) => ({
         ...prev,
         isShow: true,
@@ -19,16 +19,17 @@ export const useError = () => {
       }));
     } else if (isSerializedError(error)) {
       const message = error.message as string;
-      console.log('catch ser', message, error);
+      // console.log('catch ser', message, error);
       setShow((prev) => ({
         ...prev,
         isShow: true,
         text: message,
         severity: 'error',
       }));
-    } else {
-      console.log('catch else', error);
     }
+    // else {
+    //   console.log('catch else', error);
+    // }
   };
 
   return { catchError, setShow };
