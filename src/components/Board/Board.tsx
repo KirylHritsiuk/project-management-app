@@ -8,12 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAppSelector } from 'hooks/hooks';
+import { text } from 'components';
 
-export const text = {
-  init: { opacity: 0, scale: 0.5 },
-  anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
-  exit: { opacity: 0, scale: 0.5, transition: { duration: 0.5 } },
-};
 const card = {
   init: { opacity: 0, scale: 0.5 },
   anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
@@ -52,7 +48,7 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
             exit="exit"
           >
             <OwnerIcon />
-            {user && user.login}
+            {user ? user.login : t('NoUserError')}
           </motion.div>
           {user?._id === id && <BoarderMenu data={data} className={styled.menu} />}
         </div>
