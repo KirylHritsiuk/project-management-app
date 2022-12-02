@@ -23,6 +23,7 @@ export const columnsAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'columns', id: 'LIST' },
         { type: 'columnsSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     getColumns: build.query<GetColumnType[], { boardId: string }>({
@@ -46,6 +47,7 @@ export const columnsAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'columns', id: 'LIST' },
         { type: 'columnsSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     updateColumn: build.mutation<GetColumnType, UpdateColumnType>({
