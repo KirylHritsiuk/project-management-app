@@ -3,18 +3,22 @@ import { useDispatch } from 'react-redux';
 import { showNotification } from 'store/slices/notificationSlice';
 import { NotificationType } from 'types/types';
 
+const initial: NotificationType = {
+  isShow: false,
+  text: '',
+  severity: undefined,
+};
+
 export const useNotification = () => {
   const dispatch = useDispatch();
-  const [isShow, setShow] = useState<NotificationType>({
-    isShow: false,
-    text: '',
-    severity: undefined,
-  });
+  const [isShow, setShow] = useState<NotificationType>(initial);
+
   useEffect(() => {
     if (isShow.isShow) {
+      console.log('if show', isShow);
       dispatch(showNotification(isShow));
-      console.log('show');
     }
   }, [isShow]);
+
   return { setShow };
 };
