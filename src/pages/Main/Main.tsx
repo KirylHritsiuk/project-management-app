@@ -1,47 +1,45 @@
-import { BoardList, Loader } from 'components';
-import { IconButton, Container } from '@mui/material';
-import ReplayIcon from '@mui/icons-material/Replay';
+import { BoardList, ErrorTitle, Loader } from 'components';
+import { Container } from '@mui/material';
 import { useFilterBoards } from 'hooks/useFilterBoards';
 import styled from './Main.module.scss';
 import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNotification } from 'hooks/useNotification';
+import { useError } from 'hooks/useError';
 
 export function Main() {
   const { t } = useTranslation();
-  const { setShow } = useNotification();
+  const { catchError, setShow } = useError();
 
-  const { id, boards, user: userFilter, users } = useFilterBoards();
-  const [refetch, setRefetch] = useState<boolean>(false);
+  const {
+    id,
+    boards: { data, error, isError, isLoading, isFetching, refetch },
+    user: userFilter,
+    users,
+  } = useFilterBoards();
+  const [isRefetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
-    const refetchFun = async () => {
-      if (refetch) {
-        await users.refetch();
-        await boards.refetch();
+    const refetchBoard = async () => {
+      if (isRefetch) {
+        const resultUsers = await users.refetch();
+        const resultBoards = await refetch();
         setRefetch((prev) => !prev);
-        if ('error' in boards && boards.error && 'status' in boards.error) {
-          const message = boards.error.status as string;
-          console.log('error main refetch');
-          setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
+        if (resultUsers.isSuccess && resultBoards.isSuccess) {
+          setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
         }
+      } else if (isError) {
+        catchError(error);
       }
     };
-    refetchFun();
-  }, [refetch]);
+    refetchBoard();
+  }, [isRefetch]);
 
-  // useEffect(() => {
-  //   console.log(boards);
-  //   if ('error' in boards && boards.error && 'status' in boards.error) {
-  //     const message = boards.error.status as string;
-  //     console.log('useEffect board error ');
-
-  //     setShow((prev) => ({ ...prev, isShow: true, text: t(message), severity: 'error' }));
-  //   } else {
-  //     setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
-  //   }
-  // }, [boards.isError]);
+  useEffect(() => {
+    if (users.isError) {
+      catchError(users.error);
+    }
+  }, [users]);
 
   return (
     <Container
@@ -63,22 +61,18 @@ export function Main() {
         isError={users.isError}
         refetch={() => setRefetch((prev) => !prev)}
       />
-      {boards.isLoading && <Loader className={styled.loader} />}
-      {boards.isError && (
-        <IconButton onClick={() => setRefetch((prev) => !prev)} color="primary">
-          <ReplayIcon />
-        </IconButton>
+      {isLoading && isFetching && <Loader className={styled.loader} />}
+      {isError && (
+        <ErrorTitle title={t('WrongError')} refetch={() => setRefetch((prev) => !prev)} />
       )}
-      {!boards.isLoading && (
-        <BoardList
-          boards={boards.data}
-          id={id}
-          user={userFilter}
-          isError={boards.isError}
-          isLoading={boards.isLoading}
-          isFetching={boards.isFetching}
-        />
-      )}
+      <BoardList
+        boards={data}
+        id={id}
+        user={userFilter}
+        isError={isError}
+        isLoading={isLoading}
+        isFetching={isFetching}
+      />
     </Container>
   );
 }

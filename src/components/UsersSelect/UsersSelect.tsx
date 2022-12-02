@@ -26,24 +26,26 @@ export const UsersSelect: FC<UsersSelectProps> = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const hasError = users === undefined && !isLoading;
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (user !== e.target.value) {
+    if (user && user !== e.target.value) {
       dispatch(updateUser({ user: e.target.value }));
     }
   };
 
   return (
     <TextField
-      select
-      label={!isError ? t('Users') : t('NoUsersError')}
+      select={users !== undefined}
+      error={hasError}
+      label={isLoading ? '' : users ? t('Users') : t('NoUsersError')}
       value={isLoading ? '' : user}
       onChange={onChange}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
             {isLoading && <CircularProgress size={20} />}
-            {isError && (
+            {hasError && (
               <IconButton onClick={refetch} color="primary">
                 <ReplayIcon />
               </IconButton>

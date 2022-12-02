@@ -1,19 +1,10 @@
 .list {
+	position: relative;
 	display: grid;
 	width: 100%;
 	grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) );
 	gap: 20px 10px;
 	align-items: center;
 	justify-items: center;
+	min-height: 300px;
 }
-
-.empty {
-	display: flex;
-	text-transform: uppercase;
-	color: gray;
-	text-align: center;
-	@media screen and (max-width: 767px) {
-		font-size: 2rem!important;
-	}
-}
-
