@@ -44,8 +44,8 @@ export const boardsAPI = api.injectEndpoints({
       GetBoardType | ErrorResponseType,
       { boardId: string; body: CreateBoardType }
     >({
-      query: ({ boardId: id, body }) => ({
-        url: `/boards/${id}`,
+      query: ({ boardId, body }) => ({
+        url: `/boards/${boardId}`,
         method: 'PUT',
         body,
       }),
@@ -60,6 +60,7 @@ export const boardsAPI = api.injectEndpoints({
         url: `/boards/${boardId}`,
         method: 'GET',
       }),
+      providesTags: (result) => (result ? [{ type: 'boardById' }] : [{ type: 'boardById' }]),
     }),
 
     getBoardsSet: build.query<GetBoardType[], { boardsId: string[] }>({

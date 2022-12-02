@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePageNavigate } from '../../hooks/usePageNavigate';
@@ -8,14 +8,13 @@ import { Button, Box, IconButton, Divider } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 import { columnsAPI } from '../../api/columnsApi';
-import { boardsAPI } from '../../api/boardsApi';
 import { tasksAPI } from '../../api/tasksApi';
 
 import { reorder, reorderQuoteMap } from './reorder';
 
 import { Add } from './Add';
 import { Column } from './Column/Column';
-import { Loader } from '../../components';
+import { Loader, ErrorTitle } from '../../components';
 
 import { DropResult } from './react-beautiful-dnd';
 import {
@@ -29,39 +28,44 @@ import {
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './Board.scss';
+import { useBoardTitle } from 'hooks/useBoardTitle';
 
 export const Board = () => {
   const { t } = useTranslation();
   const { goBack } = usePageNavigate();
   const { id } = useParams();
   const boardId = id ?? '';
-  const { data, isLoading, error } = columnsAPI.useGetBoardQuery({ boardId });
+  const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
   const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
-  // const [updateColumn] = columnsAPI.useUpdateColumnMutation({ boardId });
-  const {
-    // data: board,
-    currentData: board,
-    isLoading: boardLoad,
-    error: boardErr,
-  } = boardsAPI.useGetBoardByIdQuery({ boardId });
+  const { title, boardLoad, boardError } = useBoardTitle(boardId);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
   const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
+  const [isRefetch, setRefetch] = useState<boolean>(false);
+
+  const refetchColumn = useCallback(async () => {
+    if (isRefetch) {
+      await refetch();
+      setRefetch((prev) => !prev);
+    }
+  }, [isRefetch]);
 
   useEffect(() => {
     if (data) {
       setColumns(data);
     }
+
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
-  }, [data]);
+
+    refetchColumn();
+  }, [data, isRefetch]);
 
   const changeVisible = () => {
     setVisible(!isVisible);
   };
 
   function handleOrderInColumn(result: DropResult) {
-    console.log('result', result);
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
@@ -106,10 +110,12 @@ export const Board = () => {
     }
   }
 
+  if (boardError) {
+    return <Navigate to="/404" />;
+  }
+
   return (
     <Box component="main" className="column_section">
-      {error && <span>error</span>}
-      {boardErr && <Navigate to="/404" />}
       {isLoading || boardLoad ? (
         <Loader />
       ) : (
@@ -120,7 +126,7 @@ export const Board = () => {
             </IconButton>
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-            <h2 className="board__title">{(board as GetBoardType).title}</h2>
+            {title && <h2 className="board__title">{title}</h2>}
             <Button
               onClick={changeVisible}
               variant="contained"
@@ -130,6 +136,13 @@ export const Board = () => {
               {t('Create column')}
             </Button>
           </Box>
+          {isError && (
+            <ErrorTitle
+              title={t('WrongError')}
+              className="board_error"
+              refetch={() => setRefetch((prev) => !prev)}
+            />
+          )}
           <DragDropContext onDragEnd={handleOrderInColumn}>
             <Droppable droppableId="board" type="COLUMN" direction="horizontal">
               {(provided) => (
