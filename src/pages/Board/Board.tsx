@@ -19,13 +19,7 @@ import { Column } from './Column/Column';
 import { Loader } from '../../components';
 
 import { DropResult } from './react-beautiful-dnd';
-import {
-  ChangedColumns,
-  ChangedTasks,
-  GetColumnType,
-  TaskType,
-  UpdatedAllColumns,
-} from '../../types/types';
+import { GetColumnType, TaskType, UpdatedAllColumns } from '../../types/types';
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './Board.scss';
@@ -60,20 +54,15 @@ export const Board = () => {
   };
 
   function handleOrderInColumn(result: DropResult) {
-    console.log('result', result);
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
-      const newSetColumns = state.map((column, index) => {
-        const obj = { ...column, order: index } as ChangedColumns;
-        delete obj.items;
-        delete obj.title;
-        delete obj.boardId;
-        return obj as UpdatedAllColumns;
+      const newState = state.map((column, index) => {
+        const obj = { _id: column._id, order: index } as UpdatedAllColumns;
+        return obj;
       });
-      updatedColumns(newSetColumns);
-      return;
+      updatedColumns(newState);
     } else {
       const value = Number(result.draggableId.slice(0, 1));
       const data = reorderQuoteMap({
@@ -89,18 +78,12 @@ export const Board = () => {
       });
       newSetTasks.map((arr) => {
         const value = arr.map((tasks, index) => {
-          const obj = { ...tasks, order: index } as ChangedTasks;
-          delete obj.title;
-          delete obj.description;
-          delete obj.boardId;
-          delete obj.userId;
-          delete obj.users;
+          const obj = { _id: tasks._id, columnId: tasks.columnId, order: index };
           return obj;
         });
         if (value.length > 0) {
           updateAllTasks(value);
         }
-        return value;
       });
     }
   }
