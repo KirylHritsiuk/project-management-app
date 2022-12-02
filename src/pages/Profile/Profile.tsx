@@ -23,7 +23,7 @@ export const Profile: React.FC = () => {
         <h2>{t('Profile')}</h2>
       </div>
       {userLoading || tasksLoading ? (
-        <Loader />
+        <Loader className="profile__loader" />
       ) : (
         <div className="profile__main">
           <PersonalInformation />
