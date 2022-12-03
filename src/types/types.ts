@@ -52,10 +52,10 @@ export type GetColumnType = {
   title: string;
   order: number;
   boardId: string;
-  items: TaskType[] | [];
+  items: TaskType[];
 };
 
-export type ResponceUpdatedColumns = {
+export type ResponseUpdatedColumns = {
   _id: string;
   title: string;
   order: number;
@@ -67,7 +67,7 @@ export type ChangedColumns = {
   title?: string;
   order: number;
   boardId?: string;
-  items?: TaskType[] | [];
+  items?: TaskType[];
 };
 
 export type UpdatedAllColumns = {
@@ -110,7 +110,7 @@ export type CreateTaskType = {
     description: string;
     userId: string;
     order: number;
-    users: Array<string> | [];
+    users: string[];
   };
 };
 
@@ -171,7 +171,7 @@ export type UpdateSetType = {
   columnId: string;
 };
 
-export type ResponceSetTask = {
+export type ResponseSetTask = {
   _id: string;
   title: string;
   order: number;
@@ -215,3 +215,8 @@ export type NotificationType = {
 };
 
 export type CategoryType = 'user' | 'board' | 'column' | 'task';
+
+export type ErrorResponseType = {
+  statusCode: number;
+  message: string;
+};

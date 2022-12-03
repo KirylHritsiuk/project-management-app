@@ -6,6 +6,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import NotFound from './assets/notFound.svg';
 import Face from './assets/tired.svg';
 import styles from './NotFoundPage.module.scss';
+import { NavLink } from 'react-router-dom';
 
 export const NotFoundPage = () => {
   const { t } = useTranslation();
@@ -31,15 +32,15 @@ export const NotFoundPage = () => {
             color: '#ffffff',
           }}
         />
-        <a
-          href={'/'}
+        <NavLink
+          to={'/'}
           style={{
             color: '#ffffff',
             fontSize: '20px',
           }}
         >
           {t('go home')}
-        </a>
+        </NavLink>
       </Button>
     </Box>
   );

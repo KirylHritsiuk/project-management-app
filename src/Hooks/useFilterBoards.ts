@@ -4,22 +4,27 @@ import { useAppSelector } from './hooks';
 
 export function useFilterBoards() {
   const [{ id }, { user }] = useAppSelector((state) => [state.user, state.main]);
-  const data = usersAPI.useGetUsersQuery('');
+
   if (user && user !== 'all') {
     return {
       id,
       boards: boardsAPI.useGetBoardsSetByUserIdQuery(user),
       user,
-      users: data,
+      users: usersAPI.useGetUsersQuery(''),
     };
   } else if (user && user === 'all') {
-    return { id, boards: boardsAPI.useGetBoardsQuery(''), user, users: data };
+    return {
+      id,
+      boards: boardsAPI.useGetBoardsQuery(''),
+      user,
+      users: usersAPI.useGetUsersQuery(''),
+    };
   } else {
     return {
       id,
       boards: boardsAPI.useGetBoardsSetByUserIdQuery(id),
       user: id,
-      users: data,
+      users: usersAPI.useGetUsersQuery(''),
     };
   }
 }

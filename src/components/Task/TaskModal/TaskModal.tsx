@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { TextField, Autocomplete, Checkbox, IconButton, Button } from '@mui/material';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { useAppSelector } from 'hooks/hooks';
 import { tasksAPI } from 'api/tasksApi';
 import { authUser } from 'store/slices/userSlice';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -13,13 +13,13 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { BackdropLoader, Delete } from 'components';
-import { showNotification } from 'store/slices/notificationSlice';
 import { selectBoard } from 'store/slices/boardSlice';
 import { GetUserType, TaskType } from 'types/types';
 import { ReactComponent as OwnerIcon } from '../Owner.svg';
 import { main } from 'store/slices/mainSlice';
 
 import './TaskModal.scss';
+import { useError } from 'hooks/useError';
 
 type Props = {
   task: TaskType;
@@ -43,8 +43,8 @@ export const TaskModal: React.FC<Props> = ({ task }) => {
     allUsers?.filter((item) => task.users.includes(item._id)) as GetUserType[]
   );
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { pathname } = useLocation();
+  const { catchError, setShow } = useError();
 
   const {
     register,
@@ -75,24 +75,14 @@ export const TaskModal: React.FC<Props> = ({ task }) => {
       taskId: task._id,
       body,
     });
-    if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('Task')} ${t('editFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
     if ('data' in result) {
-      setEditValues({ ...editValuesInitial });
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('Task')} ${t('editSuccess')}`,
-          severity: 'success',
-        })
-      );
+      setShow({
+        isShow: true,
+        text: `${t('Task')} ${t('editSuccess')}`,
+        severity: 'success',
+      });
+    } else {
+      catchError(result.error, `${t('Task')} ${t('editFailed')}`);
     }
   };
 

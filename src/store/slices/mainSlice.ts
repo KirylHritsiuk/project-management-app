@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { boardsAPI } from 'api/boardsApi';
+import { MAIN_FILTER } from 'constants/constants';
 import { decodeToken } from 'react-jwt';
 import { RootState } from 'store/store';
 import { DecodedTokenType, GetBoardType } from 'types/types';
 
 const token = localStorage.getItem('token');
-const userFilter = localStorage.getItem('userFilter');
+const userFilter = localStorage.getItem(MAIN_FILTER);
 let decodedToken;
 if (token) {
   decodedToken = decodeToken<DecodedTokenType>(token);
@@ -27,9 +28,9 @@ export const mainSlice = createSlice({
   reducers: {
     updateUser: (state, action: { payload: { user: string | undefined | null } }) => {
       state.user = action.payload.user;
-      if (action.payload.user) localStorage.setItem('userFilter', action.payload.user);
+      if (action.payload.user) localStorage.setItem(MAIN_FILTER, action.payload.user);
       else {
-        localStorage.removeItem('userFilter');
+        localStorage.removeItem(MAIN_FILTER);
       }
     },
   },

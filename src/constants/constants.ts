@@ -21,3 +21,5 @@ export const TEAM = [
     desc: 'Kate work',
   },
 ];
+
+export const MAIN_FILTER = 'usersFilter';

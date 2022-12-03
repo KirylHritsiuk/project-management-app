@@ -3,16 +3,16 @@ import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { TextField, Autocomplete, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { useAppSelector } from 'hooks/hooks';
 import { tasksAPI } from 'api/tasksApi';
 import { authUser } from 'store/slices/userSlice';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
 import { BackdropLoader } from 'components';
-import { showNotification } from 'store/slices/notificationSlice';
 
 import './AddTask.scss';
+import { useError } from 'hooks/useError';
 
 type Props = {
   boardId: string;
@@ -24,8 +24,8 @@ type Props = {
 export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal, order }) => {
   const { id: userId, users } = useAppSelector(authUser);
   const [createTask, status] = tasksAPI.useCreateTaskMutation();
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { catchError, setShow } = useError();
 
   const {
     register,
@@ -44,26 +44,16 @@ export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal, 
       users: data.users,
     };
     const result = await createTask({ boardId, columnId, body });
-
-    if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('Task')} ${t('addFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
     if ('data' in result) {
       setShowTaskModal((prev) => !prev);
       reset();
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('Task')} ${t('addSuccess')}`,
-          severity: 'success',
-        })
-      );
+      setShow({
+        isShow: true,
+        text: `${t('Task')} ${t('addSuccess')}`,
+        severity: 'success',
+      });
+    } else {
+      catchError(result.error, `${t('Task')} ${t('addFailed')}`);
     }
   };
 

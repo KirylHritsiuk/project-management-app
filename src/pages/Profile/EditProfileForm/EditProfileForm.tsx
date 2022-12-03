@@ -7,11 +7,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { usersAPI } from 'api/usersApi';
 import { authUser, editUser } from 'store/slices/userSlice';
-import { showNotification } from 'store/slices/notificationSlice';
 import { CreateUserType } from 'types/types';
 import { BackdropLoader } from 'components';
 
 import './EditProfileForm.scss';
+import { useError } from 'hooks/useError';
 
 const editValuesInitial: { [key: string]: boolean } = {
   name: false,
@@ -29,6 +29,7 @@ export const EditProfileForm: React.FC<Props> = ({ setModal }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [editValues, setEditValues] = useState({ ...editValuesInitial });
+  const { catchError, setShow } = useError();
 
   const {
     register,
@@ -53,16 +54,12 @@ export const EditProfileForm: React.FC<Props> = ({ setModal }) => {
   const onSubmitForm = async (data: CreateUserType) => {
     const newUser = await updateUser({ id, body: data });
     if ('data' in newUser) {
-      dispatch(showNotification({ isShow: true, text: `${t('Saved')}!`, severity: 'success' }));
+      setShow({ isShow: true, text: `${t('Saved')}!`, severity: 'success' });
       dispatch(editUser({ name: data.name, login: data.login }));
       setEditValues({ ...editValuesInitial });
       setModal(false);
-    }
-    if ('error' in newUser) {
-      let message;
-      if ('status' in newUser.error) message = (newUser.error.data as { message: string }).message;
-      else message = newUser.error.message!;
-      dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+    } else {
+      catchError(newUser.error);
       reset({ name: data?.name, login: data?.login, password: '' });
     }
   };

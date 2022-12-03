@@ -46,6 +46,7 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
               order={column.order}
               openDel={openDel}
             />
+
             <Droppable droppableId={`droppable${column._id}${index}`} type="tasks">
               {(provided: DroppableProvided) => (
                 <>

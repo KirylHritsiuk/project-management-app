@@ -1,7 +1,6 @@
-import { Autocomplete, Box, Checkbox, InputAdornment, MenuItem, TextField } from '@mui/material';
-import { FC, useEffect } from 'react';
+import { Autocomplete, Box, Checkbox, TextField } from '@mui/material';
+import { FC } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import SaveIcon from '@mui/icons-material/Save';
@@ -12,7 +11,8 @@ import { boardsAPI } from '../../../api/boardsApi';
 import { CreateBoardType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
 import { LoadingButton } from '@mui/lab';
-import { showNotification } from 'store/slices/notificationSlice';
+import { updateUser } from 'store/slices/mainSlice';
+import { useError } from 'hooks/useError';
 
 interface AddProps {
   visible: boolean;
@@ -24,8 +24,9 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
   const { t } = useTranslation();
   const { id } = useAppSelector((state) => state.user);
+  const { catchError, setShow } = useError();
   const dispatch = useAppDispatch();
-  const { data: allUsers, isLoading, error } = usersAPI.useGetUsersQuery('');
+  const { data: allUsers } = usersAPI.useGetUsersQuery('');
   const [addBoard, status] = boardsAPI.useCreateBoardMutation();
 
   const {
@@ -38,42 +39,20 @@ export const Add: FC<AddProps> = ({ visible, setModal }) => {
     defaultValues: { title: '', owner: id, users: [] },
   });
 
-  useEffect(() => {
-    if ('error' in status && status.error && 'status' in status.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(status.error.status as string)} ${t('board')} ${t('addFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
-    return () => {
-      reset();
-    };
-  }, [status.isError]);
-
   const onSubmit: SubmitHandler<CreateBoardType> = async (data) => {
     const result = await addBoard(data);
-    if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('board')} ${t('addFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
     if ('data' in result) {
       setModal((prev) => !prev);
       reset();
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('board')} ${t('addSuccess')}`,
-          severity: 'success',
-        })
-      );
+      dispatch(updateUser({ user: id }));
+      setShow((prev) => ({
+        ...prev,
+        isShow: true,
+        text: `${t('board')} ${t('addSuccess')}`,
+        severity: 'success',
+      }));
+    } else {
+      catchError(result.error, `${t('board')} ${t('addFailed')}`);
     }
   };
 

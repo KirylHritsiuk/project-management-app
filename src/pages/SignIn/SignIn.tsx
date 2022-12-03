@@ -40,7 +40,7 @@ export const SignIn: React.FC = () => {
       if ('status' in authUser.error)
         message = (authUser.error.data as { message: string }).message;
       else message = authUser.error.message!;
-      dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+      dispatch(showNotification({ isShow: true, text: t(message), severity: 'error' }));
       reset({ login: '', password: '' });
     }
   };

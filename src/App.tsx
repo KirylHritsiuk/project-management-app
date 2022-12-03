@@ -1,8 +1,9 @@
 import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Main, NotFoundPage, Profile, Board, SignIn, SignUp, Search } from 'pages';
-import { Header, Footer, Notification, Loader } from 'components';
+import { Header, Footer, Notification, Loader, ErrorBoundaryComponent } from 'components';
 import { CheckRedirect } from 'hoc/CheckRedirect';
+import { withErrorBoundary } from 'react-error-boundary';
 
 const Home = lazy(() => import('pages/Home/Home'));
 
@@ -28,4 +29,6 @@ function App() {
   );
 }
 
-export default App;
+export default withErrorBoundary(App, {
+  FallbackComponent: ErrorBoundaryComponent,
+});
