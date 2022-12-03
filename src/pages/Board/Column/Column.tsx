@@ -48,35 +48,37 @@ export const Column = ({ column, boardId, index }: ColumnType) => {
             />
             <Droppable droppableId={`droppable${column._id}${index}`} type="tasks">
               {(provided: DroppableProvided) => (
-                <div
-                  className={styles.task_list}
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  <TaskList
-                    boardId={boardId}
-                    columnId={column._id}
-                    columnNum={index}
-                    column={column}
-                  />
-                  {provided.placeholder}
-                </div>
+                <>
+                  <div
+                    className={styles.task_list}
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    <TaskList
+                      boardId={boardId}
+                      columnId={column._id}
+                      columnNum={index}
+                      column={column}
+                    />
+                    {provided.placeholder}
+                  </div>
+                  <div className={styles.wrapper__button}>
+                    <Button
+                      onClick={() => setShowTaskModal(true)}
+                      variant="outlined"
+                      className="task-list__add-task-btn"
+                      startIcon={<AddIcon />}
+                      style={{ width: '100%' }}
+                    >
+                      {t('Create task')}
+                    </Button>
+                  </div>
+                </>
               )}
             </Droppable>
           </div>
         )}
       </Draggable>
-      <div className={styles.wrapper__button}>
-        <Button
-          onClick={() => setShowTaskModal(true)}
-          variant="outlined"
-          className="task-list__add-task-btn"
-          startIcon={<AddIcon />}
-          style={{ width: '100%' }}
-        >
-          {t('Create task')}
-        </Button>
-      </div>
       <Modal visible={showTaskModal} setModal={setShowTaskModal}>
         <AddTask
           boardId={boardId}
