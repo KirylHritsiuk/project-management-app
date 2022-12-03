@@ -12,3 +12,4 @@ export * from './Loader/Loader';
 export * from './BackdropLoader/BackdropLoader';
 export * from './InfoTitle/InfoTitle';
 export * from './ErrorTitle/ErrorTitle';
+export * from './ErrorBoundaryComponent/ErrorBoundaryComponent';

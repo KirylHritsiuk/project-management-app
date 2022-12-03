@@ -15,8 +15,12 @@
   @media screen and (max-width: 331px) {
     padding: var(--padding320);
   }
-  .board_error {
-    margin-top: 8em;
+  // .board_error {
+  //   margin-top: 8em;
+  // }
+  .board__empty {
+    margin: 0 auto;
+  
   }
 }
 

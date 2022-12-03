@@ -36,10 +36,10 @@ export const UsersSelect: FC<UsersSelectProps> = ({
 
   return (
     <TextField
-      select={users !== undefined}
+      select={!hasError}
       error={hasError}
       label={isLoading ? '' : users ? t('Users') : t('NoUsersError')}
-      value={isLoading || isError ? '' : user}
+      value={isLoading || hasError ? '' : user}
       onChange={onChange}
       InputProps={{
         startAdornment: (

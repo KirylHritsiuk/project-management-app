@@ -48,6 +48,7 @@
   "editFailed": "error, check connection",
   "userWasDel": "The user was deleted",
   "WrongError": "Sorry, something went wrong",
+  "BoundaryError": "Sorry, an unexpected error has occurred.",
   "FETCH_ERROR": "FETCH ERROR, check connection",
   "PARSING_ERROR": "PARSING ERROR, incorrect data",
   "TIMEOUT_ERROR": "TIMEOUT ERROR, request timed out!",
@@ -69,7 +70,7 @@
   "kate": "Katsiaryna Vakulskaya",
   "Kiryl": "Kiryl Hritsiuk",
   "Natalia": "Natalia Chinarova",
-  "Kiryl work": "",
+  "Kiryl work": "Environment organization. Project setup. Back/Front(end) deployment. Main Page. Popup. Error Handling",
   "Natalia work": "",
   "Kate work": "Home Page. Board Page. 'Not Found' Page.",
   "go home": "Go Home",
@@ -77,5 +78,8 @@
   "Personal information": "Personal information",
   "Edit": "Edit",
   "Tasks not found": "Tasks not found",
-  "You tasks": "You tasks"
+  "You tasks": "You tasks",
+  "isEmpty": "Board is empty",
+  "ChangesSuccess": "Changes has been saved", 
+  "ChangesFailed": "Changes hasn't been saved" 
 }

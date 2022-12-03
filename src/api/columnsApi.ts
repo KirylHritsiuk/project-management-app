@@ -59,6 +59,7 @@ export const columnsAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'columns', id: 'LIST' },
         { type: 'columnsSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     getColumnById: build.query<ColumnType, { boardId: string; columnId: string }>({

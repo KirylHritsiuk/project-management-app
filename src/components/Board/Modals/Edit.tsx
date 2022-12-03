@@ -1,5 +1,5 @@
 import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField, Box } from '@mui/material';
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
