@@ -30,6 +30,7 @@ export const useError = () => {
     // else {
     //   console.log('catch else', error);
     // }
+    // throw new Error('Ooops!');
   };
 
   return { catchError, setShow };

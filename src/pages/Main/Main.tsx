@@ -62,9 +62,7 @@ export function Main() {
         refetch={() => setRefetch((prev) => !prev)}
       />
       {isLoading && isFetching && <Loader className={styled.loader} />}
-      {isError && (
-        <ErrorTitle title={t('WrongError')} refetch={() => setRefetch((prev) => !prev)} />
-      )}
+      {isError && <ErrorTitle refetch={() => setRefetch((prev) => !prev)} data={!!data} />}
       <BoardList
         boards={data}
         id={id}

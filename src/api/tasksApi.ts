@@ -55,6 +55,7 @@ export const tasksAPI = api.injectEndpoints({
       invalidatesTags: [
         { type: 'tasks', id: 'LIST' },
         { type: 'tasksSet', id: 'LIST' },
+        { type: 'Board' },
       ],
     }),
     getTaskById: build.query<TaskType, { boardId: string; columnId: string; taskId: string }>({
