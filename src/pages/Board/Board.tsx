@@ -136,11 +136,16 @@ export const Board = () => {
   }
 
   return (
-    <Box component="main" className="column_section">
-      {isLoading || boardLoad ? (
-        <Loader />
-      ) : (
-        <>
+    <>
+      {
+        <Box
+          component="main"
+          className={
+            isLoading || boardLoad || isLoad || isUpdating
+              ? 'column_section opacity'
+              : 'column_section'
+          }
+        >
           <Box className="board__title-container">
             <IconButton onClick={() => goBack()} color="primary" className="board__back-btn">
               <ArrowBackIosNewIcon />
@@ -163,28 +168,24 @@ export const Board = () => {
           {!isError && columns.length === 0 && (
             <InfoTitle title={t('isEmpty')} className="board__empty" />
           )}
-          {isLoad || isUpdating ? (
-            <Loader />
-          ) : (
-            <DragDropContext onDragEnd={handleOrderInColumn}>
-              <Droppable droppableId="board" type="COLUMN" direction="horizontal">
-                {(provided) => (
-                  <Box className="columns" {...provided.droppableProps} ref={provided.innerRef}>
-                    {columns.map((column, index) => {
-                      return (
-                        <Column column={column} index={index} key={column._id} boardId={boardId} />
-                      );
-                    })}
-                    {provided.placeholder}
-                  </Box>
-                )}
-              </Droppable>
-            </DragDropContext>
-          )}
-
+          <DragDropContext onDragEnd={handleOrderInColumn}>
+            <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+              {(provided) => (
+                <Box className="columns" {...provided.droppableProps} ref={provided.innerRef}>
+                  {columns.map((column, index) => {
+                    return (
+                      <Column column={column} index={index} key={column._id} boardId={boardId} />
+                    );
+                  })}
+                  {provided.placeholder}
+                </Box>
+              )}
+            </Droppable>
+          </DragDropContext>
           <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
-        </>
-      )}
-    </Box>
+        </Box>
+      }
+      {(isLoading || boardLoad || isLoad || isUpdating) && <Loader />}
+    </>
   );
 };

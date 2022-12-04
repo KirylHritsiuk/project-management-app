@@ -12,16 +12,19 @@
   align-items: flex-start;
   overflow: hidden;
   flex-grow: 1;
+  position: relative;
   @media screen and (max-width: 331px) {
     padding: var(--padding320);
   }
-  // .board_error {
-  //   margin-top: 8em;
-  // }
+
   .board__empty {
     margin: 0 auto;
   
   }
+}
+
+.opacity {
+  opacity: 50%;
 }
 
 .board__title-container {
