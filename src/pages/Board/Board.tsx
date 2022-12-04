@@ -69,6 +69,7 @@ export const Board = () => {
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
+      if (result.destination.index === result.source.index) return;
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
       const newState = state.map((column, index) => {
@@ -89,6 +90,11 @@ export const Board = () => {
         })
         .catch((val) => catchError(val));
     } else {
+      if (
+        result.destination.index === result.source.index &&
+        result.destination.droppableId === result.source.droppableId
+      )
+        return;
       const value = Number(result.draggableId.slice(0, 1));
       const data = reorderQuoteMap({
         columnTasks: columns,
