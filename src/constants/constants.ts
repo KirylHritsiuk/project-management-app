@@ -23,3 +23,4 @@ export const TEAM = [
 ];
 
 export const MAIN_FILTER = 'usersFilter';
+export const USER_TOKEN = 'token';

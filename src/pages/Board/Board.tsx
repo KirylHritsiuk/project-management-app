@@ -22,13 +22,13 @@ import { GetColumnType, TaskType, UpdatedAllColumns } from '../../types/types';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './Board.scss';
 import { useBoardTitle } from 'hooks/useBoardTitle';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 export const Board = () => {
   const { t } = useTranslation();
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
   const boardId = id ?? '';
   const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
   const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();

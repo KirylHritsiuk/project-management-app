@@ -11,6 +11,7 @@ import { CreateUserType } from 'types/types';
 import { BackdropLoader } from 'components';
 
 import './SignUp.scss';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 export const SignUp: React.FC = () => {
   const { status } = useAppSelector(authUser);
@@ -18,6 +19,7 @@ export const SignUp: React.FC = () => {
   const [loginUser] = usersAPI.useLoginUserMutation();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { catchError } = useHandlingError();
 
   const {
     register,
@@ -32,7 +34,7 @@ export const SignUp: React.FC = () => {
     if ('data' in newUser) {
       const authUser = await loginUser({ login: data.login, password: data.password });
 
-      if ('data' in authUser)
+      if ('data' in authUser) {
         dispatch(
           showNotification({
             isShow: true,
@@ -40,22 +42,12 @@ export const SignUp: React.FC = () => {
             severity: 'success',
           })
         );
-      if ('error' in authUser) {
-        let message;
-        if ('status' in authUser.error)
-          message = (authUser.error.data as { message: string }).message;
-        else message = authUser.error.message!;
-        dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
+      } else {
+        catchError(authUser.error);
         reset({ name: '', login: '', password: '' });
       }
-    }
-
-    if ('error' in newUser) {
-      let message;
-      if ('status' in newUser.error) message = (newUser.error.data as { message: string }).message;
-      else message = newUser.error.message!;
-      dispatch(showNotification({ isShow: true, text: message, severity: 'error' }));
-      reset({ name: '', login: '', password: '' });
+    } else {
+      catchError(newUser.error);
     }
   };
 

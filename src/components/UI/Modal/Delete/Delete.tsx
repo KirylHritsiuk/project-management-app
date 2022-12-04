@@ -8,7 +8,9 @@ import { useAppDispatch } from 'hooks/hooks';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Button, Typography } from '@mui/material';
 import { updateUser } from 'store/slices/mainSlice';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
+import { showNotification } from 'store/slices/notificationSlice';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 interface DeleteProps {
   category: CategoryType;
@@ -20,23 +22,36 @@ interface DeleteProps {
 export const Delete: FC<DeleteProps> = ({ category, id, visible, setModal }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
   const { deleteItem, error } = useDelete(category, id);
 
   const onDelete = async () => {
     const result = await deleteItem();
+    // const result: { error: FetchBaseQueryError } = {
+    //   error: { status: 'CUSTOM_ERROR', error: 'blabla' },
+    // };
+    console.log('del');
     if ('data' in result) {
-      setModal((prev) => !prev);
-      setShow((prev) => ({
-        ...prev,
-        isShow: true,
-        text: `${t(category)} ${t('delSuccess')}`,
-        severity: 'success',
-      }));
       if (category === 'user') {
+        dispatch(
+          showNotification({
+            isShow: true,
+            text: `${t(category)} ${t('userDelSuccess')}`,
+            severity: 'success',
+          })
+        );
         dispatch(updateUser({ user: undefined }));
+      } else {
+        setShow((prev) => ({
+          ...prev,
+          isShow: true,
+          text: `${t(category)} ${t('delSuccess')}`,
+          severity: 'success',
+        }));
       }
+      setModal((prev) => !prev);
     } else {
+      console.log('del err');
       catchError(result.error, `${t(category)} ${t('delFailed')}`);
     }
   };
