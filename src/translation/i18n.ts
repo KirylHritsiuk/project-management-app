@@ -11,7 +11,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'ru',
+  lng: localStorage.getItem('lang') || 'ru',
   ns: ['translations'],
   defaultNS: 'translations',
 
