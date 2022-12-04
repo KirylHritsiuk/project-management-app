@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,15 +11,26 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { main, updateSearch } from 'store/slices/mainSlice';
 
 export const SearchForm: React.FC = () => {
-  const [searchValue, setSearchValue] = useState('');
+  const { searchInput } = useAppSelector(main);
+  const [searchValue, setSearchValue] = useState(searchInput);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setSearchValue(searchInput);
+  }, [searchInput]);
 
   const onSubmitForm = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    if (searchValue) navigate('/search', { state: searchValue });
+    if (searchValue) {
+      dispatch(updateSearch(searchValue));
+      navigate('/search');
+    }
   };
 
   return (

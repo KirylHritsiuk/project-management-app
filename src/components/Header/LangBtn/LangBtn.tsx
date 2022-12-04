@@ -49,13 +49,18 @@ export const LangBtn: React.FC = () => {
   const { i18n } = useTranslation();
 
   const changeLanguage = (event: React.SyntheticEvent<Element, Event>, checked: boolean) => {
-    if (checked) i18n.changeLanguage('ru');
-    else i18n.changeLanguage('en');
+    if (checked) {
+      i18n.changeLanguage('ru');
+      localStorage.setItem('lang', 'ru');
+    } else {
+      i18n.changeLanguage('en');
+      localStorage.setItem('lang', 'en');
+    }
   };
 
   return (
     <FormControlLabel
-      control={<MaterialUISwitch defaultChecked />}
+      control={<MaterialUISwitch checked={localStorage.getItem('lang') !== 'en'} />}
       label={undefined}
       onChange={changeLanguage}
       sx={{ m: 0 }}
