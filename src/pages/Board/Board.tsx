@@ -31,8 +31,8 @@ export const Board = () => {
   const { catchError, setShow } = useHandlingError();
   const boardId = id ?? '';
   const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
-  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
-  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
+  const [updatedColumns, { isLoading: isLoad }] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updateAllTasks, { isLoading: isUpdating }] = tasksAPI.useUpdateAllTasksMutation();
   const { title, boardLoad, boardError } = useBoardTitle(boardId);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
@@ -69,6 +69,7 @@ export const Board = () => {
   function handleOrderInColumn(result: DropResult) {
     if (!result.destination) return;
     if (result.type === 'COLUMN') {
+      if (result.destination.index === result.source.index) return;
       const state = reorder(columns, result.source.index, result.destination.index);
       setColumns(state);
       const newState = state.map((column, index) => {
@@ -89,6 +90,11 @@ export const Board = () => {
         })
         .catch((val) => catchError(val));
     } else {
+      if (
+        result.destination.index === result.source.index &&
+        result.destination.droppableId === result.source.droppableId
+      )
+        return;
       const value = Number(result.draggableId.slice(0, 1));
       const data = reorderQuoteMap({
         columnTasks: columns,
@@ -130,11 +136,16 @@ export const Board = () => {
   }
 
   return (
-    <Box component="main" className="column_section">
-      {isLoading || boardLoad ? (
-        <Loader />
-      ) : (
-        <>
+    <>
+      {
+        <Box
+          component="main"
+          className={
+            isLoading || boardLoad || isLoad || isUpdating
+              ? 'column_section opacity'
+              : 'column_section'
+          }
+        >
           <Box className="board__title-container">
             <IconButton onClick={() => goBack()} color="primary" className="board__back-btn">
               <ArrowBackIosNewIcon />
@@ -172,8 +183,9 @@ export const Board = () => {
             </Droppable>
           </DragDropContext>
           <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
-        </>
-      )}
-    </Box>
+        </Box>
+      }
+      {(isLoading || boardLoad || isLoad || isUpdating) && <Loader />}
+    </>
   );
 };

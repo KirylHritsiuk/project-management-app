@@ -4,5 +4,9 @@ import cn from 'classnames';
 import styled from './Loader.module.scss';
 
 export const Loader: React.FC<LoaderProps> = ({ className, ...props }) => {
-  return <div className={cn(styled.loader, className)} {...props}></div>;
+  return (
+    <div className={cn(styled.loader_wrapper)}>
+      <div className={cn(styled.loader, className)} {...props}></div>
+    </div>
+  );
 };
