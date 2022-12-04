@@ -20,26 +20,35 @@ export function Main() {
   const [isRefetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
-    const refetchBoard = async () => {
+    const refetchMain = async () => {
       if (isRefetch) {
         const resultUsers = await users.refetch();
         const resultBoards = await refetch();
-        setRefetch((prev) => !prev);
         if (resultUsers.isSuccess && resultBoards.isSuccess) {
           setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
+        } else if (resultBoards.isError) {
+          catchError(resultBoards.error);
+        } else if (resultUsers.isError) {
+          catchError(resultUsers.error);
         }
-      } else if (isError) {
-        catchError(error);
+        setRefetch((prev) => !prev);
       }
     };
-    refetchBoard();
+
+    refetchMain();
   }, [isRefetch]);
 
   useEffect(() => {
-    if (users.isError) {
+    if (!isRefetch && isError) {
+      catchError(error);
+    }
+  }, [isError]);
+
+  useEffect(() => {
+    if (!isRefetch && users.isError) {
       catchError(users.error);
     }
-  }, [users]);
+  }, [users.isError]);
 
   return (
     <Container

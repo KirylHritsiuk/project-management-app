@@ -1,4 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { boardsAPI } from 'api/boardsApi';
 import { useTranslation } from 'react-i18next';
 import { updateUser } from 'store/slices/mainSlice';
 import { logout } from 'store/slices/userSlice';
@@ -13,11 +14,15 @@ export const useHandlingError = () => {
   const dispatch = useAppDispatch();
 
   const ErrorLogout = (message: string | number) => {
-    if (message === '403' || message === 403) {
-      setTimeout(() => {
-        dispatch(logout());
-        dispatch(updateUser({ user: undefined }));
-      }, 1000);
+    switch (message) {
+      case '403':
+      case 403:
+        setTimeout(() => {
+          dispatch(logout());
+          dispatch(updateUser({ user: undefined }));
+          dispatch(boardsAPI.util.resetApiState());
+        }, 1000);
+        break;
     }
   };
 

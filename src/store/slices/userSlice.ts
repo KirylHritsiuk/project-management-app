@@ -73,7 +73,7 @@ export const authUserSlice = createSlice({
         state.id = decodedToken!.id;
         state.login = decodedToken!.login;
         state.status = 'idle';
-        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem(USER_TOKEN, action.payload.token);
       })
       .addMatcher(usersAPI.endpoints.loginUser.matchRejected, (state) => {
         state.status = 'failed';

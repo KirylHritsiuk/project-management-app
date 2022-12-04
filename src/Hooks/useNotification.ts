@@ -15,7 +15,6 @@ export const useNotification = () => {
 
   useEffect(() => {
     if (isShow.isShow) {
-      // console.log('if show', isShow);
       dispatch(showNotification(isShow));
     }
   }, [isShow]);
