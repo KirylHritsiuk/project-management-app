@@ -165,7 +165,7 @@ export const Board = () => {
           {isError && columns.length === 0 && (
             <ErrorTitle className="board_error" refetch={() => setRefetch((prev) => !prev)} />
           )}
-          {!isError && columns.length === 0 && (
+          {!isError && columns.length === 0 && !isLoading && (
             <InfoTitle title={t('isEmpty')} className="board__empty" />
           )}
           <DragDropContext onDragEnd={handleOrderInColumn}>
