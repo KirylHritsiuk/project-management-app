@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/project-management-app/static/css/main.505020c7.css",
+    "main.js": "/project-management-app/static/js/main.94fcfa7f.js",
+    "static/media/back.jpeg": "/project-management-app/static/media/back.bb4de1d2c10d2b04ec60.jpeg",
+    "static/media/icon.png": "/project-management-app/static/media/icon.71d9f3979a6305faf18f.png",
+    "static/media/Example.png": "/project-management-app/static/media/Example.fd07474a76f1c62eebd8.png",
+    "static/media/tired.svg": "/project-management-app/static/media/tired.31446e6813bafde62cfb4b05df4b9b67.svg",
+    "static/media/rssLogo.svg": "/project-management-app/static/media/rssLogo.f904814ecc7252033e70f532cbec437c.svg",
+    "static/media/notFound.svg": "/project-management-app/static/media/notFound.09d3a45f04e482b5d458dd6fd2c161d9.svg",
+    "index.html": "/project-management-app/index.html",
+    "static/media/Owner.svg": "/project-management-app/static/media/Owner.d5c426a785a2f4c92c4c3dbf4a1e9640.svg",
+    "main.505020c7.css.map": "/project-management-app/static/css/main.505020c7.css.map",
+    "main.94fcfa7f.js.map": "/project-management-app/static/js/main.94fcfa7f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.505020c7.css",
+    "static/js/main.94fcfa7f.js"
+  ]
+}
