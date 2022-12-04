@@ -12,7 +12,7 @@ import { CreateBoardType } from '../../../types/types';
 import { Modal } from '../../UI/Modal/Modal';
 import { LoadingButton } from '@mui/lab';
 import { updateUser } from 'store/slices/mainSlice';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 interface AddProps {
   visible: boolean;
@@ -24,7 +24,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export const Add: FC<AddProps> = ({ visible, setModal }) => {
   const { t } = useTranslation();
   const { id } = useAppSelector((state) => state.user);
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
   const dispatch = useAppDispatch();
   const { data: allUsers } = usersAPI.useGetUsersQuery('');
   const [addBoard, status] = boardsAPI.useCreateBoardMutation();

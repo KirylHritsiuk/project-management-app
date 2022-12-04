@@ -5,11 +5,11 @@ import styled from './Main.module.scss';
 import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 export function Main() {
   const { t } = useTranslation();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     id,

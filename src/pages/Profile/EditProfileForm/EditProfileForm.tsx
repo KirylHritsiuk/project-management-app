@@ -11,7 +11,7 @@ import { CreateUserType } from 'types/types';
 import { BackdropLoader } from 'components';
 
 import './EditProfileForm.scss';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 const editValuesInitial: { [key: string]: boolean } = {
   name: false,
@@ -29,7 +29,7 @@ export const EditProfileForm: React.FC<Props> = ({ setModal }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [editValues, setEditValues] = useState({ ...editValuesInitial });
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     register,

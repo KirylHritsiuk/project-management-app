@@ -12,7 +12,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { BackdropLoader } from 'components';
 
 import './AddTask.scss';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 type Props = {
   boardId: string;
@@ -25,7 +25,7 @@ export const AddTask: React.FC<Props> = ({ boardId, columnId, setShowTaskModal, 
   const { id: userId, users } = useAppSelector(authUser);
   const [createTask, status] = tasksAPI.useCreateTaskMutation();
   const { t } = useTranslation();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     register,
