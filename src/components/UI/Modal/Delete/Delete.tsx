@@ -46,7 +46,6 @@ export const Delete: FC<DeleteProps> = ({ category, id, visible, setModal }) => 
       }
       setModal((prev) => !prev);
     } else {
-      console.log('del err');
       catchError(result.error, `${t(category)} ${t('delFailed')}`);
     }
   };
