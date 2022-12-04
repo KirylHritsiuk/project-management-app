@@ -28,20 +28,22 @@ export const Board = () => {
   const { t } = useTranslation();
   const { goBack } = usePageNavigate();
   const { id } = useParams();
-  const { catchError, setShow } = useHandlingError();
   const boardId = id ?? '';
   const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
   const [updatedColumns, { isLoading: isLoad }] = columnsAPI.useUpdateAllColumnsMutation();
   const [updateAllTasks, { isLoading: isUpdating }] = tasksAPI.useUpdateAllTasksMutation();
-  const { title, boardLoad, boardError } = useBoardTitle(boardId);
+  const { title, boardLoad, boardIsError, boardError } = useBoardTitle(boardId);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
   const [isRefetch, setRefetch] = useState<boolean>(false);
+  const { catchError, setShow } = useHandlingError();
 
   useEffect(() => {
     if (data) {
       setColumns(data);
+    } else {
+      catchError(error);
     }
 
     setOrder(data && data.length > 0 ? Math.max(...data.map((o) => o.order)) + 1 : 0);
@@ -51,16 +53,22 @@ export const Board = () => {
     const refetchBoard = async () => {
       if (isRefetch) {
         const result = await refetch();
-        setRefetch((prev) => !prev);
         if (result.isSuccess) {
           setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
+        } else {
+          catchError(result.error);
         }
-      } else if (isError) {
-        catchError(error);
+        setRefetch((prev) => !prev);
       }
     };
     refetchBoard();
   }, [isRefetch]);
+
+  useEffect(() => {
+    if (boardIsError) {
+      catchError(boardError);
+    }
+  }, [boardIsError]);
 
   const changeVisible = () => {
     setVisible(!isVisible);
@@ -131,7 +139,7 @@ export const Board = () => {
     }
   }
 
-  if (boardError) {
+  if (title === '404') {
     return <Navigate to="/404" />;
   }
 
@@ -165,7 +173,7 @@ export const Board = () => {
           {isError && columns.length === 0 && (
             <ErrorTitle className="board_error" refetch={() => setRefetch((prev) => !prev)} />
           )}
-          {!isError && columns.length === 0 && (
+          {!isError && columns.length === 0 && !isLoading && (
             <InfoTitle title={t('isEmpty')} className="board__empty" />
           )}
           <DragDropContext onDragEnd={handleOrderInColumn}>

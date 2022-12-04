@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { boardsAPI } from 'api/boardsApi';
-import { MAIN_FILTER } from 'constants/constants';
+import { MAIN_FILTER, USER_TOKEN } from 'constants/constants';
 import { decodeToken } from 'react-jwt';
 import { RootState } from 'store/store';
 import { DecodedTokenType, GetBoardType } from 'types/types';
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem(USER_TOKEN);
 const userFilter = localStorage.getItem(MAIN_FILTER);
 let decodedToken;
 if (token) {

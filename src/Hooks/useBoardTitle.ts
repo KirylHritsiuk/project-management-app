@@ -1,10 +1,26 @@
 import { boardsAPI } from 'api/boardsApi';
 
 export const useBoardTitle = (boardId: string) => {
-  const { data, currentData, isLoading, isError } = boardsAPI.useGetBoardByIdQuery({ boardId });
+  const { currentData, isLoading, isError, error } = boardsAPI.useGetBoardByIdQuery({
+    boardId,
+  });
+
   if (currentData && 'title' in currentData) {
-    // console.log(currentData, data);
-    return { title: currentData.title, boardLoad: isLoading, boardError: isError };
+    return {
+      title: currentData.title,
+      boardLoad: isLoading,
+      boardIsError: isError,
+      boardError: error,
+    };
+  } else if (error && 'status' in error) {
+    if ((error.status as string) === '404' || error.status === 404) {
+      return {
+        title: '404',
+        boardLoad: isLoading,
+        boardIsError: isError,
+        boardError: error,
+      };
+    }
   }
-  return { title: undefined, boardLoad: isLoading, boardError: isError };
+  return { title: '', boardLoad: isLoading, boardIsError: isError, boardError: error };
 };

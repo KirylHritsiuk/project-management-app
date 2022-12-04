@@ -1,9 +1,9 @@
 import { api } from './api';
-import { BoardType, CreateBoardType, ErrorResponseType, GetBoardType } from 'types/types';
+import { BoardType, CreateBoardType, GetBoardType } from 'types/types';
 
 export const boardsAPI = api.injectEndpoints({
   endpoints: (build) => ({
-    createBoard: build.mutation<GetBoardType | ErrorResponseType, CreateBoardType>({
+    createBoard: build.mutation<GetBoardType, CreateBoardType>({
       query: (body) => ({
         url: '/boards',
         method: 'POST',
@@ -40,10 +40,7 @@ export const boardsAPI = api.injectEndpoints({
       ],
     }),
 
-    updateBoard: build.mutation<
-      GetBoardType | ErrorResponseType,
-      { boardId: string; body: CreateBoardType }
-    >({
+    updateBoard: build.mutation<GetBoardType, { boardId: string; body: CreateBoardType }>({
       query: ({ boardId, body }) => ({
         url: `/boards/${boardId}`,
         method: 'PUT',
@@ -55,7 +52,7 @@ export const boardsAPI = api.injectEndpoints({
       ],
     }),
 
-    getBoardById: build.query<BoardType | ErrorResponseType, { boardId: string }>({
+    getBoardById: build.query<BoardType, { boardId: string }>({
       query: ({ boardId }) => ({
         url: `/boards/${boardId}`,
         method: 'GET',
