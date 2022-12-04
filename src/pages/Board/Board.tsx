@@ -31,8 +31,8 @@ export const Board = () => {
   const { catchError, setShow } = useHandlingError();
   const boardId = id ?? '';
   const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
-  const [updatedColumns] = columnsAPI.useUpdateAllColumnsMutation();
-  const [updateAllTasks] = tasksAPI.useUpdateAllTasksMutation();
+  const [updatedColumns, { isLoading: isLoad }] = columnsAPI.useUpdateAllColumnsMutation();
+  const [updateAllTasks, { isLoading: isUpdating }] = tasksAPI.useUpdateAllTasksMutation();
   const { title, boardLoad, boardError } = useBoardTitle(boardId);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
@@ -163,20 +163,25 @@ export const Board = () => {
           {!isError && columns.length === 0 && (
             <InfoTitle title={t('isEmpty')} className="board__empty" />
           )}
-          <DragDropContext onDragEnd={handleOrderInColumn}>
-            <Droppable droppableId="board" type="COLUMN" direction="horizontal">
-              {(provided) => (
-                <Box className="columns" {...provided.droppableProps} ref={provided.innerRef}>
-                  {columns.map((column, index) => {
-                    return (
-                      <Column column={column} index={index} key={column._id} boardId={boardId} />
-                    );
-                  })}
-                  {provided.placeholder}
-                </Box>
-              )}
-            </Droppable>
-          </DragDropContext>
+          {isLoad || isUpdating ? (
+            <Loader />
+          ) : (
+            <DragDropContext onDragEnd={handleOrderInColumn}>
+              <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+                {(provided) => (
+                  <Box className="columns" {...provided.droppableProps} ref={provided.innerRef}>
+                    {columns.map((column, index) => {
+                      return (
+                        <Column column={column} index={index} key={column._id} boardId={boardId} />
+                      );
+                    })}
+                    {provided.placeholder}
+                  </Box>
+                )}
+              </Droppable>
+            </DragDropContext>
+          )}
+
           <Add visible={isVisible} setModal={setVisible} boardId={boardId} order={order} />
         </>
       )}
