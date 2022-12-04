@@ -6,10 +6,13 @@ import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHandlingError } from 'hooks/useHandlingError';
+// import { boardsAPI } from 'api/boardsApi';
+import { useAppDispatch } from 'hooks/hooks';
 
 export function Main() {
   const { t } = useTranslation();
   const { catchError, setShow } = useHandlingError();
+  // const dispatch = useAppDispatch();
 
   const {
     id,

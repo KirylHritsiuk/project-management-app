@@ -1,4 +1,3 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { boardsAPI } from 'api/boardsApi';
 import { useTranslation } from 'react-i18next';
 import { updateUser } from 'store/slices/mainSlice';
@@ -29,7 +28,6 @@ export const useHandlingError = () => {
   const catchError = (error: unknown, text?: string) => {
     if (isFetchBaseQueryError(error)) {
       const message = error.status as string;
-      console.log('catch fetch', 'mes:', message, 'text:', text, 'err', error);
       setShow((prev) => ({
         ...prev,
         isShow: true,
@@ -40,7 +38,6 @@ export const useHandlingError = () => {
     } else if (isSerializedError(error)) {
       const message = error.message as string;
       const code = error.code as string;
-      console.log('catch ser', message, error.code);
       setShow((prev) => ({
         ...prev,
         isShow: true,
@@ -48,19 +45,7 @@ export const useHandlingError = () => {
         severity: 'error',
       }));
       ErrorLogout(code);
-    } else {
-      console.log('catch else', error);
-      //   const message = (error as FetchBaseQueryError).status as string;
-      //   console.log('catch fetch', 'mes:', message, 'text:', text, 'err', error);
-      //   setShow((prev) => ({
-      //     ...prev,
-      //     isShow: true,
-      //     text: `${t(message)} ${text ?? ''}`,
-      //     severity: 'error',
-      //   }));
-      //   ErrorLogout(message);
     }
-    // throw new Error('Ooops!');
   };
 
   return { catchError, setShow };

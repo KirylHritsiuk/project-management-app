@@ -21,7 +21,7 @@ export const NotFoundPage = () => {
       }}
       className={styles.section_notFound}
     >
-      <h1>Oops!</h1>
+      <h2>{t('NotFound')}</h2>
       <div className={styles.section_images}>
         <img src={NotFound} alt="404" />;
         <img src={Face} alt="sadness face" />;

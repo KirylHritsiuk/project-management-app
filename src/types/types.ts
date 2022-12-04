@@ -215,8 +215,3 @@ export type NotificationType = {
 };
 
 export type CategoryType = 'user' | 'board' | 'column' | 'task';
-
-export type ErrorResponseType = {
-  statusCode: number;
-  message: string;
-};

@@ -1,5 +1,5 @@
 import { Autocomplete, Checkbox, InputAdornment, MenuItem, TextField, Box } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ReactComponent as OwnerIcon } from './Owner.svg';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -33,18 +33,27 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const [owner, setOwner] = useState<string>(data.owner);
   const [users, setUsers] = useState<GetUserType[]>(userList);
   const ids = users.map((u) => u._id);
+  const idsInit = userList.map((u) => u._id);
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<CreateBoardType>({
-    defaultValues: { title: data.title, owner, users: ids },
+    defaultValues: { title: data.title, owner, users: idsInit },
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setOwner(event.target.value);
   };
+
+  useEffect(() => {
+    if (!visible) {
+      reset();
+      setUsers(userList);
+    }
+  }, [visible]);
 
   const onSubmit = async (formData: CreateBoardType) => {
     const result = await editBoard({ boardId: data._id, body: { ...formData, users: ids } });
@@ -109,7 +118,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
             <Autocomplete
               multiple
               disableCloseOnSelect
-              value={users}
+              value={!visible ? userList : users}
               options={allUsers || []}
               getOptionLabel={(option) => option!.login}
               renderOption={(props, option, { selected }) => (
@@ -125,7 +134,7 @@ export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
               )}
               style={{ width: 300 }}
               renderInput={(params) => (
-                <TextField {...params} label={t('Users')} placeholder={t('Search') as string} />
+                <TextField {...params} label={t('Users')} placeholder={`${t('Search')}`} />
               )}
               onChange={(_, data) => {
                 setUsers(data);

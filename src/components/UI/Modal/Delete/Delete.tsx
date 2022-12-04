@@ -10,7 +10,6 @@ import { Box, Button, Typography } from '@mui/material';
 import { updateUser } from 'store/slices/mainSlice';
 import { useHandlingError } from 'hooks/useHandlingError';
 import { showNotification } from 'store/slices/notificationSlice';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 interface DeleteProps {
   category: CategoryType;
@@ -27,10 +26,6 @@ export const Delete: FC<DeleteProps> = ({ category, id, visible, setModal }) => 
 
   const onDelete = async () => {
     const result = await deleteItem();
-    // const result: { error: FetchBaseQueryError } = {
-    //   error: { status: 'CUSTOM_ERROR', error: 'blabla' },
-    // };
-    console.log('del');
     if ('data' in result) {
       if (category === 'user') {
         dispatch(
