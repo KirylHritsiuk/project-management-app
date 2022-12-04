@@ -15,11 +15,13 @@ if (token) {
 interface Main {
   user: string | undefined | null;
   boards: GetBoardType[];
+  searchInput: string;
 }
 
 const initialState: Main = {
   user: userFilter ?? decodedToken?.id,
   boards: [],
+  searchInput: '',
 };
 
 export const mainSlice = createSlice({
@@ -33,6 +35,9 @@ export const mainSlice = createSlice({
         localStorage.removeItem(MAIN_FILTER);
       }
     },
+    updateSearch: (state, action: { payload: string }) => {
+      state.searchInput = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addMatcher(boardsAPI.endpoints.getBoards.matchFulfilled, (state, action) => {
@@ -43,6 +48,6 @@ export const mainSlice = createSlice({
 
 export const main = (state: RootState) => state.main;
 
-export const { updateUser } = mainSlice.actions;
+export const { updateUser, updateSearch } = mainSlice.actions;
 
 export default mainSlice.reducer;

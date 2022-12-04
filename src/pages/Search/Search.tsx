@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container } from '@mui/material';
 import { ErrorTitle, InfoTitle, Loader, Task } from 'components';
 import { tasksAPI } from 'api/tasksApi';
 import { boardsAPI } from 'api/boardsApi';
+import { useHandlingError } from 'hooks/useHandlingError';
+import { useAppDispatch, useAppSelector } from 'hooks/hooks';
+import { main, updateSearch } from 'store/slices/mainSlice';
 
 import './Search.scss';
-import { useHandlingError } from 'hooks/useHandlingError';
 
 export const Search: React.FC = () => {
-  const { state: searchInput } = useLocation();
+  const { searchInput } = useAppSelector(main);
   const {} = boardsAPI.useGetBoardsQuery('');
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { catchError, setShow } = useHandlingError();
-  if (!searchInput) navigate('/main');
   const {
     data: tasks,
     isFetching,
@@ -40,6 +40,12 @@ export const Search: React.FC = () => {
     };
     refetchBoard();
   }, [isRefetch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(updateSearch(''));
+    };
+  }, [dispatch]);
 
   return (
     <Container component="main" className="search">
