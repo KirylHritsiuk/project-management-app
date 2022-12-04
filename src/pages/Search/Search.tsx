@@ -7,14 +7,14 @@ import { tasksAPI } from 'api/tasksApi';
 import { boardsAPI } from 'api/boardsApi';
 
 import './Search.scss';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 export const Search: React.FC = () => {
   const { state: searchInput } = useLocation();
   const {} = boardsAPI.useGetBoardsQuery('');
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
   if (!searchInput) navigate('/main');
   const {
     data: tasks,

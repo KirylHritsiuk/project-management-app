@@ -3,9 +3,10 @@ import { usersAPI } from 'api/usersApi';
 import { DecodedTokenType, UserStateType } from 'types/types';
 import { RootState } from 'store/store';
 import { decodeToken, isExpired } from 'react-jwt';
+import { USER_TOKEN } from 'constants/constants';
 
 const getInitialState = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem(USER_TOKEN);
   if (token && !isExpired(token)) {
     const decodedToken = decodeToken(token) as DecodedTokenType;
     return {
@@ -18,7 +19,7 @@ const getInitialState = () => {
       users: null,
     };
   } else {
-    localStorage.removeItem('token');
+    localStorage.removeItem(USER_TOKEN);
     return {
       isAuth: false,
       token: null,
@@ -38,7 +39,7 @@ export const authUserSlice = createSlice({
   initialState,
   reducers: {
     logout: () => {
-      localStorage.removeItem('token');
+      localStorage.removeItem(USER_TOKEN);
       return {
         isAuth: false,
         token: null,
@@ -92,7 +93,7 @@ export const authUserSlice = createSlice({
         state.status = 'loading';
       })
       .addMatcher(usersAPI.endpoints.deleteUser.matchFulfilled, (state) => {
-        localStorage.removeItem('token');
+        localStorage.removeItem(USER_TOKEN);
         state.isAuth = false;
         state.token = null;
         state.id = '';

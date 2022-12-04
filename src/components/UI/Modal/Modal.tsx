@@ -1,10 +1,11 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { ModalProps } from './Modal.props';
 import styles from './Modal.module.scss';
 import cn from 'classnames';
 import { Portal } from '../Portal/Portal';
 import { motion } from 'framer-motion';
 import { useMount } from 'hooks/useMount';
+import { useAppSelector } from 'hooks/hooks';
 
 const variants = {
   open: { opacity: 1, scale: 1 },
@@ -15,14 +16,20 @@ const variants = {
   initOverlay: { opacity: 0 },
 };
 
-export const Modal: FC<ModalProps> = (props) => {
-  const { className, visible, setModal, children } = props;
+export const Modal: FC<ModalProps> = ({ className, visible, setModal, children }) => {
+  const { token } = useAppSelector((state) => state.user);
   const { mounted } = useMount(visible);
+
+  useEffect(() => {
+    if (!token) {
+      setModal(false);
+    }
+  }, [token]);
 
   if (mounted) {
     return (
       <Portal>
-        <div className={styles.modal}>
+        <motion.div className={styles.modal}>
           <motion.div
             className={styles.overlay}
             onClick={() => setModal(false)}
@@ -40,7 +47,7 @@ export const Modal: FC<ModalProps> = (props) => {
           >
             {children}
           </motion.div>
-        </div>
+        </motion.div>
       </Portal>
     );
   }

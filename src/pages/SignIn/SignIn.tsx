@@ -11,12 +11,14 @@ import { LoginUserType } from 'types/types';
 import { BackdropLoader } from 'components';
 
 import './SignIn.scss';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 export const SignIn: React.FC = () => {
   const { status } = useAppSelector(authUser);
   const [loginUser] = usersAPI.useLoginUserMutation();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { catchError } = useHandlingError();
 
   const {
     register,
@@ -27,7 +29,7 @@ export const SignIn: React.FC = () => {
 
   const onSubmitForm = async (data: LoginUserType) => {
     const authUser = await loginUser({ ...data });
-    if ('data' in authUser)
+    if ('data' in authUser) {
       dispatch(
         showNotification({
           isShow: true,
@@ -35,14 +37,26 @@ export const SignIn: React.FC = () => {
           severity: 'success',
         })
       );
-    if ('error' in authUser) {
-      let message;
-      if ('status' in authUser.error)
-        message = (authUser.error.data as { message: string }).message;
-      else message = authUser.error.message!;
-      dispatch(showNotification({ isShow: true, text: t(message), severity: 'error' }));
+    } else {
+      catchError(authUser.error);
       reset({ login: '', password: '' });
     }
+    // if ('data' in authUser)
+    //   dispatch(
+    //     showNotification({
+    //       isShow: true,
+    //       text: `${t('Welcome')}, ${data.login}!`,
+    //       severity: 'success',
+    //     })
+    //   );
+    // if ('error' in authUser) {
+    //   let message;
+    //   if ('status' in authUser.error)
+    //     message = (authUser.error.data as { message: string }).message;
+    //   else message = authUser.error.message!;
+    //   dispatch(showNotification({ isShow: true, text: t(message), severity: 'error' }));
+    //   reset({ login: '', password: '' });
+    // }
   };
 
   return (

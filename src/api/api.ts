@@ -1,12 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { isExpired } from 'react-jwt';
-import { API_BASE_URL } from '../constants/constants';
-import { RootState } from '../store/store';
+import { API_BASE_URL, USER_TOKEN } from '../constants/constants';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).user.token;
+  prepareHeaders: (headers) => {
+    const token = localStorage.getItem(USER_TOKEN);
     if (token && !isExpired(token)) {
       headers.set('Authorization', `Bearer ${token}`);
     }

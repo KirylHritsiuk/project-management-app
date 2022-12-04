@@ -19,7 +19,7 @@ import { ReactComponent as OwnerIcon } from '../Owner.svg';
 import { main } from 'store/slices/mainSlice';
 
 import './TaskModal.scss';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 type Props = {
   task: TaskType;
@@ -44,7 +44,7 @@ export const TaskModal: React.FC<Props> = ({ task }) => {
   );
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     register,

@@ -11,7 +11,7 @@ import { CreateBoardType, GetBoardType, GetUserType } from '../../../types/types
 import { Modal } from '../../UI/Modal/Modal';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { LoadingButton } from '@mui/lab';
-import { useError } from 'hooks/useError';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 interface EditProps {
   data: GetBoardType;
@@ -24,7 +24,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export const Edit: FC<EditProps> = ({ data, visible, setModal }) => {
   const { t } = useTranslation();
-  const { catchError, setShow } = useError();
+  const { catchError, setShow } = useHandlingError();
 
   const [editBoard, status] = boardsAPI.useUpdateBoardMutation();
 
