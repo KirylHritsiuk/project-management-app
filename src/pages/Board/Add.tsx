@@ -1,13 +1,12 @@
 import { Box, TextField } from '@mui/material';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import SaveIcon from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
-import { showNotification } from 'store/slices/notificationSlice';
-import { useAppDispatch } from 'hooks/hooks';
 import { columnsAPI } from '../../api/columnsApi';
 import { Modal } from 'components';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 interface AddProps {
   visible: boolean;
@@ -18,8 +17,8 @@ interface AddProps {
 
 export const Add: FC<AddProps> = ({ visible, setModal, boardId, order }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const [addColumn, status] = columnsAPI.useCreateColumnMutation();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     register,
@@ -30,39 +29,18 @@ export const Add: FC<AddProps> = ({ visible, setModal, boardId, order }) => {
     defaultValues: { title: '' },
   });
 
-  useEffect(() => {
-    if ('error' in status && status.error && 'status' in status.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(status.error.status as string)} ${t('column')} ${t('addFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
-  }, [status.isError]);
-
   const onSubmit: SubmitHandler<{ title: string }> = async (data) => {
     const result = await addColumn({ boardId, body: { title: data.title.trim(), order } });
-    if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('column')} ${t('addFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
     if ('data' in result) {
+      setShow({
+        isShow: true,
+        text: `${t('column')} ${t('addSuccess')}`,
+        severity: 'success',
+      });
       setModal((prev) => !prev);
       reset();
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('column')} ${t('addSuccess')}`,
-          severity: 'success',
-        })
-      );
+    } else {
+      catchError(result.error, `${t('column')} ${t('addFailed')}`);
     }
   };
 

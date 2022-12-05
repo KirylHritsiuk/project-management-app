@@ -7,11 +7,18 @@ import NotFound from './assets/notFound.svg';
 import Face from './assets/tired.svg';
 import styles from './NotFoundPage.module.scss';
 import { NavLink } from 'react-router-dom';
+import { pageAnimation } from 'constants/animation';
+import { motion } from 'framer-motion';
 
 export const NotFoundPage = () => {
   const { t } = useTranslation();
   return (
     <Box
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
       sx={{
         bgcolor: '#106354',
         display: 'flex',

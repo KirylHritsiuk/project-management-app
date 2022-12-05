@@ -12,6 +12,8 @@ import { BackdropLoader } from 'components';
 
 import './SignUp.scss';
 import { useHandlingError } from 'hooks/useHandlingError';
+import { pageAnimation } from 'constants/animation';
+import { motion } from 'framer-motion';
 
 export const SignUp: React.FC = () => {
   const { status } = useAppSelector(authUser);
@@ -52,7 +54,14 @@ export const SignUp: React.FC = () => {
   };
 
   return (
-    <Container component="main" className="registr">
+    <Container
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
+      className="registr"
+    >
       <BackdropLoader open={status === 'loading'} />
 
       <h2 className="registr__title">{t('Create new account')}</h2>
