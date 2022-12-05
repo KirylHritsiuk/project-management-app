@@ -68,7 +68,13 @@ export const Search: React.FC = () => {
           )}
         </>
       )}
-      {isError && <ErrorTitle refetch={() => setRefetch((prev) => !prev)} />}
+      {isError && (
+        <ErrorTitle
+          refetch={() => setRefetch((prev) => !prev)}
+          data={!!tasks}
+          isFetching={isRefetch}
+        />
+      )}
     </Container>
   );
 };

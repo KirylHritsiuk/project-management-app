@@ -5,4 +5,5 @@ export interface ErrorTitleProps
   title?: string;
   refetch: () => void;
   data?: boolean;
+  isFetching: boolean;
 }
