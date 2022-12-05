@@ -117,8 +117,8 @@ const Home = () => {
                 variants={textAnimation}
                 initial="hidden"
                 whileInView="visible"
-                custom={4}
-                viewport={{ amount: 0.4, once: true }}
+                custom={3}
+                viewport={{ amount: 0.3, once: true }}
               >
                 {t(item.name)}
               </motion.h3>
@@ -126,7 +126,7 @@ const Home = () => {
                 variants={textAnimation}
                 initial="hidden"
                 whileInView="visible"
-                custom={5}
+                custom={4}
                 viewport={{ amount: 0.4, once: true }}
               >
                 {t(item.desc)}
