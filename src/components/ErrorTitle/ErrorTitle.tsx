@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ErrorTitleProps } from './ErrorTitle.props';
 import styled from './ErrorTitle.module.scss';
 import cn from 'classnames';
-import { InfoTitle, text } from 'components';
+import { InfoTitle } from 'components';
+import { text } from 'constants/animation';
 import { useTranslation } from 'react-i18next';
 
 export const ErrorTitle = ({ title, className, refetch, data, isFetching }: ErrorTitleProps) => {

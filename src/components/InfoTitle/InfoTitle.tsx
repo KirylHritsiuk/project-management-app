@@ -3,12 +3,7 @@ import { motion } from 'framer-motion';
 import { InfoTitleProps } from './InfoTitle.props';
 import styled from './InfoTitle.module.scss';
 import cn from 'classnames';
-
-export const text = {
-  init: { opacity: 0, scale: 0.5 },
-  anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
-  exit: { opacity: 0, scale: 0.5, transition: { duration: 0.5 } },
-};
+import { text } from 'constants/animation';
 
 export const InfoTitle = ({ title, className }: InfoTitleProps) => {
   return (

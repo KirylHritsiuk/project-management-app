@@ -8,15 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetUserFromId } from 'hooks/useGetUserFromId';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAppSelector } from 'hooks/hooks';
-import { text } from 'components';
-
-const card = {
-  init: { opacity: 0, scale: 0.5 },
-  anim: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
-  exit: { opacity: 0, scale: 0.5, transition: { duration: 1 } },
-  hover: { scale: 1.07 },
-  tab: { scale: 1.07 },
-};
+import { card, text } from 'constants/animation';
 
 export const Board: React.FC<BoardProps> = ({ data }) => {
   const { t } = useTranslation();
@@ -31,12 +23,12 @@ export const Board: React.FC<BoardProps> = ({ data }) => {
       <Card
         variant="outlined"
         component={motion.div}
-        // variants={card}
-        // whileHover="hover"
-        // whileTap="tab"
-        // initial="init"
-        // animate="anim"
-        // exit="exit"
+        variants={card}
+        whileHover="hover"
+        whileTap="tab"
+        initial="init"
+        animate="anim"
+        exit="exit"
         className={styled.card}
       >
         <div className={styled.header}>
