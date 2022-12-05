@@ -1,0 +1,36 @@
+.profile__user-tasks {
+  width: 300px;
+  background: var(--containerCardBG);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.profile__tasks-container {
+  padding: 10px 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.profile__tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile__subtitle {
+  color: white;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: var(--headerColumnBG);
+  font-size: var(--headerCardTitleSize);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+.profile__no-tasks {
+  text-align: center;
+  margin-top: 30px;
+  font-weight: bold;
+}

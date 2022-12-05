@@ -1,0 +1,10 @@
+.tasklist_container {
+  flex-grow: 1;
+  padding: 15px 10px;
+  padding-bottom: 0;
+}
+
+.task-list__add-task-btn {
+  margin-top: 10px !important;
+  background: var(--bodyCardBG) !important;
+}

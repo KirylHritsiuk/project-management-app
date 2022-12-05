@@ -1,0 +1,12 @@
+.main {
+	position: relative;
+	@media screen and (max-width: 331px) {
+		padding: var(--padding320)!important;
+	}
+}
+
+.loader {
+	position: absolute;
+	z-index: 1;
+	top: 50%;
+}

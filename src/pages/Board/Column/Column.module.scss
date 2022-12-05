@@ -1,0 +1,14 @@
+.task_list {
+  max-height: calc(100vh - 380px);
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+}
+
+.wrapper__button {
+  background-color: rgba(228, 228, 228, 1);
+  display: flex;
+  padding: 0 10px 10px 10px;
+}

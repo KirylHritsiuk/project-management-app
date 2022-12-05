@@ -1,0 +1,9 @@
+.empty {
+	display: flex;
+	text-transform: uppercase;
+	color: gray;
+	text-align: center;
+	@media screen and (max-width: 767px) {
+		font-size: 2rem!important;
+	}
+}

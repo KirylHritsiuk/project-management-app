@@ -1,0 +1,178 @@
+$middle: 1000px;
+
+.public_page {
+  display: flex !important;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.home_section {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.home_main {
+  display: flex;
+  width: 40%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.home_main h2 {
+    text-align: center;
+    font-size: 4em;
+    color: #1e5945;
+  }
+
+.home_main p {
+    text-align: center;
+    font-size: 2em;
+  }
+
+.home_image {
+  width: 50%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+
+.project_section {
+  display: flex;
+  padding: 10px;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: url(./assets/back.jpeg);
+}
+
+.project_image {
+  opacity: 0.3;
+  width: 100%;
+  height: auto;
+  position: absolute;
+}
+
+.project_main {
+  display: flex;
+  width: 300px;
+  height: max-content;
+  padding: 10px;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(239, 239, 240, 0.7);
+  border-radius: var(--radius);
+}
+
+.project_main h2,
+.project_main span,
+.about_section h2 {
+  font-size: 2em;
+  color: #1e5945;
+}
+
+.project_main p {
+  font-size: 3em;
+}
+
+.project_rss {
+  max-width: 200px;
+}
+
+.project_description {
+  max-width: 60%;
+  padding: 10px;
+  font-size: 1.5em;
+  background-color: rgba(239, 239, 240, 0.7);
+  text-align: center;
+  border-radius: var(--radius);
+}
+
+.about_section {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+}
+
+.about_members {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.about_member {
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  user-select: none;
+}
+
+.about_members p,
+.about_members h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.about_members h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+.about_member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  max-width: 300px;
+}
+
+.home_background_image,
+.about_image {
+  position: absolute;
+  opacity: 0.5;
+  width: 100%;
+  height: auto;
+}
+
+.about_member_image {
+  width: 300px;
+  height: 50px;
+}
+
+.home_back_image {
+  position: absolute;
+  opacity: 0.5;
+  width: 100%;
+  height: auto;
+  width: 1px;
+  height: 1px;
+  background-repeat: repeat;
+}
+
+.about_member_head {
+  max-width: 300px;
+}
+
+
+@media (max-width: 900px) {
+  .home_main {
+    width: 100%;
+  }
+  .home_image {
+    width: 70%;
+  }
+
+  .project_description {
+    max-width: 100%;
+  }
+}

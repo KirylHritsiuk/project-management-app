@@ -1,0 +1,30 @@
+.auth {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.auth__form {
+  display: flex;
+  margin-top: 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.auth__input {
+  max-width: 300px;
+  width: 100%;
+  margin-bottom: 24px !important;
+}
+
+.auth__error-input {
+  width: 300px;
+}
+
+.auth__text {
+  margin-top: 30px;
+}
+
+.auth__button {
+  width: max-content;
+}

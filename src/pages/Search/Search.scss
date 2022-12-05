@@ -1,0 +1,17 @@
+.search__tasks {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.search__task {
+  width: 300px;
+}
+
+.search__no-task {
+  margin-top: 40px !important;
+  text-align: center;
+  font-size: 30px;
+  justify-content: center;
+}

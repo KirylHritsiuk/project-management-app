@@ -1,0 +1,23 @@
+.profile__form {
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-form__title {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-form__field {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.profile__input {
+  flex-grow: 1;
+  margin-bottom: 24px !important;
+}
+

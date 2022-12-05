@@ -1,0 +1,104 @@
+@mixin topBorders($radius) {
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+
+.column_section {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+  flex-grow: 1;
+  position: relative;
+  @media screen and (max-width: 331px) {
+    padding: var(--padding320);
+  }
+
+  .board__empty {
+    margin: 0 auto;
+  
+  }
+}
+
+.opacity {
+  opacity: 50%;
+}
+
+.board__title-container {
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.board__title {
+  margin-left: 15px;
+}
+
+.board__add-column-btn {
+  margin-left: auto !important;
+}
+
+.columns {
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.card_column {
+  width: 300px;
+  flex-shrink: 0;
+  flex-grow: 1;
+  background: var(--containerCardBG);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+
+  @media screen and (max-width: 374px) {
+    width: 300px;
+  }
+}
+
+.card_title {
+  position: relative;
+  display: flex;
+  color: white;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background-color: var(--headerColumnBG);
+  @include topBorders(var(--radius));
+}
+
+.card_title {
+  flex-grow: 1;
+  height: var(--headerCardTitleHeight);
+
+  h3 {
+    text-align: center;
+
+    font-size: var(--headerCardTitleSize);
+    font-weight: var(--headerCardTitleWeight);
+    line-height: var(--headerCardTitleLineHeight);
+    color: var(--headerCardTitleColor);
+
+    cursor: pointer;
+  }
+
+  input {
+    font-size: var(--headerCardTitleSize);
+    font-weight: var(--headerCardTitleWeight);
+    line-height: var(--headerCardTitleLineHeight);
+    color: var(--headerCardTitleColor);
+    box-sizing: border-box !important;
+    height: 35px;
+  }
+}
+

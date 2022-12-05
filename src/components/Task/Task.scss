@@ -1,0 +1,31 @@
+.task {
+  height: 93px;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.task__title {
+  text-align: center;
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task__body {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.task__creator {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  line-height: 16px;
+  color: #80878f;
+}
