@@ -21,21 +21,22 @@ $middle: 1000px;
   align-items: center;
 }
 
-.home_main h2 {
-  text-align: center;
-  font-size: 4em;
-  color: #1e5945;
-}
+h2 {
+    text-align: center;
+    font-size: 4em;
+    color: #1e5945;
+  }
+
+p {
+    text-align: center;
+    font-size: 2em;
+  }
 
 .home_image {
   width: 50%;
   height: auto;
 }
 
-.home_main p {
-  text-align: center;
-  font-size: 2em;
-}
 
 .project_section {
   display: flex;
@@ -106,6 +107,8 @@ $middle: 1000px;
 
 .about_member {
   box-sizing: border-box;
+  border-radius: var(--radius);
+  user-select: none;
 }
 
 .about_member:hover {
