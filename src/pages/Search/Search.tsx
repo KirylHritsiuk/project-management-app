@@ -19,8 +19,6 @@ export const Search: React.FC = () => {
   const {
     data: tasks,
     isFetching,
-    isLoading,
-    isSuccess,
     isError,
     error,
     refetch,
