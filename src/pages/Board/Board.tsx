@@ -29,10 +29,10 @@ export const Board = () => {
   const { goBack } = usePageNavigate();
   const { id } = useParams();
   const boardId = id ?? '';
+  const { title, boardLoad, boardIsError, boardError } = useBoardTitle(boardId);
   const { data, isLoading, isError, error, refetch } = columnsAPI.useGetBoardQuery({ boardId });
   const [updatedColumns, { isLoading: isLoad }] = columnsAPI.useUpdateAllColumnsMutation();
   const [updateAllTasks, { isLoading: isUpdating }] = tasksAPI.useUpdateAllTasksMutation();
-  const { title, boardLoad, boardIsError, boardError } = useBoardTitle(boardId);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [order, setOrder] = useState<number>(0);
   const [columns, setColumns] = useState<GetColumnType[]>([]);
@@ -171,7 +171,11 @@ export const Board = () => {
             </Button>
           </Box>
           {isError && columns.length === 0 && (
-            <ErrorTitle className="board_error" refetch={() => setRefetch((prev) => !prev)} />
+            <ErrorTitle
+              className="board_error"
+              refetch={() => setRefetch((prev) => !prev)}
+              isFetching={isRefetch}
+            />
           )}
           {!isError && columns.length === 0 && !isLoading && (
             <InfoTitle title={t('isEmpty')} className="board__empty" />

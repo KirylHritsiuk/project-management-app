@@ -6,13 +6,10 @@ import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHandlingError } from 'hooks/useHandlingError';
-// import { boardsAPI } from 'api/boardsApi';
-import { useAppDispatch } from 'hooks/hooks';
 
 export function Main() {
   const { t } = useTranslation();
   const { catchError, setShow } = useHandlingError();
-  // const dispatch = useAppDispatch();
 
   const {
     id,
@@ -28,7 +25,7 @@ export function Main() {
         const resultUsers = await users.refetch();
         const resultBoards = await refetch();
         if (resultUsers.isSuccess && resultBoards.isSuccess) {
-          setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
+          setShow((prev) => ({ ...prev, isShow: true, text: t('Connect'), severity: 'success' }));
         } else if (resultBoards.isError) {
           catchError(resultBoards.error);
         } else if (resultUsers.isError) {
@@ -74,7 +71,13 @@ export function Main() {
         refetch={() => setRefetch((prev) => !prev)}
       />
       {isLoading && isFetching && <Loader className={styled.loader} />}
-      {isError && <ErrorTitle refetch={() => setRefetch((prev) => !prev)} data={!!data} />}
+      {isError && (
+        <ErrorTitle
+          refetch={() => setRefetch((prev) => !prev)}
+          data={!!data}
+          isFetching={isRefetch}
+        />
+      )}
       <BoardList
         boards={data}
         id={id}
