@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Edit } from './Edit';
-import { AnimatePresence, motion } from 'framer-motion';
-import { text } from 'components';
+import { motion } from 'framer-motion';
+import { text } from 'constants/animation';
 
 interface TitleProps {
   boardId: string;

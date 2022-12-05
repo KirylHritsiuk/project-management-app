@@ -18,7 +18,7 @@ export const BoardList: FC<BoardListProps> = ({ boards, id, user, isLoading }) =
   const { t } = useTranslation();
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div className={styled.list}>
         {boards && boards.map((user) => <Board key={user._id} data={user} />)}
         {boards && boards.length == 0 && !isLoading && (
