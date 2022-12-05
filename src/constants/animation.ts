@@ -1,3 +1,15 @@
+export const pageAnimation = {
+  initial: {
+    opacity: 0,
+  },
+  in: {
+    opacity: 1,
+  },
+  out: {
+    opacity: 0,
+  },
+};
+
 export const textAnimation = {
   hidden: {
     y: 20,
@@ -9,6 +21,7 @@ export const textAnimation = {
     transition: { delay: custom * 0.2 },
   }),
 };
+
 export const imgAnimation = {
   hidden: {
     x: 50,

@@ -3,22 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { Container } from '@mui/material';
 import { ErrorTitle, InfoTitle, Loader, Task } from 'components';
 import { tasksAPI } from 'api/tasksApi';
-import { boardsAPI } from 'api/boardsApi';
 import { useHandlingError } from 'hooks/useHandlingError';
 import { useAppDispatch, useAppSelector } from 'hooks/hooks';
 import { main, updateSearch } from 'store/slices/mainSlice';
 
 import './Search.scss';
+import { pageAnimation } from 'constants/animation';
+import { motion } from 'framer-motion';
 
 export const Search: React.FC = () => {
   const { searchInput } = useAppSelector(main);
-  const {} = boardsAPI.useGetBoardsQuery('');
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { catchError, setShow } = useHandlingError();
   const {
     data: tasks,
     isFetching,
+    isLoading,
+    isSuccess,
     isError,
     error,
     refetch,
@@ -30,16 +32,24 @@ export const Search: React.FC = () => {
     const refetchBoard = async () => {
       if (isRefetch) {
         const result = await refetch();
-        setRefetch((prev) => !prev);
         if (result.isSuccess) {
           setShow((prev) => ({ ...prev, isShow: true, text: t('connect'), severity: 'success' }));
+        } else if (result.isError) {
+          catchError(result.error);
         }
-      } else if (isError) {
+        setRefetch((prev) => !prev);
+      } else {
         catchError(error);
       }
     };
     refetchBoard();
   }, [isRefetch]);
+
+  useEffect(() => {
+    if (!isRefetch && isError) {
+      catchError(error);
+    }
+  }, [isError]);
 
   useEffect(() => {
     return () => {
@@ -48,12 +58,26 @@ export const Search: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <Container component="main" className="search">
+    <Container
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
+      className="search"
+    >
       <h2>{`${t('Search')}: ${searchInput}`}</h2>
       {isFetching ? (
         <Loader className="profile__loader" />
       ) : (
         <>
+          {isError && (
+            <ErrorTitle
+              refetch={() => setRefetch((prev) => !prev)}
+              data={!!tasks}
+              isFetching={isRefetch}
+            />
+          )}
           {tasks && tasks.length > 0 && (
             <div className="search__tasks">
               {tasks.map((task) => (
@@ -63,17 +87,10 @@ export const Search: React.FC = () => {
               ))}
             </div>
           )}
-          {tasks && tasks.length === 0 && (
+          {tasks && tasks.length === 0 && !isError && !isFetching && (
             <InfoTitle title={t('Tasks not found')} className="search__no-task" />
           )}
         </>
-      )}
-      {isError && (
-        <ErrorTitle
-          refetch={() => setRefetch((prev) => !prev)}
-          data={!!tasks}
-          isFetching={isRefetch}
-        />
       )}
     </Container>
   );

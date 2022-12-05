@@ -23,6 +23,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import './Board.scss';
 import { useBoardTitle } from 'hooks/useBoardTitle';
 import { useHandlingError } from 'hooks/useHandlingError';
+import { motion } from 'framer-motion';
+import { pageAnimation } from 'constants/animation';
 
 export const Board = () => {
   const { t } = useTranslation();
@@ -147,7 +149,11 @@ export const Board = () => {
     <>
       {
         <Box
-          component="main"
+          component={motion.main}
+          initial="initial"
+          animate="in"
+          exit="out"
+          variants={pageAnimation}
           className={
             isLoading || boardLoad || isLoad || isUpdating
               ? 'column_section opacity'

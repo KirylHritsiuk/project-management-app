@@ -12,6 +12,8 @@ import { BackdropLoader } from 'components';
 
 import './SignIn.scss';
 import { useHandlingError } from 'hooks/useHandlingError';
+import { pageAnimation } from 'constants/animation';
+import { motion } from 'framer-motion';
 
 export const SignIn: React.FC = () => {
   const { status } = useAppSelector(authUser);
@@ -41,26 +43,17 @@ export const SignIn: React.FC = () => {
       catchError(authUser.error);
       reset({ login: '', password: '' });
     }
-    // if ('data' in authUser)
-    //   dispatch(
-    //     showNotification({
-    //       isShow: true,
-    //       text: `${t('Welcome')}, ${data.login}!`,
-    //       severity: 'success',
-    //     })
-    //   );
-    // if ('error' in authUser) {
-    //   let message;
-    //   if ('status' in authUser.error)
-    //     message = (authUser.error.data as { message: string }).message;
-    //   else message = authUser.error.message!;
-    //   dispatch(showNotification({ isShow: true, text: t(message), severity: 'error' }));
-    //   reset({ login: '', password: '' });
-    // }
   };
 
   return (
-    <Container component="main" className="auth">
+    <Container
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
+      className="auth"
+    >
       <BackdropLoader open={status === 'loading'} />
       <h2 className="auth__title">{t('Sign In')}</h2>
       <form onSubmit={handleSubmit(onSubmitForm)} className="auth__form">

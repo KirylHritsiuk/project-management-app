@@ -1,14 +1,12 @@
 import { Box, IconButton, Input } from '@mui/material';
-import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
-import { showNotification } from 'store/slices/notificationSlice';
-import { useAppDispatch } from 'hooks/hooks';
 import { columnsAPI } from 'api/columnsApi';
 import DoneIcon from '@mui/icons-material/Done';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { BackdropLoader } from 'components';
+import { useHandlingError } from 'hooks/useHandlingError';
 
 interface EditProps {
   boardId: string;
@@ -20,8 +18,8 @@ interface EditProps {
 
 export const Edit = ({ boardId, columnId, title, order, close }: EditProps) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const [editColumn, status] = columnsAPI.useUpdateColumnMutation();
+  const { catchError, setShow } = useHandlingError();
 
   const {
     register,
@@ -32,43 +30,22 @@ export const Edit = ({ boardId, columnId, title, order, close }: EditProps) => {
     defaultValues: { title },
   });
 
-  useEffect(() => {
-    if ('error' in status && status.error && 'status' in status.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(status.error.status as string)} ${t('column')} ${t('editFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
-  }, [dispatch, status, status.isError, t]);
-
   const onSubmit: SubmitHandler<{ title: string }> = async (data) => {
     const result = await editColumn({
       boardId,
       columnId,
       body: { title: data.title.trim(), order },
     });
-    if ('error' in result && 'status' in result.error) {
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t(result.error.status as string)} ${t('column')} ${t('editFailed')}`,
-          severity: 'error',
-        })
-      );
-    }
     if ('data' in result) {
+      setShow({
+        isShow: true,
+        text: `${t('column')} ${t('editSuccess')}`,
+        severity: 'success',
+      });
       close();
       reset();
-      dispatch(
-        showNotification({
-          isShow: true,
-          text: `${t('column')} ${t('editSuccess')}`,
-          severity: 'success',
-        })
-      );
+    } else {
+      catchError(result.error, `${t('column')} ${t('editFailed')}`);
     }
   };
 

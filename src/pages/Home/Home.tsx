@@ -8,12 +8,19 @@ import Icon from './assets/icon.png';
 import RssLogo from 'components/Footer/assets/rssLogo.svg';
 import './Home.scss';
 import { motion } from 'framer-motion';
-import { card, imgAnimation, textAnimation } from 'constants/animation';
+import { card, imgAnimation, pageAnimation, textAnimation } from 'constants/animation';
 
 const Home = () => {
   const { t } = useTranslation();
   return (
-    <Container component="main" className="public_page">
+    <Container
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
+      className="public_page"
+    >
       <motion.div
         initial="hidden"
         whileInView="visible"

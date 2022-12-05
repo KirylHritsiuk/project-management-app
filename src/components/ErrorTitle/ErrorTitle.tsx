@@ -16,7 +16,6 @@ export const ErrorTitle = ({ title, className, refetch, data, isFetching }: Erro
         variants={text}
         initial="init"
         animate="anim"
-        exit="exit"
         className={cn(styled.error, className)}
       >
         {!data && <InfoTitle title={title ?? t('WrongError')} />}

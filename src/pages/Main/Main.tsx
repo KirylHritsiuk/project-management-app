@@ -6,6 +6,8 @@ import { UsersSelect } from 'components';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHandlingError } from 'hooks/useHandlingError';
+import { pageAnimation } from 'constants/animation';
+import { motion } from 'framer-motion';
 
 export function Main() {
   const { t } = useTranslation();
@@ -52,8 +54,12 @@ export function Main() {
 
   return (
     <Container
+      component={motion.main}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageAnimation}
       className={styled.main}
-      component="main"
       sx={{
         display: 'flex',
         alignItems: 'center',
